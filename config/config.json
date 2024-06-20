@@ -1,9 +1,9 @@
 {
   "development": {
     "username": "root",
-    "password": "password",
-    "database": "database_name",
-    "host": "127.0.0.1",
+    "password": "root",
+    "database": "db_auditoria",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }
