@@ -18,6 +18,10 @@
     "sequelize": "^6.3.5"
   },
   "devDependencies": {
-    "sequelize-cli": "^6.2.0"
+    "chai": "^5.1.1",
+    "chai-http": "^5.0.0",
+    "mocha": "^10.4.0",
+    "sequelize-cli": "^6.2.0",
+    "sequelize-test-helpers": "^1.4.3"
   }
 }
