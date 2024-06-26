@@ -1,16 +1,45 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const userRoutes = require('./routes/userRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
+require('dotenv').config();
+const { sequelize } = require('./models');
+
+// Importar rotas
+const pauseReasonRoutes = require('./routes/pauseReasonRoutes');
+const documentTypeRoutes = require('./routes/documentTypeRoutes');
+const paymentMethodRoutes = require('./routes/paymentMethodRoutes');
+const storeRoutes = require('./routes/storeRoutes');
+const causeLossRoutes = require('./routes/causeLossRoutes');
+const evaluationTypeRoutes = require('./routes/evaluationTypeRoutes');
+const questionRoutes = require('./routes/questionRoutes');
+const standardPhraseRoutes = require('./routes/standardPhraseRoutes');
+const auditMaintenanceRoutes = require('./routes/auditMaintenanceRoutes');
+const salesReportRoutes = require('./routes/salesReportRoutes');
+
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.use('/api', userRoutes);
-app.use('/api', categoryRoutes);
 
-app.listen(port, () => {
+// Usar rotas
+app.use('/api/pauseReasons', pauseReasonRoutes);
+app.use('/api/documentTypes', documentTypeRoutes);
+app.use('/api/paymentMethods', paymentMethodRoutes);
+app.use('/api/stores', storeRoutes);
+app.use('/api/causeLosses', causeLossRoutes);
+app.use('/api/evaluationTypes', evaluationTypeRoutes);
+app.use('/api/questions', questionRoutes);
+app.use('/api/standardPhrases', standardPhraseRoutes);
+app.use('/api/auditMaintenances', auditMaintenanceRoutes);
+app.use('/api/salesReports', salesReportRoutes);
+
+app.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
+  try {
+    await sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
 });
 
 module.exports = app;
