@@ -14,7 +14,9 @@ const questionRoutes = require('./routes/questionRoutes');
 const standardPhraseRoutes = require('./routes/standardPhraseRoutes');
 const auditMaintenanceRoutes = require('./routes/auditMaintenanceRoutes');
 const salesReportRoutes = require('./routes/salesReportRoutes');
-const auditAssignmentRoutes = require('./routes/auditAssignmentRoutes');  // Adicione esta linha
+const auditAssignmentRoutes = require('./routes/auditAssignmentRoutes');
+const auditRoutes = require('./routes/auditRoutes');
+const flowRoutes = require('./routes/flowRoutes');  // Adicione esta linha
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,7 +34,9 @@ app.use('/api/questions', questionRoutes);
 app.use('/api/standardPhrases', standardPhraseRoutes);
 app.use('/api/auditMaintenances', auditMaintenanceRoutes);
 app.use('/api/salesReports', salesReportRoutes);
-app.use('/api/auditAssignments', auditAssignmentRoutes);  // Adicione esta linha
+app.use('/api/auditAssignments', auditAssignmentRoutes);
+app.use('/api/audits', auditRoutes);
+app.use('/api/flows', flowRoutes);  // Adicione esta linha
 
 app.listen(port, async () => {
   console.log(`Server is running on port ${port}`);

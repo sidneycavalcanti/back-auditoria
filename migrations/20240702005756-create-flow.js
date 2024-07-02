@@ -2,7 +2,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('SalesReports', {
+    await queryInterface.createTable('Flows', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -19,31 +19,29 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      value: {
-        type: Sequelize.FLOAT,
-        allowNull: false,
-      },
-      sex: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      paymentMethodId: {
+      qtdMaleSpeculator: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'PaymentMethods',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
-      ageRange: {
-        type: Sequelize.STRING,
+      qtdFemaleSpeculator: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      observation: {
-        type: Sequelize.STRING,
-        allowNull: true,
+      qtdMaleCompanion: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      qtdFemaleCompanion: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      qtdOtherMale: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      qtdOtherFemale: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
@@ -59,6 +57,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('SalesReports');
+    await queryInterface.dropTable('Flows');
   }
 };

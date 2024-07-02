@@ -1,61 +1,67 @@
-const { SalesReport } = require('../models');
+const { Flow, Audit } = require('../models');
 
-exports.createSalesReport = async (req, res) => {
+exports.createFlow = async (req, res) => {
   try {
-    const salesReport = await SalesReport.create(req.body);
-    res.status(201).json(salesReport);
+    const flow = await Flow.create(req.body);
+    res.status(201).json(flow);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-exports.getAllSalesReports = async (req, res) => {
+exports.getAllFlows = async (req, res) => {
   try {
-    const salesReports = await SalesReport.findAll();
-    res.status(200).json(salesReports);
+    const flows = await Flow.findAll({
+      include: [Audit]
+    });
+    res.status(200).json(flows);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.getSalesReportById = async (req, res) => {
+exports.getFlowById = async (req, res) => {
   try {
-    const salesReport = await SalesReport.findByPk(req.params.id);
-    if (salesReport) {
-      res.status(200).json(salesReport);
+    const flow = await Flow.findByPk(req.params.id, {
+      include: [Audit]
+    });
+    if (flow) {
+      res.status(200).json(flow);
     } else {
-      res.status(404).json({ error: 'SalesReport not found' });
+      res.status(404).json({ error: 'Flow not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.updateSalesReport = async (req, res) => {
+exports.updateFlow = async (req, res) => {
   try {
-    const [updated] = await SalesReport.update(req.body, {
+    const [updated] = await Flow.update(req.body, {
       where: { id: req.params.id },
     });
     if (updated) {
-      const updatedSalesReport = await SalesReport.findByPk(req.params.id);
-      res.status(200).json(updatedSalesReport);
+      const updatedFlow = await Flow.findByPk(req.params.id, {
+        include: [Audit]
+      });
+      res.status(200).json(updatedFlow);
     } else {
-      res.status(404).json({ error: 'SalesReport not found' });
+      res.status(404).json({ error: 'Flow not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.deleteSalesReport = async (req, res) => {
+exports.deleteFlow = async (req, res) => {
   try {
-    const deleted = await SalesReport.destroy({
+    const deleted = await Flow.destroy({
       where: { id: req.params.id },
     });
     if (deleted) {
       res.status(204).send();
     } else {
-      res.status(404).json({ error: 'SalesReport not found' });
+      res.status(404).json({ error: 'Flow not found' });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
