@@ -2,31 +2,28 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Audits', {
+    await queryInterface.createTable('Losses', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      annotations: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
-      },
-      other: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      userId: {
+      auditId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'Users',
+          model: 'Audits',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+      },
+      causeLossId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'CauseLosses',
           key: 'id'
         },
         onUpdate: 'CASCADE',
@@ -46,6 +43,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Audits');
+    await queryInterface.dropTable('Losses');
   }
 };

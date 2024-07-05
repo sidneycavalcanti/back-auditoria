@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'Audits',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
@@ -32,7 +32,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'PaymentMethods',
-          key: 'id'
+          key: 'id',
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
