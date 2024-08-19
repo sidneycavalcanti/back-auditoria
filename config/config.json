@@ -1,9 +1,0 @@
-{
-  "development": {
-    "username": "root",
-    "password": "root",
-    "database": "db_auditoria",
-    "host": "localhost",
-    "dialect": "mysql"
-  }
-}
