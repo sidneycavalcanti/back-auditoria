@@ -1,15 +1,9 @@
-const config = {
-    dialect: "mysql",
-    host: "localhost",
-    // port: 3307,
-    username: "root",
-    password: "",
-    database: "db_auditoria",
-    define: {
-      timestamp: true, // cria duas colunas: createdAt e updatedAt
-      underscored: true,
-      underscoredAll: true,
-    },
-  };
+require('dotenv').config();
+const { Sequelize } = require('sequelize');
 
-  export default config;
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
+  dialect: 'mysql',
+});
+
+module.exports = sequelize;
