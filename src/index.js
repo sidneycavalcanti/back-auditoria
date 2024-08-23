@@ -1,11 +1,16 @@
-require('dotenv').config();
-const express = require('express');
-const app = express();
-const sequelize = require('../src/config/database');
-const usuarioRoutes = require('./routes/usuarioRoutes');
+import dotenv from 'dotenv';
+import express from 'express';
+import routes from './routes/index.js';
+import sequelize from './config/database.js'; // Ajuste o caminho conforme necessário
 
+
+dotenv.config();
+
+const app = express();
 app.use(express.json());
-app.use('/src/usuarios', usuarioRoutes);
+
+// usar o reador central
+app.use(routes); // Corrigido o caminho da rota
 
 const PORT = process.env.PORT || 3000;
 

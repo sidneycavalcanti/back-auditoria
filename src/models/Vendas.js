@@ -7,22 +7,22 @@ const Vendas = sequelize.define('Vendas', {
     primaryKey: true,
     autoIncrement: true,
   },
-  auditoria_id: {
+  auditoriaId: {
     type: DataTypes.INTEGER,
   },
-  formadepagamento_id: {
+  formadepagamentoId: {
     type: DataTypes.INTEGER,
   },
-  loja_id: {
+  lojaId: {
     type: DataTypes.INTEGER,
   },
-  sexo_id: {
+  sexoId: {
     type: DataTypes.INTEGER,
   },
   faixaetaria: {
     type: DataTypes.INTEGER,
   },
-  usuario_id: {
+  usuarioId: {
     type: DataTypes.INTEGER,
   },
   createdAt: {

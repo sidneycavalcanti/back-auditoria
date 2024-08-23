@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
-const Categoria = sequelize.define('Categoria', {
+const Cadquestoes = sequelize.define('Cadquestoes', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -10,6 +10,10 @@ const Categoria = sequelize.define('Categoria', {
   name: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  situacao: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -20,9 +24,9 @@ const Categoria = sequelize.define('Categoria', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'categoria',
+  tableName: 'Cadquestoes',
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-export default Categoria; // Certifique-se de que o modelo está sendo exportado como default
+export default Cadquestoes; // Certifique-se de que o modelo está sendo exportado como default
