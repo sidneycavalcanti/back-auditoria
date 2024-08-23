@@ -1,57 +1,73 @@
-const Usuario = require('../models/Usuario');
+import UserService from '../services/userService.js';
+import { createUserSchema, updateUserSchema } from '../validations/userValidation.js';
 
-exports.getAllUsuarios = async (req, res) => {
-  try {
-    const usuarios = await Usuario.findAll();
-    res.status(200).json(usuarios);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuários', error });
-  }
-};
-
-exports.createUsuario = async (req, res) => {
-  try {
-    const novoUsuario = await Usuario.create(req.body);
-    res.status(201).json(novoUsuario);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar usuário', error });
-  }
-};
-
-exports.getUsuarioById = async (req, res) => {
-  try {
-    const usuario = await Usuario.findByPk(req.params.id);
-    if (!usuario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
+class UserController {
+  async index(req, res) {
+    try {
+      const users = await UserService.getUsers(req.query);
+      return res.status(200).json(users);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao buscar usuários' });
     }
-    res.status(200).json(usuario);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar usuário', error });
   }
-};
 
-exports.updateUsuario = async (req, res) => {
-  try {
-    const usuario = await Usuario.findByPk(req.params.id);
-    if (!usuario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-    await usuario.update(req.body);
-    res.status(200).json(usuario);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar usuário', error });
-  }
-};
+  async show(req, res) {
+    try {
+      const user = await UserService.getUserById(req.params.id);
 
-exports.deleteUsuario = async (req, res) => {
-  try {
-    const usuario = await Usuario.findByPk(req.params.id);
-    if (!usuario) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
+      if (!user) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+      }
+
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao buscar usuário' });
     }
-    await usuario.destroy();
-    res.status(200).json({ message: 'Usuário excluído com sucesso' });
-  } catch (error) {
-    res.status(500).json({ message: 'Erro ao excluir usuário', error });
   }
-};
+
+  async create(req, res) {
+    try {
+      await createUserSchema.validate(req.body, { abortEarly: false }); // aqui ela passa pela validação 
+
+      const user = await UserService.createUser(req.body);
+
+      return res.status(201).json(user);
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ errors: error.errors });
+      }
+      console.error('Erro ao criar usuário:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar usuário', detalhes: error.message });
+    }
+  }
+
+  async update(req, res) {
+    try {
+      await updateUserSchema.validate(req.body, { abortEarly: false });
+
+      const user = await UserService.updateUser(req.params.id, req.body);
+
+      return res.status(200).json(user);
+    } catch (error) {
+      if (error.name === 'ValidationError') {
+        return res.status(400).json({ errors: error.errors });
+      }
+      console.error('Erro ao excluir usuário:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao excluir usuário', detalhes: error.message });
+      //return res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
+  }
+
+  async destroy(req, res) {
+    try {
+      await UserService.deleteUser(req.params.id);
+      return res.status(204).send();
+    } catch (error) {
+      console.error('Erro ao excluir usuário:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao excluir usuário', detalhes: error.message });
+     // return res.status(500).json({ error: 'Erro ao excluir usuário' });
+    }
+  }
+}
+
+export default new UserController();

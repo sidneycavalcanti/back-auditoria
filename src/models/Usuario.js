@@ -1,5 +1,6 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../../src/config/database');
+import { DataTypes } from 'sequelize';
+import bcrypt from 'bcryptjs';
+import sequelize from '../../src/config/database.js'; // Note a extensão .js
 
 const Usuario = sequelize.define('Usuario', {
   id: {
@@ -7,17 +8,28 @@ const Usuario = sequelize.define('Usuario', {
     primaryKey: true,
     autoIncrement: true,
   },
-  categoria_id: {
+  categoriaId: {
     type: DataTypes.INTEGER,
   },
   situacao: {
     type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
   username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
-  created_at: {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
@@ -27,7 +39,21 @@ const Usuario = sequelize.define('Usuario', {
   },
 }, {
   tableName: 'usuario',
-  timestamps: false,
+  timestamps: true,
+  underscored: false,
+  hooks: {
+    beforeSave: async (usuario) => {
+      if (usuario.password) {
+        // Hash a senha antes de salvar no banco de dados
+        usuario.password = await bcrypt.hash(usuario.password, 8);
+      }
+    },
+  },
 });
 
-module.exports = Usuario;
+// Método para verificar a senha
+Usuario.prototype.checkPassword = function(password) {
+  return bcrypt.compare(password, this.password);
+};
+
+export default Usuario;

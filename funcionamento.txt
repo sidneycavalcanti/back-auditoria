@@ -1,0 +1,32 @@
+src/
+│-- controllers/
+│   └-- userController.js
+│-- services/
+│   └-- userService.js
+│-- models/
+│   └-- User.js
+│-- routes/
+│   └-- userRoutes.js
+│-- validations/
+│   └-- userValidation.js
+│-- services/
+│   └-- userService.js
+
+
+1. Validação com Yup (src/validations/userValidation.js)
+Vamos encapsular as regras de validação em um arquivo dedicado:
+
+2. Serviço de Usuário (src/services/userService.js)
+O serviço encapsula a lógica de negócio:
+
+3. Controlador (src/controllers/userController.js)
+O controlador agora chama o serviço para realizar operações:
+
+4. Rotas (src/routes/userRoutes.js)
+Configuração das rotas:
+
+Conclusão
+A lógica de negócios foi movida para o serviço, deixando o controlador mais limpo e focado em lidar com requisições e respostas.
+A validação foi centralizada em arquivos separados, facilitando a manutenção e a reutilização.
+O uso de ES Modules com import/export está alinhado com as práticas modernas de desenvolvimento.
+Se precisar de mais ajustes ou tiver outras dúvidas, estarei por aqui para ajudar!

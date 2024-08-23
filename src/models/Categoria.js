@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../../src/config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
 const Categoria = sequelize.define('Categoria', {
   id: {
@@ -21,7 +21,8 @@ const Categoria = sequelize.define('Categoria', {
   },
 }, {
   tableName: 'categoria',
-  timestamps: false,
+  timestamps: true, // Mantém o controle automático de createdAt e updatedAt
+  underscored: false, // Desativa a conversão automática para snake_case
 });
 
-module.exports = Categoria;
+export default Categoria; // Certifique-se de que o modelo está sendo exportado como default
