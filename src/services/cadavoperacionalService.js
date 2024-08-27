@@ -1,8 +1,8 @@
-import Cadquestoes from '../models/Cadquestoes.js';
+import Cadavoperacional from '../models/Cadavoperacional.js';
 import { Op } from 'sequelize';
 
-class CadquestoesService {
-  async getCadquestoes({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class CadavoperacionalService {
+  async getCadavoperacional({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -31,7 +31,7 @@ class CadquestoesService {
     }
 
     const offset = (page - 1) * limit;
-    const cadquestoes = await Cadquestoes.findAndCountAll({
+    const cadavoperacional = await Cadavoperacional.findAndCountAll({
       where,
       order,
       limit,
@@ -39,48 +39,48 @@ class CadquestoesService {
     });
 
     return {
-      cadquestoes: cadquestoes.rows,
-      totalItems: cadquestoes.count,
-      totalPages: Math.ceil(cadquestoes.count / limit),
+      cadquestoes: cadavoperacional.rows,
+      totalItems: cadavoperacional.count,
+      totalPages: Math.ceil(cadavoperacional.count / limit),
       currentPage: page,
     };
   }
 
-    async getcadquestoesById(id) {
-    return await Cadquestoes.findByPk(id, {
+    async getcadavoperacionalById(id) {
+    return await Cadavoperacional.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createCadquestoes(data) {
-    return await Cadquestoes.create(data);
+  async createCadavoperacional(data) {
+    return await Cadavoperacional.create(data);
   }
 
-  async updateCadquestoes(id, updateData) {
-    const [updated] = await Cadquestoes.update(updateData, {
+  async updateCadavoperacional(id, updateData) {
+    const [updated] = await Cadavoperacional.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
       return await this.getcadquestoesById(id); // Retorna o registro atualizado
     }
-    throw new Error('cadquestoes não encontrada');
+    throw new Error('Avaliação operacional não encontrada');
   }
 
 
-  async deleteCadquestoes(id) {
+  async deleteCadavoperacional(id) {
     // Verifica se a cadquestoes existe
-    const cadquestoes = await this.getcadquestoesById(id);
+    const cadavoperacional = await this.getcadquestoesById(id);
 
-    if (!cadquestoes) {
-      throw new Error('cadquestoes não encontrada');
+    if (!cadavoperacional) {
+      throw new Error('Avaliação operacional não encontrada');
     }
 
     // Exclui a cadquestoes com a condição where
-    return await Cadquestoes.destroy({
+    return await Cadavoperacional.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new CadquestoesService();
+export default new CadavoperacionalService();

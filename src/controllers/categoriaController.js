@@ -24,7 +24,7 @@ class CatController {
 
       return res.status(200).json(cat);
     } catch (error) {
-      console.error('Erro ao criar usuário:', error); // Log mais detalhado
+      console.error('Erro ao criar categoria:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao criar categoria', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
@@ -34,14 +34,14 @@ class CatController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cat = await CatService.createCat(req.body);
+      const cat = await CatService.createcat(req.body);
 
       return res.status(201).json(cat);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar usuário:', error); // Log mais detalhado
+      console.error('Erro ao criar categoria:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao criar categoria', detalhes: error.message });
     }
   }

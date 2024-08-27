@@ -7,8 +7,8 @@ class CadquestoesController {
       const cats = await Cadquestoes.getCats(req.query);
       return res.status(200).json(cats);
     } catch (error) {
-      console.error('Erro ao buscar categoria:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao buscar categoria', detalhes: error.message });
+      console.error('Erro ao buscar questões:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao buscar questões', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
    
@@ -16,16 +16,16 @@ class CadquestoesController {
 
   async show(req, res) {
     try {
-      const cat = await Cadquestoes.getCatById(req.params.id);
+      const cadq = await Cadquestoes.getCatById(req.params.id);
 
-      if (!cat) {
-        return res.status(404).json({ error: 'Categoria não encontrado' });
+      if (!cadq) {
+        return res.status(404).json({ error: 'questões não encontrado' });
       }
 
-      return res.status(200).json(cat);
+      return res.status(200).json(cadq);
     } catch (error) {
       console.error('Erro ao criar usuário:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar categoria', detalhes: error.message });
+      res.status(500).json({ error: 'Erro ao criar questões', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
   }
@@ -34,15 +34,15 @@ class CadquestoesController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cat = await Cadquestoes.createCat(req.body);
+      const cadq = await Cadquestoes.createcat(req.body);
 
-      return res.status(201).json(cat);
+      return res.status(201).json(cadq);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar usuário:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar categoria', detalhes: error.message });
+      console.error('Erro ao criar questões:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar questões', detalhes: error.message });
     }
   }
 
@@ -50,15 +50,15 @@ class CadquestoesController {
     try {
       await req.body, { abortEarly: false };
 
-      const cat = await Cadquestoes.updateCat(req.params.id, req.body);
+      const cadq = await Cadquestoes.updateCat(req.params.id, req.body);
 
-      return res.status(200).json(cat);
+      return res.status(200).json(cadq);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao atualizar categoria:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao atualizar categoria', detalhes: error.message });
+      console.error('Erro ao atualizar questões:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao atualizar questões', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao atualizar categoria' });
     }
   }
@@ -69,8 +69,8 @@ class CadquestoesController {
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });
-      console.error('Erro ao excluir categoria:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao excluir categoria', detalhes: error.message });
+      console.error('Erro ao excluir questões:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao excluir questões', detalhes: error.message });
     }
   }
 }
