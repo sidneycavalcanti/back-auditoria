@@ -1,8 +1,8 @@
-import Cadavoperacional from '../models/Cadavoperacional.js';
+import Motivoperdas from '../models/Motivoperdas.js';
 import { Op } from 'sequelize';
 
-class CadavoperacionalService {
-  async getCadavoperacional({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class MotivoperdasService {
+  async getMotivoperdas({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -31,7 +31,7 @@ class CadavoperacionalService {
     }
 
     const offset = (page - 1) * limit;
-    const cadavoperacional = await Cadavoperacional.findAndCountAll({
+    const motivoperdas = await Motivoperdas.findAndCountAll({
       where,
       order,
       limit,
@@ -39,30 +39,30 @@ class CadavoperacionalService {
     });
 
     return {
-      cadavoperacional: cadavoperacional.rows,
-      totalItems: cadavoperacional.count,
-      totalPages: Math.ceil(cadavoperacional.count / limit),
+      motivoperdas: motivoperdas.rows,
+      totalItems: motivoperdas.count,
+      totalPages: Math.ceil(motivoperdas.count / limit),
       currentPage: page,
     };
   }
 
-    async getcadavoperacionalById(id) {
-    return await Cadavoperacional.findByPk(id, {
+    async getMotivoperdasById(id) {
+    return await Motivoperdas.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createCadavoperacional(data) {
-    return await Cadavoperacional.create(data);
+  async createMotivoperdas(data) {
+    return await Motivoperdas.create(data);
   }
 
-  async updateCadavoperacional(id, updateData) {
-    const [updated] = await Cadavoperacional.update(updateData, {
+  async updateMotivoperdas(id, updateData) {
+    const [updated] = await Motivoperdas.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getcadquestoesById(id); // Retorna o registro atualizado
+      return await this.getMotivoperdasById(id); // Retorna o registro atualizado
     }
     throw new Error('Avaliação operacional não encontrada');
   }
@@ -70,14 +70,14 @@ class CadavoperacionalService {
 
   async deleteCadavoperacional(id) {
     // Verifica se a cadquestoes existe
-    const cadavoperacional = await this.getcadquestoesById(id);
+    const motivoperdas = await this.getMotivoperdasById(id);
 
-    if (!cadavoperacional) {
+    if (!motivoperdas) {
       throw new Error('Avaliação operacional não encontrada');
     }
 
     // Exclui a cadquestoes com a condição where
-    return await Cadavoperacional.destroy({
+    return await Motivoperdas.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
