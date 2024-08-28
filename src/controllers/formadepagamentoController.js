@@ -4,8 +4,8 @@ import Formadepagamento from '../services/formadepagamentoService.js';
 class FormadepagamentoController {
   async index(req, res) {
     try {
-      const Formadepagamento = await Formadepagamento.getFormadepagamento(req.query);
-      return res.status(200).json(Formadepagamento);
+      const formadepagamento = await Formadepagamento.getFormadepagamento(req.query);
+      return res.status(200).json(formadepagamento);
     } catch (error) {
       console.error('Erro ao buscar avaliação operacional:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao buscar avaliação operacional', detalhes: error.message });
@@ -16,16 +16,16 @@ class FormadepagamentoController {
 
   async show(req, res) {
     try {
-      const Formadepagamento = await Formadepagamento.getFormadepagamentoById(req.params.id);
+      const formadepagamento = await Formadepagamento.getFormadepagamentoById(req.params.id);
 
-      if (!Formadepagamento) {
+      if (!formadepagamento) {
         return res.status(404).json({ error: 'avaliação operacional não encontrado' });
       }
 
-      return res.status(200).json(Formadepagamento);
+      return res.status(200).json(formadepagamento);
     } catch (error) {
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao criar Forma de pagamento:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar Forma de pagamento', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
   }
@@ -34,15 +34,15 @@ class FormadepagamentoController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const Formadepagamento = await Formadepagamento.createFormadepagamento(req.body);
+      const formadepagamento = await Formadepagamento.createFormadepagamento(req.body);
 
-      return res.status(201).json(Formadepagamento);
+      return res.status(201).json(formadepagamento);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao criar forma de pagamento:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar forma de pagamento', detalhes: error.message });
     }
   }
 
@@ -50,15 +50,15 @@ class FormadepagamentoController {
     try {
       await req.body, { abortEarly: false };
 
-      const Formadepagamento = await Formadepagamento.updateFormadepagamento(req.params.id, req.body);
+      const formadepagamento = await Formadepagamento.updateFormadepagamento(req.params.id, req.body);
 
-      return res.status(200).json(Formadepagamento);
+      return res.status(200).json(formadepagamento);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao atualizar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao atualizar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao atualizar forma de pagamento:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao atualizar forma de pagamento', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao atualizar categoria' });
     }
   }

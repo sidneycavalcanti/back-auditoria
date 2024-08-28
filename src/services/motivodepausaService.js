@@ -73,7 +73,7 @@ class MotivodepausaService {
   }
 
 
-  async deleteCadavoperacional(id) {
+  async deleteMotivodepausa(id) {
     // Verifica se a cadquestoes existe
     const Motivodepausa = await this.getMotivodepausaById(id);
 
@@ -88,4 +88,4 @@ class MotivodepausaService {
   }
 }
 
-export default new CadavoperacionalService();
+export default new MotivodepausaService();

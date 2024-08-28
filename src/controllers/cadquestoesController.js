@@ -4,7 +4,7 @@ import Cadquestoes from '../services/cadquestoesService.js';
 class CadquestoesController {
   async index(req, res) {
     try {
-      const cats = await Cadquestoes.getCats(req.query);
+      const cats = await Cadquestoes.getCadquestoes(req.query);
       return res.status(200).json(cats);
     } catch (error) {
       console.error('Erro ao buscar questões:', error); // Log mais detalhado
@@ -16,7 +16,7 @@ class CadquestoesController {
 
   async show(req, res) {
     try {
-      const cadq = await Cadquestoes.getCatById(req.params.id);
+      const cadq = await Cadquestoes.getcadquestoesById(req.params.id);
 
       if (!cadq) {
         return res.status(404).json({ error: 'questões não encontrado' });
@@ -34,7 +34,7 @@ class CadquestoesController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cadq = await Cadquestoes.createcat(req.body);
+      const cadq = await Cadquestoes.createCadquestoes(req.body);
 
       return res.status(201).json(cadq);
     } catch (error) {
@@ -50,7 +50,7 @@ class CadquestoesController {
     try {
       await req.body, { abortEarly: false };
 
-      const cadq = await Cadquestoes.updateCat(req.params.id, req.body);
+      const cadq = await Cadquestoes.updateCadquestoes(req.params.id, req.body);
 
       return res.status(200).json(cadq);
     } catch (error) {
@@ -65,7 +65,7 @@ class CadquestoesController {
 
   async destroy(req, res) {
     try {
-      await Cadquestoes.deletecat(req.params.id);
+      await Cadquestoes.deleteCadquestoes(req.params.id);
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });

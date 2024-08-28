@@ -1,8 +1,8 @@
-import Formadepagamento from '../models/Formadepagamento.js';
+import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
-class FormadepagamentoService {
-  async getFormadepagamento({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class CadsexoService {
+  async getCadsexo({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -36,7 +36,7 @@ class FormadepagamentoService {
     }
 
     const offset = (page - 1) * limit;
-    const Formadepagamento = await Formadepagamento.findAndCountAll({
+    const cadsexo = await Cadsexo.findAndCountAll({
       where,
       order,
       limit,
@@ -44,48 +44,48 @@ class FormadepagamentoService {
     });
 
     return {
-      Formadepagamento: Formadepagamento.rows,
-      totalItems: Formadepagamento.count,
-      totalPages: Math.ceil(Formadepagamento.count / limit),
+      cadsexo: cadsexo.rows,
+      totalItems: cadsexo.count,
+      totalPages: Math.ceil(cadsexo.count / limit),
       currentPage: page,
     };
   }
 
-    async getFormadepagamentoById(id) {
-    return await Formadepagamento.findByPk(id, {
+    async getCadsexoById(id) {
+    return await Cadsexo.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createFormadepagamento(data) {
-    return await Formadepagamento.create(data);
+  async createCadsexo(data) {
+    return await Motivodepausa.create(data);
   }
 
-  async updateFormadepagamento(id, updateData) {
-    const [updated] = await Formadepagamento.update(updateData, {
+  async updateCadsexo(id, updateData) {
+    const [updated] = await Motivodepausa.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getFormadepagamentoById(id); // Retorna o registro atualizado
+      return await this.getCadsexoById(id); // Retorna o registro atualizado
     }
-    throw new Error('Forma de pagamento não encontrada');
+    throw new Error('sexo não encontrada');
   }
 
 
-  async deleteFormadepagamento(id) {
+  async deleteCadsexo(id) {
     // Verifica se a cadquestoes existe
-    const Formadepagamento = await this.getFormadepagamentoById(id);
+    const Cadsexo = await this.getMotivodepausaById(id);
 
-    if (!Formadepagamento) {
-      throw new Error('Forma de pagamento não encontrada');
+    if (!Cadsexo) {
+      throw new Error('sexo não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where
-    return await Formadepagamento.destroy({
+    return await Cadsexo.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new FormadepagamentoService();
+export default new CadsexoService();
