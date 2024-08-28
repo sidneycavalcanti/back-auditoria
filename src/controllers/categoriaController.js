@@ -34,7 +34,7 @@ class CatController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cat = await CatService.createcat(req.body);
+      const cat = await CatService.createCat(req.body);
 
       return res.status(201).json(cat);
     } catch (error) {
