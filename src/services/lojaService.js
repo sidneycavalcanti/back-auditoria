@@ -1,8 +1,8 @@
-import Cadsexo from '../models/Cadsexo.js';
+import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
-class CadsexoService {
-  async getCadsexo({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class LojaService {
+  async getLoja({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -36,7 +36,7 @@ class CadsexoService {
     }
 
     const offset = (page - 1) * limit;
-    const cadsexo = await Cadsexo.findAndCountAll({
+    const loja = await Loja.findAndCountAll({
       where,
       order,
       limit,
@@ -44,48 +44,48 @@ class CadsexoService {
     });
 
     return {
-      cadsexo: cadsexo.rows,
-      totalItems: cadsexo.count,
-      totalPages: Math.ceil(cadsexo.count / limit),
+      loja: loja.rows,
+      totalItems: loja.count,
+      totalPages: Math.ceil(loja.count / limit),
       currentPage: page,
     };
   }
 
-    async getCadsexoById(id) {
-    return await Cadsexo.findByPk(id, {
+    async getLojaById(id) {
+    return await Loja.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createCadsexo(data) {
-    return await Cadsexo.create(data);
+  async createLoja(data) {
+    return await Loja.create(data);
   }
 
-  async updateCadsexo(id, updateData) {
-    const [updated] = await Cadsexo.update(updateData, {
+  async updateLoja(id, updateData) {
+    const [updated] = await Loja.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getCadsexoById(id); // Retorna o registro atualizado
+      return await this.getLojaById(id); // Retorna o registro atualizado
     }
-    throw new Error('sexo não encontrada');
+    throw new Error('Loja não encontrada');
   }
 
 
-  async deleteCadsexo(id) {
+  async deleteLoja(id) {
     // Verifica se a cadquestoes existe
-    const Cadsexo = await this.getCadsexoById(id);
+    const loja = await this.getLojaById(id);
 
-    if (!Cadsexo) {
-      throw new Error('sexo não encontrada');
+    if (!loja) {
+      throw new Error('Loja não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where
-    return await Cadsexo.destroy({
+    return await Loja.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new CadsexoService();
+export default new LojaService();

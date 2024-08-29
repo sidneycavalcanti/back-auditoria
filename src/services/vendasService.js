@@ -1,8 +1,8 @@
-import Cadsexo from '../models/Cadsexo.js';
+import Vendas from '../models/Vendas.js';
 import { Op } from 'sequelize';
 
-class CadsexoService {
-  async getCadsexo({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class VendasService {
+  async getVendas({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -36,7 +36,7 @@ class CadsexoService {
     }
 
     const offset = (page - 1) * limit;
-    const cadsexo = await Cadsexo.findAndCountAll({
+    const vendas = await Vendas.findAndCountAll({
       where,
       order,
       limit,
@@ -44,48 +44,48 @@ class CadsexoService {
     });
 
     return {
-      cadsexo: cadsexo.rows,
-      totalItems: cadsexo.count,
-      totalPages: Math.ceil(cadsexo.count / limit),
+      vendas: vendas.rows,
+      totalItems: vendas.count,
+      totalPages: Math.ceil(vendas.count / limit),
       currentPage: page,
     };
   }
 
-    async getCadsexoById(id) {
-    return await Cadsexo.findByPk(id, {
+    async getVendasById(id) {
+    return await Vendas.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createCadsexo(data) {
-    return await Cadsexo.create(data);
+  async createVendas(data) {
+    return await Vendas.create(data);
   }
 
-  async updateCadsexo(id, updateData) {
-    const [updated] = await Cadsexo.update(updateData, {
+  async updateVendas(id, updateData) {
+    const [updated] = await Vendas.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getCadsexoById(id); // Retorna o registro atualizado
+      return await this.getVendasById(id); // Retorna o registro atualizado
     }
-    throw new Error('sexo não encontrada');
+    throw new Error('Motivo de pausa não encontrada');
   }
 
 
-  async deleteCadsexo(id) {
+  async deleteVendas(id) {
     // Verifica se a cadquestoes existe
-    const Cadsexo = await this.getCadsexoById(id);
+    const vendas = await this.getVendasById(id);
 
-    if (!Cadsexo) {
-      throw new Error('sexo não encontrada');
+    if (!vendas) {
+      throw new Error('Motivo de pausa não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where
-    return await Cadsexo.destroy({
+    return await Vendas.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new CadsexoService();
+export default new VendasService();

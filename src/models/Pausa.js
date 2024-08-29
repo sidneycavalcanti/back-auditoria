@@ -1,28 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../src/config/database');
 
-const Vendas = sequelize.define('Vendas', {
+const Pausa = sequelize.define('Pausa', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  auditoriaId: {
-    type: DataTypes.INTEGER,
-  },
-  formadepagamentoId: {
-    type: DataTypes.INTEGER,
-  },
-  lojaId: {
-    type: DataTypes.INTEGER,
-  },
-  sexoId: {
-    type: DataTypes.INTEGER,
-  },
-  faixaetaria: {
+  motivodepausaId: {
     type: DataTypes.INTEGER,
   },
   usuarioId: {
+    type: DataTypes.INTEGER,
+  },
+  auditoriaId: {
     type: DataTypes.INTEGER,
   },
   createdAt: {
@@ -34,9 +25,9 @@ const Vendas = sequelize.define('Vendas', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'vendas',
+  tableName: 'pausa',
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-module.exports = Vendas;
+module.exports = Pausa;

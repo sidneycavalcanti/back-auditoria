@@ -1,11 +1,11 @@
-import FormadepagamentoService from '../services/formadepagamentoService.js';
+import LojaService from '../services/lojaService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
-class FormadepagamentoController {
+class LojaController {
   async index(req, res) {
     try {
-      const formadepagamento = await FormadepagamentoService.getFormadepagamento(req.query);
-      return res.status(200).json(formadepagamento);
+      const lojas = await LojaService.getLojaservice(req.query);
+      return res.status(200).json(lojas);
     } catch (error) {
       console.error('Erro ao buscar avaliação operacional:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao buscar avaliação operacional', detalhes: error.message });
@@ -16,13 +16,13 @@ class FormadepagamentoController {
 
   async show(req, res) {
     try {
-      const formadepagamento = await FormadepagamentoService.getFormadepagamentoById(req.params.id);
+      const loja = await LojaService.getLojaserviceById(req.params.id);
 
-      if (!formadepagamento) {
+      if (!loja) {
         return res.status(404).json({ error: 'avaliação operacional não encontrado' });
       }
 
-      return res.status(200).json(formadepagamento);
+      return res.status(200).json(loja);
     } catch (error) {
       console.error('Erro ao criar Forma de pagamento:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao criar Forma de pagamento', detalhes: error.message });
@@ -34,9 +34,9 @@ class FormadepagamentoController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const formadepagamento = await FormadepagamentoService.createFormadepagamento(req.body);
+      const loja = await LojaService.createLojaservice(req.body);
 
-      return res.status(201).json(formadepagamento);
+      return res.status(201).json(loja);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
@@ -50,9 +50,9 @@ class FormadepagamentoController {
     try {
       await req.body, { abortEarly: false };
 
-      const formadepagamento = await FormadepagamentoService.updateFormadepagamento(req.params.id, req.body);
+      const loja = await LojaService.updateLojaservice(req.params.id, req.body);
 
-      return res.status(200).json(formadepagamento);
+      return res.status(200).json(loja);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
@@ -65,7 +65,7 @@ class FormadepagamentoController {
 
   async destroy(req, res) {
     try {
-      await FormadepagamentoService.deleteFormadepagamento(req.params.id);
+      await LojaService.deleteLojaservice(req.params.id);
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });
@@ -75,4 +75,4 @@ class FormadepagamentoController {
   }
 }
 
-export default new FormadepagamentoController();
+export default new LojaController();

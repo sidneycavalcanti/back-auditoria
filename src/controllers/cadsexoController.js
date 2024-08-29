@@ -1,10 +1,10 @@
-import Cadsexo from '../services/cadsexoService.js';
+import CadsexoService from '../services/cadsexoService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class CadsexoController {
   async index(req, res) {
     try {
-      const cadsexo = await Cadsexo.getCadsexo(req.query);
+      const cadsexo = await Cadsexo.CadsexoService(req.query);
       return res.status(200).json(cats);
     } catch (error) {
       console.error('Erro ao buscar sexo:', error); // Log mais detalhado
@@ -16,7 +16,7 @@ class CadsexoController {
 
   async show(req, res) {
     try {
-      const cadsexo = await Cadsexo.getCadsexoById(req.params.id);
+      const cadsexo = await CadsexoService.getCadsexoById(req.params.id);
 
       if (!cadsexo) {
         return res.status(404).json({ error: 'sexo não encontrado' });
@@ -34,7 +34,7 @@ class CadsexoController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cadsexo = await Cadsexo.createCadsexo(req.body);
+      const cadsexo = await CadsexoService.createCadsexo(req.body);
 
       return res.status(201).json(cadsexo);
     } catch (error) {
@@ -50,7 +50,7 @@ class CadsexoController {
     try {
       await req.body, { abortEarly: false };
 
-      const cadsexo = await Cadsexo.updateCadsexo(req.params.id, req.body);
+      const cadsexo = await CadsexoService.updateCadsexo(req.params.id, req.body);
 
       return res.status(200).json(cadsexo);
     } catch (error) {
@@ -65,7 +65,7 @@ class CadsexoController {
 
   async destroy(req, res) {
     try {
-      await Cadsexo.deleteCadsexo(req.params.id);
+      await CadsexoService.deleteCadsexo(req.params.id);
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });
