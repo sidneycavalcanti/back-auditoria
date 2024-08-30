@@ -1,8 +1,8 @@
-import Anotacoes from '../models/Anotacoes';
+import Questoes from '../models/Questoes';
 import { Op } from 'sequelize';
 
-class AnotacoesService {
-  async getAnotacoes({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class QuestoesService {
+  async getQuestoes({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -36,7 +36,7 @@ class AnotacoesService {
     }
 
     const offset = (page - 1) * limit;
-    const anotacoes = await Anotacoes.findAndCountAll({
+    const questoes = await Questoes.findAndCountAll({
       where,
       order,
       limit,
@@ -44,48 +44,48 @@ class AnotacoesService {
     });
 
     return {
-      anotacoes: anotacoes.rows,
-      totalItems: anotacoes.count,
-      totalPages: Math.ceil(anotacoes.count / limit),
+      questoes: questoes.rows,
+      totalItems: questoes.count,
+      totalPages: Math.ceil(questoes.count / limit),
       currentPage: page,
     };
   }
 
-    async getAnotacoesById(id) {
-    return await Anotacoes.findByPk(id, {
+    async getQuestoesById(id) {
+    return await Questoes.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createAnotacoes(data) {
-    return await Anotacoes.create(data);
+  async createQuestoes(data) {
+    return await Questoes.create(data);
   }
 
-  async updateAnotacoes(id, updateData) {
-    const [updated] = await Anotacoes.update(updateData, {
+  async updateQuestoes(id, updateData) {
+    const [updated] = await Questoes.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getAnotacoesById(id); // Retorna o registro atualizado
+      return await this.getQuestoesById(id); // Retorna o registro atualizado
     }
-    throw new Error('Anotacões não encontrada');
+    throw new Error('questoes não encontrada');
   }
 
 
-  async deleteAnotacoes(id) {
+  async deleteQuestoes(id) {
     // Verifica se a cadquestoes existe
-    const anotacoes = await this.getAnotacoesById(id);
+    const questoes = await this.getQuestoesById(id);
 
-    if (!anotacoes) {
-      throw new Error('Anotações não encontrada');
+    if (!questoes) {
+      throw new Error('questoes não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where
-    return await Anotacoes.destroy({
+    return await questoes.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new AnotacoesService();
+export default new QuestoesService();

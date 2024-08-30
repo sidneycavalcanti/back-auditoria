@@ -44,7 +44,7 @@ class AuditoriaService {
     });
 
     return {
-      Auditoria: auditoria.rows,
+      auditoria: auditoria.rows,
       totalItems: auditoria.count,
       totalPages: Math.ceil(auditoria.count / limit),
       currentPage: page,
@@ -78,7 +78,7 @@ class AuditoriaService {
     const auditoria = await this.getAuditoriaById(id);
 
     if (!auditoria) {
-      throw new Error('Anotações não encontrada');
+      throw new Error('auditoria não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where

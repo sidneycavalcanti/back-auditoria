@@ -1,8 +1,8 @@
-import Anotacoes from '../models/Anotacoes';
+import Avoperacional from '../models/Avoperacional';
 import { Op } from 'sequelize';
 
-class AnotacoesService {
-  async getAnotacoes({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+class AvoperacionalService {
+  async getAvoperacional({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -36,7 +36,7 @@ class AnotacoesService {
     }
 
     const offset = (page - 1) * limit;
-    const anotacoes = await Anotacoes.findAndCountAll({
+    const avoperacional = await Avoperacional.findAndCountAll({
       where,
       order,
       limit,
@@ -44,48 +44,48 @@ class AnotacoesService {
     });
 
     return {
-      anotacoes: anotacoes.rows,
-      totalItems: anotacoes.count,
-      totalPages: Math.ceil(anotacoes.count / limit),
+      avoperacional: avoperacional.rows,
+      totalItems: avoperacional.count,
+      totalPages: Math.ceil(avoperacional.count / limit),
       currentPage: page,
     };
   }
 
-    async getAnotacoesById(id) {
-    return await Anotacoes.findByPk(id, {
+    async getAvoperacionalById(id) {
+    return await Avoperacional.findByPk(id, {
       attributes: {},
     });
   }
 
-  async createAnotacoes(data) {
-    return await Anotacoes.create(data);
+  async createAvoperacional(data) {
+    return await Avoperacional.create(data);
   }
 
-  async updateAnotacoes(id, updateData) {
-    const [updated] = await Anotacoes.update(updateData, {
+  async updateAvoperacional(id, updateData) {
+    const [updated] = await Avoperacional.update(updateData, {
       where: { id } // Especifica qual registro deve ser atualizado
     });
 
     if (updated) {
-      return await this.getAnotacoesById(id); // Retorna o registro atualizado
+      return await this.getAvoperacionalById(id); // Retorna o registro atualizado
     }
-    throw new Error('Anotacões não encontrada');
+    throw new Error('avoperacional não encontrada');
   }
 
 
-  async deleteAnotacoes(id) {
+  async deleteAvoperacional(id) {
     // Verifica se a cadquestoes existe
-    const anotacoes = await this.getAnotacoesById(id);
+    const avoperacional = await this.getAvoperacionalById(id);
 
-    if (!anotacoes) {
-      throw new Error('Anotações não encontrada');
+    if (!avoperacional) {
+      throw new Error('avoperacional não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where
-    return await Anotacoes.destroy({
+    return await avoperacional.destroy({
       where: { id } // Especifica o registro a ser excluído
     });
   }
 }
 
-export default new AnotacoesService();
+export default new AvoperacionalService();
