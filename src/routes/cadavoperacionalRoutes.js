@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import cadavoperacionalController from '../controllers/cadavoperacionalController';
+import cadavoperacionalController from '../controllers/cadavoperacionalController.js';
 
 const router = new Router();
 

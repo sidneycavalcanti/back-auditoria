@@ -1,4 +1,4 @@
-import AvoperacionalService from '../services/avoperacionalService';
+import AvoperacionalService from '../services/avoperacionalService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class AvoperacionalController {

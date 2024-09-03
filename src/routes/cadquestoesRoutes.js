@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import cadquestoesController from '../controllers/cadquestoesController';
+import cadquestoesController from '../controllers/cadquestoesController.js';
 
 const router = new Router();
 

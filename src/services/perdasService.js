@@ -1,4 +1,4 @@
-import Perdas from '../models/Perdas';
+import Perdas from '../models/Perdas.js';
 import { Op } from 'sequelize';
 
 class PerdaService {

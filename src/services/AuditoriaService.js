@@ -1,4 +1,4 @@
-import Auditoria from '../models/Auditoria';
+import Auditoria from '../models/Auditoria.js';
 import { Op } from 'sequelize';
 
 class AuditoriaService {

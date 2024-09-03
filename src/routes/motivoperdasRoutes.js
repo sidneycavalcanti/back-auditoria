@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import motivoperdasController from '../controllers/motivoperdasController';
+import motivoperdasController from '../controllers/motivoperdasController.js';
 
 const router = new Router();
 

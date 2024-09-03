@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import anotacoesController from '../controllers/anotacoesController';
+import anotacoesController from '../controllers/anotacoesController.js';
 
 const router = new Router();
 

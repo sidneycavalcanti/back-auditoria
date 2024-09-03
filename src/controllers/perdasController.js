@@ -1,5 +1,5 @@
 import PerdasService from '../services/perdasService.js';
-import { createPerdasSchema, updatePerdasSchema } from '../validations/PerdasValidation.js';
+//import { createPerdasSchema, updatePerdasSchema } from '../validations/PerdasValidation.js';
 
 class PerdasController {
   async index(req, res) {

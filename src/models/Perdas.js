@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
 const Perdas = sequelize.define('Perdas', {
   id: {
@@ -48,4 +48,4 @@ const Perdas = sequelize.define('Perdas', {
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-module.exports = Perdas;
+export default Perdas;

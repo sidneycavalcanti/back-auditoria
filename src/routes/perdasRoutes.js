@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import perdasController from '../controllers/perdasController';
+import perdasController from '../controllers/perdasController.js';
 
 const router = new Router();
 

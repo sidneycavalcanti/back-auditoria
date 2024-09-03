@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import avoperacionalController from '../controllers/avoperacionalController';
+import avoperacionalController from '../controllers/avoperacionalController.js';
 
 const router = new Router();
 

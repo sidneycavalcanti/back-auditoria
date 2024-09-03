@@ -1,4 +1,4 @@
-import AnotacoesService from '../services/anotacoesService';
+import AnotacoesService from '../services/anotacoesService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class AnotacoesController {

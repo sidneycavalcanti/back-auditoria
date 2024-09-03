@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import formadepagamentoController from '../controllers/formadepagamentoController';
+import formadepagamentoController from '../controllers/formadepagamentoController.js';
 
 const router = new Router();
 

@@ -1,4 +1,4 @@
-import Questoes from '../models/Questoes';
+import Questoes from '../models/Questoes.js';
 import { Op } from 'sequelize';
 
 class QuestoesService {

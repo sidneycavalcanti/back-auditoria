@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../../src/config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
 const Vendas = sequelize.define('Vendas', {
   id: {
@@ -39,4 +39,4 @@ const Vendas = sequelize.define('Vendas', {
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-module.exports = Vendas;
+export default Vendas;

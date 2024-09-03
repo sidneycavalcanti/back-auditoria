@@ -1,4 +1,4 @@
-import PausaService from '../services/pausaService';
+import PausaService from '../services/pausaService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class PausaController {

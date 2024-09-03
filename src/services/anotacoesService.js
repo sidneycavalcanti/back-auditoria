@@ -1,4 +1,4 @@
-import Anotacoes from '../models/Anotacoes';
+import Anotacoes from '../models/Anotacoes.js';
 import { Op } from 'sequelize';
 
 class AnotacoesService {

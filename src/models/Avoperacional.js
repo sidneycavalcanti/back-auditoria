@@ -1,5 +1,5 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+import { DataTypes } from 'sequelize';
+import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
 const Auditoria = sequelize.define('Auditoria', {
   id: {
@@ -35,5 +35,4 @@ const Auditoria = sequelize.define('Auditoria', {
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
-
-module.exports = Auditoria;
+export default Auditoria;

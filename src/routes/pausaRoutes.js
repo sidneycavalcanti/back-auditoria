@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import pausaController from '../controllers/pausaController';
+import pausaController from '../controllers/pausaController.js';
 
 const router = new Router();
 

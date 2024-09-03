@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import motivodepausaController from '../controllers/motivodepausaController';
+import motivodepausaController from '../controllers/motivodepausaController.js';
 
 const router = new Router();
 

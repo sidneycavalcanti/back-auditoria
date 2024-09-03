@@ -1,4 +1,4 @@
-import QuestoesService from '../services/questoesService';
+import QuestoesService from '../services/questoesService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class QuestoesController {

@@ -1,4 +1,4 @@
-import Avoperacional from '../models/Avoperacional';
+import Avoperacional from '../models/Avoperacional.js';
 import { Op } from 'sequelize';
 
 class AvoperacionalService {

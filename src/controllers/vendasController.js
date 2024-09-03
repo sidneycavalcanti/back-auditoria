@@ -1,4 +1,4 @@
-import VendasService from '../services/vendasService';
+import VendasService from '../services/vendasService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class VendasController {
