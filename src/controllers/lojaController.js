@@ -4,7 +4,7 @@ import LojaService from '../services/lojaService.js';
 class LojaController {
   async index(req, res) {
     try {
-      const lojas = await LojaService.getLojaservice(req.query);
+      const lojas = await LojaService.getLoja(req.query);
       return res.status(200).json(lojas);
     } catch (error) {
       console.error('Erro ao buscar avaliação operacional:', error); // Log mais detalhado
@@ -16,10 +16,10 @@ class LojaController {
 
   async show(req, res) {
     try {
-      const loja = await LojaService.getLojaserviceById(req.params.id);
+      const loja = await LojaService.getLojaById(req.params.id);
 
       if (!loja) {
-        return res.status(404).json({ error: 'avaliação operacional não encontrado' });
+        return res.status(404).json({ error: 'Loja não encontrado' });
       }
 
       return res.status(200).json(loja);
@@ -34,7 +34,7 @@ class LojaController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const loja = await LojaService.createLojaservice(req.body);
+      const loja = await LojaService.createLoja(req.body);
 
       return res.status(201).json(loja);
     } catch (error) {
@@ -50,7 +50,7 @@ class LojaController {
     try {
       await req.body, { abortEarly: false };
 
-      const loja = await LojaService.updateLojaservice(req.params.id, req.body);
+      const loja = await LojaService.updateLoja(req.params.id, req.body);
 
       return res.status(200).json(loja);
     } catch (error) {
@@ -65,7 +65,7 @@ class LojaController {
 
   async destroy(req, res) {
     try {
-      await LojaService.deleteLojaservice(req.params.id);
+      await LojaService.deleteLoja(req.params.id);
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });
