@@ -4,8 +4,8 @@ import CadsexoService from '../services/cadsexoService.js';
 class CadsexoController {
   async index(req, res) {
     try {
-      const cadsexo = await Cadsexo.CadsexoService(req.query);
-      return res.status(200).json(cats);
+      const cadsexo = await CadsexoService.getCadsexo(req.query);
+      return res.status(200).json(cadsexo);
     } catch (error) {
       console.error('Erro ao buscar sexo:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao buscar sexo', detalhes: error.message });

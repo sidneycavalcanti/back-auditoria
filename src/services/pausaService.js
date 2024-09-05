@@ -2,7 +2,7 @@ import Pausa from '../models/Pausa.js';
 import { Op } from 'sequelize';
 
 class PausaService {
-  async getPausa({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getPausa({ page = 1, limit = 10, name, motivodepausaId, usuarioId, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -10,8 +10,16 @@ class PausaService {
       where = { ...where, name: { [Op.like]: `%${name}%` } };
     }
 
-    if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+    if (motivodepausaId) {
+      where = { ...where, motivodepausaId: { [Op.like]: `%${name}%` } };
+    }
+
+    if (usuarioId) {
+      where = { ...where, usuarioId: { [Op.like]: `%${name}%` } };
+    }
+
+    if (auditoriaId) {
+      where = { ...where, auditoriaId: { [Op.like]: `%${name}%` } };
     }
 
     if (createdBefore) {

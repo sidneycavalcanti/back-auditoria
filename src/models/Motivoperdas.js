@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
-const Cadavoperacional = sequelize.define('Cadavoperacional', {
+const Motivoperdas = sequelize.define('Motivoperdas', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,6 +15,10 @@ const Cadavoperacional = sequelize.define('Cadavoperacional', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  obs: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
@@ -24,9 +28,9 @@ const Cadavoperacional = sequelize.define('Cadavoperacional', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'cadavoperacional',
+  tableName: 'motivoperdas',
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-export default Cadavoperacional; // Certifique-se de que o modelo está sendo exportado como default
+export default Motivoperdas; // Certifique-se de que o modelo está sendo exportado como default

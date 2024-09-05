@@ -2,7 +2,7 @@ import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
 class CadsexoService {
-  async getCadsexo({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getCadsexo({ page = 1, limit = 10, name, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -11,7 +11,7 @@ class CadsexoService {
     }
 
     if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+      where = { ...where, situacao: { [Op.like]: `%${situacao}%` } };
     }
 
     if (createdBefore) {

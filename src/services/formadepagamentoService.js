@@ -2,7 +2,7 @@ import Formadepagamento from '../models/Formadepagamento.js';
 import { Op } from 'sequelize';
 
 class FormadepagamentoService {
-  async getFormadepagamento({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getFormadepagamento({ page = 1, limit = 10, name, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -11,7 +11,7 @@ class FormadepagamentoService {
     }
 
     if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+      where = { ...where, situacao: { [Op.like]: `%${situacao}%` } };
     }
 
     if (createdBefore) {
@@ -36,7 +36,7 @@ class FormadepagamentoService {
     }
 
     const offset = (page - 1) * limit;
-    const Formadepagamento = await Formadepagamento.findAndCountAll({
+    const formadepagamento = await Formadepagamento.findAndCountAll({
       where,
       order,
       limit,
@@ -44,9 +44,9 @@ class FormadepagamentoService {
     });
 
     return {
-      Formadepagamento: Formadepagamento.rows,
-      totalItems: Formadepagamento.count,
-      totalPages: Math.ceil(Formadepagamento.count / limit),
+      formadepagamento: formadepagamento.rows,
+      totalItems: formadepagamento.count,
+      totalPages: Math.ceil(formadepagamento.count / limit),
       currentPage: page,
     };
   }
@@ -75,9 +75,9 @@ class FormadepagamentoService {
 
   async deleteFormadepagamento(id) {
     // Verifica se a cadquestoes existe
-    const Formadepagamento = await this.getFormadepagamentoById(id);
+    const formadepagamento = await this.getFormadepagamentoById(id);
 
-    if (!Formadepagamento) {
+    if (!formadepagamento) {
       throw new Error('Forma de pagamento não encontrada');
     }
 

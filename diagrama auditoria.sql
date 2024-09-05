@@ -30,7 +30,7 @@ CREATE TABLE `vendas` (
 
 CREATE TABLE `cadsexo` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(255),
+  `name` VARCHAR(255),
   `situacao` BOOLEAN,
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -38,7 +38,7 @@ CREATE TABLE `cadsexo` (
 
 CREATE TABLE `formadepagamento` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(255),
+  `name` VARCHAR(255),
   `situacao` BOOLEAN,
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -46,7 +46,7 @@ CREATE TABLE `formadepagamento` (
 
 CREATE TABLE `motivodepausa` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
-  `nome` VARCHAR(255),
+  `name` VARCHAR(255),
   `situacao` BOOLEAN,
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -172,7 +172,7 @@ ALTER TABLE `anotacoes` ADD CONSTRAINT fk_usuario_anotacoes FOREIGN KEY (`usuari
 ALTER TABLE `anotacoes` ADD CONSTRAINT fk_loja_anotacoes FOREIGN KEY (`lojaId`) REFERENCES `loja`(`id`);
 ALTER TABLE `anotacoes` ADD CONSTRAINT fk_auditoria_anotacoes FOREIGN KEY (`auditoriaId`) REFERENCES `auditoria`(`id`);
 
-ALTER TABLE `perdas` ADD CONSTRAINT fk_motivoperdas FOREIGN KEY (`motivoperdas_id`) REFERENCES `motivoperdas`(`id`);
+ALTER TABLE `perdas` ADD CONSTRAINT fk_motivoperdas FOREIGN KEY (`motivoperdasId`) REFERENCES `motivoperdas`(`id`);
 ALTER TABLE `perdas` ADD CONSTRAINT fk_usuario_perdas FOREIGN KEY (`usuarioId`) REFERENCES `usuario`(`id`);
 ALTER TABLE `perdas` ADD CONSTRAINT fk_loja_perdas FOREIGN KEY (`lojaId`) REFERENCES `loja`(`id`);
 ALTER TABLE `perdas` ADD CONSTRAINT fk_auditoria_perdas FOREIGN KEY (`auditoriaId`) REFERENCES `auditoria`(`id`);
@@ -181,7 +181,7 @@ ALTER TABLE `auditoria` ADD CONSTRAINT fk_loja_auditoria FOREIGN KEY (`lojaId`) 
 ALTER TABLE `auditoria` ADD CONSTRAINT fk_usuario_auditoria FOREIGN KEY (`usuarioId`) REFERENCES `usuario`(`id`);
 ALTER TABLE `auditoria` ADD CONSTRAINT fk_criador_auditoria FOREIGN KEY (`criadorId`) REFERENCES `usuario`(`id`);
 
-ALTER TABLE `avoperacional` ADD CONSTRAINT fk_cadavoperacional FOREIGN KEY (`cadavoperacional_id`) REFERENCES `cadavoperacional`(`id`);
+ALTER TABLE `avoperacional` ADD CONSTRAINT fk_cadavoperacional FOREIGN KEY (`cadavoperacionalId`) REFERENCES `cadavoperacional`(`id`);
 ALTER TABLE `avoperacional` ADD CONSTRAINT fk_usuario_avoperacional FOREIGN KEY (`usuarioId`) REFERENCES `usuario`(`id`);
 ALTER TABLE `avoperacional` ADD CONSTRAINT fk_loja_avoperacional FOREIGN KEY (`lojaId`) REFERENCES `loja`(`id`);
 ALTER TABLE `avoperacional` ADD CONSTRAINT fk_auditoria_avoperacional FOREIGN KEY (`auditoriaId`) REFERENCES `auditoria`(`id`);

@@ -2,7 +2,7 @@ import Auditoria from '../models/Auditoria.js';
 import { Op } from 'sequelize';
 
 class AuditoriaService {
-  async getAuditoria({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAuditoria({ page = 1, limit = 10, name, lojaId,  usuarioId, criadorId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -10,8 +10,16 @@ class AuditoriaService {
       where = { ...where, name: { [Op.like]: `%${name}%` } };
     }
 
-    if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+    if (lojaId) {
+      where = { ...where, name: { [Op.like]: `%${lojaId}%` } };
+    }
+
+    if (usuarioId) {
+      where = { ...where, name: { [Op.like]: `%${usuarioId}%` } };
+    }
+
+    if (criadorId) {
+      where = { ...where, name: { [Op.like]: `%${criadorId}%` } };
     }
 
     if (createdBefore) {

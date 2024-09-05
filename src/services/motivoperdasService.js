@@ -2,12 +2,15 @@ import Motivoperdas from '../models/Motivoperdas.js';
 import { Op } from 'sequelize';
 
 class MotivoperdasService {
-  async getMotivoperdas({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getMotivoperdas({ page = 1, limit = 10, name, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
     if (name) {
       where = { ...where, name: { [Op.like]: `%${name}%` } };
+    }
+    if (situacao) {
+      where = { ...where, situacao: { [Op.like]: `%${name}%` } };
     }
 
     if (createdBefore) {
@@ -83,4 +86,4 @@ class MotivoperdasService {
   }
 }
 
-export default new CadavoperacionalService();
+export default new MotivoperdasService();

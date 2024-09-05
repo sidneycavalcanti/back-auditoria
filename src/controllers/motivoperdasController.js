@@ -1,14 +1,14 @@
-import Cadavoperacional from '../services/cadavoperacionalService.js';
+import motivoperdasService from '../services/motivoperdasService.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class motivoperdasController {
   async index(req, res) {
     try {
-      const cadavop = await Cadavoperacional.getCadavoperacional(req.query);
-      return res.status(200).json(cadavop);
+      const motivo = await motivoperdasService.getMotivoperdas(req.query);
+      return res.status(200).json(motivo);
     } catch (error) {
-      console.error('Erro ao buscar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao buscar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao buscar motivo de perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao buscar motivo de perdas', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
    
@@ -16,16 +16,16 @@ class motivoperdasController {
 
   async show(req, res) {
     try {
-      const cadavop = await Cadavoperacional.getcadavoperacionalById(req.params.id);
+      const motivo = await motivoperdasService.getMotivoperdasById(req.params.id);
 
-      if (!cadavop) {
-        return res.status(404).json({ error: 'avaliação operacional não encontrado' });
+      if (!motivo) {
+        return res.status(404).json({ error: 'motivo de perdas não encontrado' });
       }
 
-      return res.status(200).json(cadavop);
+      return res.status(200).json(motivo);
     } catch (error) {
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao criar motivo de perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar motivo de perdas', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
   }
@@ -34,15 +34,15 @@ class motivoperdasController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const cadavop = await Cadavoperacional.createCadavoperacional(req.body);
+      const motivo = await motivoperdasService.createMotivoperdas(req.body);
 
-      return res.status(201).json(cadavop);
+      return res.status(201).json(motivo);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao criar motivo de perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar motivo de perdas', detalhes: error.message });
     }
   }
 
@@ -50,22 +50,22 @@ class motivoperdasController {
     try {
       await req.body, { abortEarly: false };
 
-      const cadavop = await Cadavoperacional.updateCadavoperacional(req.params.id, req.body);
+      const motivo = await motivoperdasService.updateMotivoperdas(req.params.id, req.body);
 
-      return res.status(200).json(cadavop);
+      return res.status(200).json(motivo);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao atualizar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao atualizar avaliação operacional', detalhes: error.message });
+      console.error('Erro ao atualizar motivo de perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao atualizar motivo de perdas', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao atualizar categoria' });
     }
   }
 
   async destroy(req, res) {
     try {
-      await Cadavoperacional.deleteCadavoperacional(req.params.id);
+      await motivoperdasService.deleteCadavoperacional(req.params.id);
       return res.status(204).send();
     } catch (error) {
       //return res.status(500).json({ error: 'Erro ao excluir categoria' });
