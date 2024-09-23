@@ -9,11 +9,7 @@ class PerdaService {
     if (name) {
       where = { ...where, name: { [Op.like]: `%${name}%` } };
     }
-
-    if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
-    }
-
+  
     if (createdBefore) {
       where = { ...where, createdAt: { [Op.gte]: createdBefore } };
     }

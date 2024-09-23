@@ -1,17 +1,18 @@
 import Avoperacional from '../models/Avoperacional.js';
+import Cadavoperacional from '../models/Cadavoperacional.js';
+import Usuario from '../models/Usuario.js';
+import Loja from '../models/Loja.js';
+
 import { Op } from 'sequelize';
 
+
 class AvoperacionalService {
-  async getAvoperacional({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAvoperacional({ page = 1, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-
-    if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+    if (id) {
+      where = { ...where, name: { [Op.like]: `%${id}%` } };
     }
 
     if (createdBefore) {
@@ -41,6 +42,23 @@ class AvoperacionalService {
       order,
       limit,
       offset,
+      include: [
+        {
+          model: Loja,
+          as: 'loja', // Alias da associação
+          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+        },
+        {
+          model: Usuario,
+          as: 'usuario', // Alias da associação
+          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
+        },
+        {
+          model: Cadavoperacional,
+          as: 'cadoperacional', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'name'],
+        },
+      ],
     });
 
     return {

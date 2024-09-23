@@ -9,12 +9,24 @@ const Pausa = sequelize.define('Pausa', {
   },
   motivodepausaId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'pausa',
+      key: 'id',
+    }
   },
   usuarioId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'usuario',
+      key: 'id',
+    }
   },
   auditoriaId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'auditoria',
+      key: 'id',
+    }
   },
   createdAt: {
     type: DataTypes.DATE,

@@ -1,4 +1,7 @@
 import Auditoria from '../models/Auditoria.js';
+import Loja from '../models/Loja.js';
+import Usuario from '../models/Usuario.js';
+
 import { Op } from 'sequelize';
 
 class AuditoriaService {
@@ -11,15 +14,15 @@ class AuditoriaService {
     }
 
     if (lojaId) {
-      where = { ...where, name: { [Op.like]: `%${lojaId}%` } };
+      where = { ...where, lojaId };
     }
 
     if (usuarioId) {
-      where = { ...where, name: { [Op.like]: `%${usuarioId}%` } };
+      where = { ...where, usuarioId };
     }
 
     if (criadorId) {
-      where = { ...where, name: { [Op.like]: `%${criadorId}%` } };
+      where = { ...where, criadorId };
     }
 
     if (createdBefore) {
@@ -43,12 +46,32 @@ class AuditoriaService {
       order = sort.split(',').map((item) => item.split(':'));
     }
 
+    // Paginação
     const offset = (page - 1) * limit;
+
+    // Consulta ao banco de dados, incluindo os relacionamentos
     const auditoria = await Auditoria.findAndCountAll({
       where,
       order,
       limit,
       offset,
+       include: [
+        {
+          model: Loja,
+          as: 'loja', // Alias da associação
+          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+        },
+        {
+          model: Usuario,
+          as: 'usuario', // Alias da associação
+          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
+        },
+        {
+          model: Usuario,
+          as: 'criador', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'name'],
+        },
+      ],
     });
 
     return {

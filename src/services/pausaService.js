@@ -1,25 +1,28 @@
 import Pausa from '../models/Pausa.js';
+import Loja from '../models/Loja.js';
+import Usuario from '../models/Usuario.js';
+import Motivodepausa from '../models/Motivodepausa.js';
+
 import { Op } from 'sequelize';
+import Motivodepausa from '../models/Motivodepausa.js';
+
+
 
 class PausaService {
-  async getPausa({ page = 1, limit = 10, name, motivodepausaId, usuarioId, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getPausa({ page = 1, limit = 10, motivodepausaId, usuarioId, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-
     if (motivodepausaId) {
-      where = { ...where, motivodepausaId: { [Op.like]: `%${name}%` } };
+      where = { ...where, motivodepausaId };
     }
 
     if (usuarioId) {
-      where = { ...where, usuarioId: { [Op.like]: `%${name}%` } };
+      where = { ...where, usuarioId };
     }
 
     if (auditoriaId) {
-      where = { ...where, auditoriaId: { [Op.like]: `%${name}%` } };
+      where = { ...where, auditoriaId };
     }
 
     if (createdBefore) {
@@ -49,6 +52,23 @@ class PausaService {
       order,
       limit,
       offset,
+      include: [
+        {
+          model: Loja,
+          as: 'loja',
+          attributes: ['id','name'],
+        },
+        {
+          model: Usuario,
+          as: 'usuario',
+          attributes: ['id','name'],
+        },
+        {
+          model: Motivodepausa,
+          as: 'Motivodepausa',
+          attributes: ['id','name'],
+        },
+      ]
     });
 
     return {
@@ -60,13 +80,13 @@ class PausaService {
   }
 
     async getPausaById(id) {
-    return await Loja.findByPk(id, {
+    return await Pausa.findByPk(id, {
       attributes: {},
     });
   }
 
   async createPausa(data) {
-    return await Loja.create(data);
+    return await Pausa.create(data);
   }
 
   async updatePausa(id, updateData) {

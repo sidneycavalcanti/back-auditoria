@@ -1,5 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
+import Loja from './Loja.js';
+import Usuario from './Usuario.js';
 
 const Auditoria = sequelize.define('Auditoria', {
   id: {
@@ -9,12 +11,24 @@ const Auditoria = sequelize.define('Auditoria', {
   },
   lojaId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'loja',
+      key: 'id',
+    },
   },
   usuarioId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'usuario',
+      key: 'id',
+    }
   },
   criadorId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'criador',
+      key: 'id',
+    }
   },
   data: {
     type: DataTypes.DATE,
@@ -41,5 +55,10 @@ const Auditoria = sequelize.define('Auditoria', {
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
+
+// Definindo a relação: Produto pertence a Categoria
+Auditoria.belongsTo(Loja, { foreignKey: 'lojaId', as: 'loja' });
+Auditoria.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
+Auditoria.belongsTo(Usuario, { foreignKey: 'criadorId', as: 'criador' });
 
 export default Auditoria;
