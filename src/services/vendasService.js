@@ -1,4 +1,10 @@
 import Vendas from '../models/Vendas.js';
+import Auditoria from '../models/Auditoria.js';
+import Usuario from '../models/Usuario.js';
+import Formadepagamento from '../models/Formadepagamento.js';
+import Loja from '../models/Loja.js';
+import Cadsexo from '../models/Cadsexo.js';
+
 import { Op } from 'sequelize';
 
 class VendasService {
@@ -30,13 +36,42 @@ class VendasService {
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
     }
-
+    //paginação
     const offset = (page - 1) * limit;
+
+    // consulta ao banco de dados, incluindo os relacionamentos
     const vendas = await Vendas.findAndCountAll({
       where,
       order,
       limit,
       offset,
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação
+          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante','fluxooutros'], //apenas campos da tabela auditoria.
+        },
+        {
+          model: Usuario,
+          as: 'usuario', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+        },
+        {
+          model: Formadepagamento,
+          as: 'formadepagamento', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+        },
+        {
+          model: Loja,
+          as: 'loja', // Alias da associação
+          attributes: ['id', 'name', 'luc','piso','codigo'], //apenas campos da tabela auditoria.
+        },
+        {
+          model: Cadsexo,
+          as: 'sexo', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+        },
+      ]
     });
 
     return {

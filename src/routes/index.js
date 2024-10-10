@@ -22,21 +22,21 @@ import anotacaoRoutes from './anotacaoRoutes.js';
 const router = Router();
 
 // Registrar as rotas de usuário e categoria
-router.use('/usuarios', usuarioRoutes);
-router.use('/categorias', categoriaRoutes);
-router.use('/anotacao', anotacaoRoutes);
-router.use('/auditoria', auditoriaRoutes);
-router.use('/avoperacional', avoperacionalRoustes);
+router.use('/usuarios', usuarioRoutes); //teste feito
+router.use('/categorias', categoriaRoutes); //teste feito
+router.use('/anotacao', anotacaoRoutes); 
+router.use('/auditoria', auditoriaRoutes); //teste feito
+router.use('/avoperacional', avoperacionalRoustes); 
 router.use('/cadavoperacional', cadavoperacionalRoutes);
 router.use('/cadquestoes', cadquestoesRoutes);
-router.use('/cadsexo', cadsexoRoutes);
-router.use('/formadepagamento', formadepagamentoRoutes);
-router.use('/loja', lojaRoutes);
-router.use('/motivodepausa', motivodepausaRoutes);
-router.use('/motivoperdas', motivoperdasRoutes);
+router.use('/cadsexo', cadsexoRoutes); //teste feito
+router.use('/formadepagamento', formadepagamentoRoutes); //teste feito
+router.use('/loja', lojaRoutes); //teste feito
+router.use('/motivodepausa', motivodepausaRoutes); //teste feito
+router.use('/motivoperdas', motivoperdasRoutes); //teste feito
 router.use('/questoes', questoesRoutes);
 router.use('/pausa', pausaRoutes);
 router.use('/perdas', perdasRoutes);
-router.use('/vendas', vendasRoutes);
+router.use('/vendas', vendasRoutes); //teste feito.
 
 export default router;

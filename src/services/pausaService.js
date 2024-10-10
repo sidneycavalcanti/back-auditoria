@@ -2,9 +2,7 @@ import Pausa from '../models/Pausa.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
 import Motivodepausa from '../models/Motivodepausa.js';
-
 import { Op } from 'sequelize';
-import Motivodepausa from '../models/Motivodepausa.js';
 
 
 

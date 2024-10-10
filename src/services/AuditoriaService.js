@@ -8,11 +8,7 @@ class AuditoriaService {
   async getAuditoria({ page = 1, limit = 10, name, lojaId,  usuarioId, criadorId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
-
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-
+    
     if (lojaId) {
       where = { ...where, lojaId };
     }
