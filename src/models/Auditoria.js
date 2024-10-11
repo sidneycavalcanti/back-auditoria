@@ -14,7 +14,7 @@ const Auditoria = sequelize.define('Auditoria', {
     references: {
       model: 'loja',
       key: 'id',
-    },
+    }
   },
   usuarioId: {
     type: DataTypes.INTEGER,

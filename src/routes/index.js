@@ -24,7 +24,7 @@ const router = Router();
 // Registrar as rotas de usuário e categoria
 router.use('/usuarios', usuarioRoutes); //teste feito
 router.use('/categorias', categoriaRoutes); //teste feito
-router.use('/anotacao', anotacaoRoutes); 
+router.use('/anotacao', anotacaoRoutes); //teste feito
 router.use('/auditoria', auditoriaRoutes); //teste feito
 router.use('/avoperacional', avoperacionalRoustes); 
 router.use('/cadavoperacional', cadavoperacionalRoutes);

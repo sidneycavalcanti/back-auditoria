@@ -1,17 +1,17 @@
 import Anotacoes from '../models/Anotacoes.js';
+import Loja from '../models/Loja.js';
+import Auditoria from '../models/Auditoria.js';
+import Usuario from '../models/Usuario.js';
+
 import { Op } from 'sequelize';
 
 class AnotacoesService {
-  async getAnotacoes({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAnotacoes({ page = 1, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-
-    if (situacao) {
-      where = { ...where, name: { [Op.like]: `%${situacao}%` } };
+    if (id) {
+      where = { ...where, id: { [Op.like]: `%${id}%` } };
     }
 
     if (createdBefore) {
@@ -21,7 +21,7 @@ class AnotacoesService {
     if (createdAfter) {
       where = { ...where, createdAt: { [Op.lte]: createdAfter } };
     }
-    
+
 
     if (updatedBefore) {
       where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
@@ -41,6 +41,23 @@ class AnotacoesService {
       order,
       limit,
       offset,
+      include: [
+        {
+          model: Loja,
+          as: 'loja', // Alias da associação
+          attributes: ['id', 'name'],// Apenas os campos que você quer da tabela Loja
+        },
+        {
+          model: Usuario,
+          as: 'usuario', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação
+          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+        }
+      ]
     });
 
     return {
@@ -51,7 +68,7 @@ class AnotacoesService {
     };
   }
 
-    async getAnotacoesById(id) {
+  async getAnotacoesById(id) {
     return await Anotacoes.findByPk(id, {
       attributes: {},
     });

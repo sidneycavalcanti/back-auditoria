@@ -5,7 +5,7 @@ import Usuario from '../models/Usuario.js';
 import { Op } from 'sequelize';
 
 class AuditoriaService {
-  async getAuditoria({ page = 1, limit = 10, name, lojaId,  usuarioId, criadorId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAuditoria({ page = 1, limit = 10, lojaId,  usuarioId, criadorId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
     
@@ -66,7 +66,7 @@ class AuditoriaService {
           model: Usuario,
           as: 'criador', // Alias da associação para o criador (se for diferente de usuario)
           attributes: ['id', 'name'],
-        },
+        }
       ],
     });
 
