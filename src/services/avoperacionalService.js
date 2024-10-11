@@ -2,6 +2,7 @@ import Avoperacional from '../models/Avoperacional.js';
 import Cadavoperacional from '../models/Cadavoperacional.js';
 import Usuario from '../models/Usuario.js';
 import Loja from '../models/Loja.js';
+import Auditoria from '../models/Auditoria.js';
 
 import { Op } from 'sequelize';
 
@@ -55,9 +56,14 @@ class AvoperacionalService {
         },
         {
           model: Cadavoperacional,
-          as: 'cadoperacional', // Alias da associação para o criador (se for diferente de usuario)
-          attributes: ['id', 'name'],
+          as: 'cadavoperacional', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'descricao'],
         },
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'data'],
+        }
       ],
     });
 

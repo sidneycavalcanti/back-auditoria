@@ -26,8 +26,8 @@ router.use('/usuarios', usuarioRoutes); //teste feito
 router.use('/categorias', categoriaRoutes); //teste feito
 router.use('/anotacao', anotacaoRoutes); //teste feito
 router.use('/auditoria', auditoriaRoutes); //teste feito
-router.use('/avoperacional', avoperacionalRoustes); 
-router.use('/cadavoperacional', cadavoperacionalRoutes);
+router.use('/avoperacional', avoperacionalRoustes); //teste feito
+router.use('/cadavoperacional', cadavoperacionalRoutes); //teste feito
 router.use('/cadquestoes', cadquestoesRoutes);
 router.use('/cadsexo', cadsexoRoutes); //teste feito
 router.use('/formadepagamento', formadepagamentoRoutes); //teste feito

@@ -2,13 +2,18 @@ import Cadavoperacional from '../models/Cadavoperacional.js';
 import { Op } from 'sequelize';
 
 class CadavoperacionalService {
-  async getCadavoperacional({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getCadavoperacional({ page = 1, limit = 10,descricao, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
+    if (descricao) {
+      where = { ...where, descricao: { [Op.like]: `%${descricao}%` } };
     }
+
+    if (situacao) {
+      where = { ...where, situacao: { [Op.like]: `%${situacao}%` } };
+    }
+
 
     if (createdBefore) {
       where = { ...where, createdAt: { [Op.gte]: createdBefore } };
@@ -62,7 +67,7 @@ class CadavoperacionalService {
     });
 
     if (updated) {
-      return await this.getcadquestoesById(id); // Retorna o registro atualizado
+      return await this.getcadavoperacionalById(id); // Retorna o registro atualizado
     }
     throw new Error('Avaliação operacional não encontrada');
   }
@@ -70,7 +75,7 @@ class CadavoperacionalService {
 
   async deleteCadavoperacional(id) {
     // Verifica se a cadquestoes existe
-    const cadavoperacional = await this.getcadquestoesById(id);
+    const cadavoperacional = await this.getcadavoperacionalById(id);
 
     if (!cadavoperacional) {
       throw new Error('Avaliação operacional não encontrada');

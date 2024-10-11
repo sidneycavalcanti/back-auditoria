@@ -7,7 +7,7 @@ const Cadavoperacional = sequelize.define('Cadavoperacional', {
     primaryKey: true,
     autoIncrement: true,
   },
-  name: {
+  descricao: {
     type: DataTypes.STRING,
     allowNull: false,
   },

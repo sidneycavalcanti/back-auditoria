@@ -54,15 +54,15 @@ const Avoperacional = sequelize.define('Avoperacional', {
     defaultValue: DataTypes.NOW,
   },
 }, {
-  tableName: 'auditoria',
+  tableName: 'avoperacional',
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
 
-Avoperacional.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as: 'auditoria' });
+Avoperacional.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as: 'cadavoperacional' });
 Avoperacional.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
-//Avoperacional.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
+Avoperacional.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 Avoperacional.belongsTo(Loja, { foreignKey: 'lojaId', as: 'loja' });
 
 
