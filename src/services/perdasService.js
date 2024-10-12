@@ -1,15 +1,12 @@
 import Perdas from '../models/Perdas.js';
 import { Op } from 'sequelize';
 
+
 class PerdaService {
-  async getPerdas({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getPerdas({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
-    if (name) {
-      where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-  
     if (createdBefore) {
       where = { ...where, createdAt: { [Op.gte]: createdBefore } };
     }
@@ -37,6 +34,25 @@ class PerdaService {
       order,
       limit,
       offset,
+      [
+        {
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name']
+            }
+          ],
+        },
+      ]
     });
 
     return {

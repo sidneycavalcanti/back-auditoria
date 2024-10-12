@@ -1,7 +1,8 @@
 import Pausa from '../models/Pausa.js';
-import Loja from '../models/Loja.js';
+import Auditoria from '../models/Auditoria.js';
 import Usuario from '../models/Usuario.js';
 import Motivodepausa from '../models/Motivodepausa.js';
+import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
 
@@ -52,18 +53,26 @@ class PausaService {
       offset,
       include: [
         {
-          model: Loja,
-          as: 'loja',
-          attributes: ['id','name'],
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name']
+            }
+          ],
         },
-        {
-          model: Usuario,
-          as: 'usuario',
-          attributes: ['id','name'],
-        },
+       
         {
           model: Motivodepausa,
-          as: 'Motivodepausa',
+          as: 'motivodepausa',
           attributes: ['id','name'],
         },
       ]

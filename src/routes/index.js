@@ -28,14 +28,14 @@ router.use('/anotacao', anotacaoRoutes); //teste feito
 router.use('/auditoria', auditoriaRoutes); //teste feito
 router.use('/avoperacional', avoperacionalRoustes); //teste feito
 router.use('/cadavoperacional', cadavoperacionalRoutes); //teste feito
-router.use('/cadquestoes', cadquestoesRoutes);
+router.use('/cadquestoes', cadquestoesRoutes); //teste feito
 router.use('/cadsexo', cadsexoRoutes); //teste feito
 router.use('/formadepagamento', formadepagamentoRoutes); //teste feito
 router.use('/loja', lojaRoutes); //teste feito
 router.use('/motivodepausa', motivodepausaRoutes); //teste feito
 router.use('/motivoperdas', motivoperdasRoutes); //teste feito
-router.use('/questoes', questoesRoutes);
-router.use('/pausa', pausaRoutes);
+router.use('/questoes', questoesRoutes); // teste feito
+router.use('/pausa', pausaRoutes); // teste feito
 router.use('/perdas', perdasRoutes);
 router.use('/vendas', vendasRoutes); //teste feito.
 

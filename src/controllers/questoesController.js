@@ -22,10 +22,10 @@ class QuestoesController {
         return res.status(404).json({ error: 'questoes não encontrado' });
       }
 
-      return res.status(200).json(Questoes);
+      return res.status(200).json(questoes);
     } catch (error) {
-      console.error('Erro ao criar questoes:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar questoes', detalhes: error.message });
+      console.error('Erro ao buscar questão:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao  buscar questão', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
   }
