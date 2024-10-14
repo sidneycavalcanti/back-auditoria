@@ -20,7 +20,7 @@ CREATE TABLE `vendas` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `auditoriaId` INTEGER,
   `formadepagamentoId` INTEGER,
-  `lojaId` INTEGER,
+  `lojaId` INTEGER, //excluir da tabela
   `sexoId` INTEGER,
   `faixaetaria` INTEGER,
   `usuarioId` INTEGER,
@@ -55,7 +55,7 @@ CREATE TABLE `motivodepausa` (
 CREATE TABLE `pausa` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `motivodepausaId` INTEGER,
-  `usuarioId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
   `auditoriaId` INTEGER,
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -64,8 +64,8 @@ CREATE TABLE `pausa` (
 CREATE TABLE `anotacoes` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `auditoriaId` INTEGER,
-  `usuarioId` INTEGER,
-  `lojaId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
+  `lojaId` INTEGER, //excluir da tabela
   `descricao` VARCHAR(255),
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -84,8 +84,8 @@ CREATE TABLE `perdas` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `motivoperdasId` INTEGER,
   `auditoriaId` INTEGER,
-  `usuarioId` INTEGER,
-  `lojaId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
+  `lojaId` INTEGER, //excluir da tabela
   `obs` TEXT,
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -120,9 +120,9 @@ CREATE TABLE `auditoria` (
 CREATE TABLE `avoperacional` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `cadavoperacionalId` INTEGER,
-  `usuarioId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
   `auditoriaId` INTEGER,
-  `lojaId` INTEGER,
+  `lojaId` INTEGER, //excluir da tabela
   `resposta` VARCHAR(255),
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
@@ -139,9 +139,9 @@ CREATE TABLE `cadavoperacional` (
 CREATE TABLE `questoes` (
   `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
   `cadquestoesId` INTEGER,
-  `usuarioId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
   `auditoriaId` INTEGER,
-  `lojaId` INTEGER,
+  `lojaId` INTEGER, //excluir da tabela
   `resposta` VARCHAR(255),
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP

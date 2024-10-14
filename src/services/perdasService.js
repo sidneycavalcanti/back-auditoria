@@ -1,6 +1,10 @@
 import Perdas from '../models/Perdas.js';
 import { Op } from 'sequelize';
-
+import Auditoria from '../models/Auditoria.js';
+import Loja from '../models/Loja.js';
+import Usuario from '../models/Usuario.js';
+import Formadepagamento from '../models/Formadepagamento.js';
+import Motivodepausa from '../models/Motivodepausa.js';
 
 class PerdaService {
   async getPerdas({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
@@ -34,6 +38,7 @@ class PerdaService {
       order,
       limit,
       offset,
+      include:
       [
         {
           model: Auditoria,
@@ -48,10 +53,20 @@ class PerdaService {
             {
               model: Usuario,
               as: 'usuario',
-              attributes: ['id', 'name']
-            }
+              attributes: ['id', 'name'],
+            },
           ],
         },
+        {
+          model: Formadepagamento,
+          as: 'formadepagamento',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Motivodepausa,
+          as: 'motivodepausa',
+          attributes: [ 'id','name']
+        }
       ]
     });
 

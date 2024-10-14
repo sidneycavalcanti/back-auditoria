@@ -89,6 +89,31 @@ class PausaService {
     async getPausaById(id) {
     return await Pausa.findByPk(id, {
       attributes: {},
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name']
+            }
+          ],
+        },
+       
+        {
+          model: Motivodepausa,
+          as: 'motivodepausa',
+          attributes: ['id','name'],
+        },
+      ]
     });
   }
 
