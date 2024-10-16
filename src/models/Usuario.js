@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import bcrypt from 'bcryptjs';
 import sequelize from '../../src/config/database.js'; // Note a extensão .js
+import Categoria from './Categoria.js';
 
 const Usuario = sequelize.define('Usuario', {
   id: {
@@ -10,6 +11,10 @@ const Usuario = sequelize.define('Usuario', {
   },
   categoriaId: {
     type: DataTypes.INTEGER,
+    references: {
+      model: 'auditoria',
+      key: 'id',
+    }
   },
   situacao: {
     type: DataTypes.BOOLEAN,
@@ -55,5 +60,7 @@ const Usuario = sequelize.define('Usuario', {
 Usuario.prototype.checkPassword = function(password) {
   return bcrypt.compare(password, this.password);
 };
+
+Usuario.belongsTo(Categoria, { foreignKey: 'categoriaId', as: 'categoria' });
 
 export default Usuario;
