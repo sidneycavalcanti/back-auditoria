@@ -1,9 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
-import Usuario from './Usuario.js';
 import Motivodepausa from './Motivodepausa.js';
 import Auditoria from './Auditoria.js';
-import Loja from './Loja.js';
 
 const Pausa = sequelize.define('Pausa', {
   id: {
@@ -15,13 +13,6 @@ const Pausa = sequelize.define('Pausa', {
     type: DataTypes.INTEGER,
     references: {
       model: 'motivodepausa',
-      key: 'id',
-    }
-  },
-  usuarioId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'usuario',
       key: 'id',
     }
   },
@@ -49,7 +40,6 @@ const Pausa = sequelize.define('Pausa', {
 // Definindo a relação: Produto pertence a Categoria
 Pausa.belongsTo(Motivodepausa, { foreignKey: 'motivodepausaId', as: 'motivodepausa' });
 Pausa.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
-Pausa.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 
 
 export default Pausa;

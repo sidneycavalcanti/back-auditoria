@@ -3,8 +3,8 @@ import { Op } from 'sequelize';
 import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
-import Formadepagamento from '../models/Formadepagamento.js';
-import Motivodepausa from '../models/Motivodepausa.js';
+import Motivoperdas from '../models/Motivoperdas.js';
+
 
 class PerdaService {
   async getPerdas({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
@@ -58,13 +58,8 @@ class PerdaService {
           ],
         },
         {
-          model: Formadepagamento,
-          as: 'formadepagamento',
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Motivodepausa,
-          as: 'motivodepausa',
+          model: Motivoperdas,
+          as: 'motivoperdas',
           attributes: [ 'id','name']
         }
       ]
@@ -81,6 +76,31 @@ class PerdaService {
     async getPerdasById(id) {
     return await Perdas.findByPk(id, {
       attributes: {},
+      include:
+      [
+        {
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name'],
+            },
+          ],
+        },
+        {
+          model: Motivoperdas,
+          as: 'motivoperdas',
+          attributes: [ 'id','name']
+        }
+      ]
     });
   }
 
@@ -102,7 +122,7 @@ class PerdaService {
 
   async deletePerda(id) {
     // Verifica se a cadquestoes existe
-    const Perdas = await this.getPerdaById(id);
+    const Perdas = await this.getPerdasById(id);
 
     if (!Perdas) {
       throw new Error('Perda não encontrada');

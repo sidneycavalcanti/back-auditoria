@@ -7,8 +7,8 @@ class PerdasController {
       const perdas = await PerdasService.getPerdas(req.query);
       return res.status(200).json(perdas);
     } catch (error) {
-      console.error('Erro ao criar perdas:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar perdas', detalhes: error.message });
+      console.error('Erro ao buscar perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao buscar perdas', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao buscar perdass' });
     }
   }
@@ -31,38 +31,38 @@ class PerdasController {
     try {
       await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const vendas = await PerdasService.createPerdas(req.body);
+      const perdas = await PerdasService.createPerdas(req.body);
 
-      return res.status(201).json(vendas);
+      return res.status(201).json(perdas);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar Vendas:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar Vendas', detalhes: error.message });
+      console.error('Erro ao criar perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao criar perdas', detalhes: error.message });
     }
   }
 
   async update(req, res) {
     try {
-      await updatePerdasSchema.validate(req.body, { abortEarly: false });
+      await req.body, { abortEarly: false };
 
-      const Perdas = await PerdasService.updatePerdas(req.params.id, req.body);
+      const perdas = await PerdasService.updatePerdas(req.params.id, req.body);
 
-      return res.status(200).json(Perdas);
+      return res.status(200).json(perdas);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao excluir perdas:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao excluir perdas', detalhes: error.message });
+      console.error('Erro ao atualizar perdas:', error); // Log mais detalhado
+      res.status(500).json({ error: 'Erro ao atualizar perdas', detalhes: error.message });
       //return res.status(500).json({ error: 'Erro ao atualizar perdas' });
     }
   }
 
   async destroy(req, res) {
     try {
-      await PerdasService.deletePerdas(req.params.id);
+      await PerdasService.deletePerda(req.params.id);
       return res.status(204).send();
     } catch (error) {
       console.error('Erro ao excluir perdas:', error); // Log mais detalhado

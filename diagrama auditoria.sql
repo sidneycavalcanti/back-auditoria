@@ -23,7 +23,7 @@ CREATE TABLE `vendas` (
   `lojaId` INTEGER, //excluir da tabela
   `sexoId` INTEGER,
   `faixaetaria` INTEGER,
-  `usuarioId` INTEGER,
+  `usuarioId` INTEGER, //excluir da tabela
   `createdAt` TIMESTAMP,
   `updatedAt` TIMESTAMP
 );

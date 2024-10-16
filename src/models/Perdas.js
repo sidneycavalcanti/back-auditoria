@@ -1,8 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 import Auditoria from './Auditoria.js';
-import Formadepagamento from './Formadepagamento.js';
-import Motivodepausa from './Motivodepausa.js';
+import Motivoperdas from './Motivoperdas.js';
 
 const Perdas = sequelize.define('Perdas', {
   id: {
@@ -13,7 +12,7 @@ const Perdas = sequelize.define('Perdas', {
   motivoperdasId: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'motivopausa',
+      model: 'motivoperdas',
       key: 'id',
     }
   },
@@ -23,28 +22,6 @@ const Perdas = sequelize.define('Perdas', {
       model: 'auditoria',
       key: 'id',
     }
-  },
-  usuarioId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'usuario',
-      key: 'id',
-    }
-  },
-  formadepagamentoId: {
-    type: DataTypes.INTEGER,
-  },
-  lojaId: {
-    type: DataTypes.INTEGER,
-    defaultValue: DataTypes.NOW,
-  },
-  sexoId: {
-    type: DataTypes.INTEGER,
-    defaultValue: DataTypes.NOW,
-  },
-  faixaetaria: {
-    type: DataTypes.INTEGER,
-    defaultValue: DataTypes.NOW,
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -60,8 +37,7 @@ const Perdas = sequelize.define('Perdas', {
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-Perdas.belongsTo(Auditoria, {foreignKey: 'auditoriaId', as: 'auditoria'});
-Perdas.belongsTo(Formadepagamento, {foreignKey: 'formadepagamentoId', as: 'formadepagamento'});
-Perdas.belongsTo(Motivodepausa, {foreignKey: 'motivodepausaId', as: 'motivodepausa'});
+Perdas.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
+Perdas.belongsTo(Motivoperdas, { foreignKey: 'motivoperdasId', as: 'motivoperdas' });
 
 export default Perdas;

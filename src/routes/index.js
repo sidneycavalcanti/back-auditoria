@@ -36,7 +36,7 @@ router.use('/motivodepausa', motivodepausaRoutes); //teste feito
 router.use('/motivoperdas', motivoperdasRoutes); //teste feito
 router.use('/questoes', questoesRoutes); // teste feito
 router.use('/pausa', pausaRoutes); // teste feito
-router.use('/perdas', perdasRoutes);
+router.use('/perdas', perdasRoutes);// teste feito
 router.use('/vendas', vendasRoutes); //teste feito.
 
 export default router;

@@ -23,7 +23,7 @@ class VendasService {
     if (createdAfter) {
       where = { ...where, createdAt: { [Op.lte]: createdAfter } };
     }
-    
+
 
     if (updatedBefore) {
       where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
@@ -49,22 +49,25 @@ class VendasService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante','fluxooutros'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+            },
+          ]
         },
-        {
-          model: Usuario,
-          as: 'usuario', // Alias da associação
-          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
-        },
+
         {
           model: Formadepagamento,
           as: 'formadepagamento', // Alias da associação
           attributes: ['id', 'name'], //apenas campos da tabela auditoria.
-        },
-        {
-          model: Loja,
-          as: 'loja', // Alias da associação
-          attributes: ['id', 'name', 'luc','piso','codigo'], //apenas campos da tabela auditoria.
         },
         {
           model: Cadsexo,
@@ -82,9 +85,39 @@ class VendasService {
     };
   }
 
-    async getVendasById(id) {
+  async getVendasById(id) {
     return await Vendas.findByPk(id, {
       attributes: {},
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação
+          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+            },
+          ]
+        },
+
+        {
+          model: Formadepagamento,
+          as: 'formadepagamento', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+        },
+        {
+          model: Cadsexo,
+          as: 'sexo', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+        },
+      ]
     });
   }
 
