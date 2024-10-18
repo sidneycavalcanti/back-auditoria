@@ -1,17 +1,14 @@
+import Categoria from '../models/Categoria.js';
 import User from '../models/Usuario.js';
 import { Op } from 'sequelize';
 
 class UserService {
-  async getUsers({ page = 1, limit = 10, name, cat, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getUsers({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
     if (name) {
       where = { ...where, name: { [Op.like]: `%${name}%` } };
-    }
-
-    if (cat) {
-      where = { ...where, cat: { [Op.like]: cat } };
     }
 
     if (createdBefore) {
@@ -40,6 +37,13 @@ class UserService {
       order,
       limit,
       offset,
+      include:[
+        {
+          model: Categoria,
+          as: 'categoria',
+          attributes: ['id', 'name']
+        }
+      ]
     });
 
     return {
@@ -53,6 +57,13 @@ class UserService {
   async getUserById(id) {
     return await User.findByPk(id, {
       attributes: { exclude: ['password', 'password_hash'] },
+      include:[
+        {
+          model: Categoria,
+          as: 'categoria',
+          attributes: ['id', 'name']
+        }
+      ]
     });
   }
 
