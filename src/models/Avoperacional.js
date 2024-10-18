@@ -1,8 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
-import Loja from './Loja.js';
-import Usuario from './Usuario.js';
 import Auditoria from './Auditoria.js';
 import Cadavoperacional from './Cadavoperacional.js';
 
@@ -20,25 +18,10 @@ const Avoperacional = sequelize.define('Avoperacional', {
       key: 'id',
     }
   },
-  usuarioId: {
-    type: DataTypes.INTEGER,
-    references: {
-      model: 'usuario',
-      key: 'id',
-    }
-    
-  },
   auditoriaId: {
     type: DataTypes.INTEGER,
-    references: { 
-      model: 'auditoria',
-      key: 'id',
-    }
-  },
-  lojaId: {
-    type: DataTypes.INTEGER,
     references: {
-      model: 'loja',
+      model: 'auditoria',
       key: 'id',
     }
   },
@@ -61,10 +44,7 @@ const Avoperacional = sequelize.define('Avoperacional', {
 
 
 Avoperacional.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as: 'cadavoperacional' });
-Avoperacional.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 Avoperacional.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
-Avoperacional.belongsTo(Loja, { foreignKey: 'lojaId', as: 'loja' });
-
 
 
 

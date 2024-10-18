@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
+import Auditoria from './Auditoria.js';
 
 const Questoes = sequelize.define('Questoes', {
   id: {
@@ -10,14 +11,12 @@ const Questoes = sequelize.define('Questoes', {
   cadquestoesId: {
     type: DataTypes.INTEGER,
   },
-  usuarioId: {
-    type: DataTypes.INTEGER,
-  },
   auditoriaId: {
     type: DataTypes.INTEGER,
-  },
-  lojaId: {
-    type: DataTypes.INTEGER,
+    references: {
+      model: 'auditoria',
+      key: 'id',
+    }
   },
   resposta: {
     type: DataTypes.STRING,
@@ -35,5 +34,7 @@ const Questoes = sequelize.define('Questoes', {
   timestamps: true, // Mantém o controle automático de createdAt e updatedAt
   underscored: false, // Desativa a conversão automática para snake_case
 });
+
+Questoes.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 
 export default Questoes;

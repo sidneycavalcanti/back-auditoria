@@ -23,7 +23,7 @@ class AvoperacionalService {
     if (createdAfter) {
       where = { ...where, createdAt: { [Op.lte]: createdAfter } };
     }
-    
+
 
     if (updatedBefore) {
       where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
@@ -44,16 +44,7 @@ class AvoperacionalService {
       limit,
       offset,
       include: [
-        {
-          model: Loja,
-          as: 'loja', // Alias da associação
-          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
-        },
-        {
-          model: Usuario,
-          as: 'usuario', // Alias da associação
-          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
-        },
+
         {
           model: Cadavoperacional,
           as: 'cadavoperacional', // Alias da associação para o criador (se for diferente de usuario)
@@ -63,6 +54,19 @@ class AvoperacionalService {
           model: Auditoria,
           as: 'auditoria', // Alias da associação para o criador (se for diferente de usuario)
           attributes: ['id', 'data'],
+          include: [
+            {
+              model: Loja,
+              as: 'loja', // Alias da associação
+              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
+            },
+          ]
+
         }
       ],
     });
@@ -75,9 +79,35 @@ class AvoperacionalService {
     };
   }
 
-    async getAvoperacionalById(id) {
+  async getAvoperacionalById(id) {
     return await Avoperacional.findByPk(id, {
       attributes: {},
+      include: [
+
+        {
+          model: Cadavoperacional,
+          as: 'cadavoperacional', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'descricao'],
+        },
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação para o criador (se for diferente de usuario)
+          attributes: ['id', 'data'],
+          include: [
+            {
+              model: Loja,
+              as: 'loja', // Alias da associação
+              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
+            },
+          ]
+
+        }
+      ],
     });
   }
 

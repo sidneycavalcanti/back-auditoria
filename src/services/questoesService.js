@@ -1,5 +1,8 @@
 import Questoes from '../models/Questoes.js';
 import { Op } from 'sequelize';
+import Auditoria from '../models/Auditoria.js';
+import Loja from '../models/Loja.js';
+import Usuario from '../models/Usuario.js';
 
 class QuestoesService {
   async getQuestoes({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
@@ -33,6 +36,26 @@ class QuestoesService {
       order,
       limit,
       offset,
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'data'],
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+            },
+          ]
+        }
+      ]
+
     });
 
     return {
@@ -46,6 +69,25 @@ class QuestoesService {
     async getQuestoesById(id) {
     return await Questoes.findByPk(id, {
       attributes: {},
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria',
+          attributes: ['id', 'data'],
+          include: [
+            {
+              model: Loja,
+              as: 'loja',
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+            },
+            {
+              model: Usuario,
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+            },
+          ]
+        }
+      ]
     });
   }
 

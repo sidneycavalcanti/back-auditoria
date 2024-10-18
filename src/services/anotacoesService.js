@@ -43,19 +43,22 @@ class AnotacoesService {
       offset,
       include: [
         {
-          model: Loja,
-          as: 'loja', // Alias da associação
-          attributes: ['id', 'name'],// Apenas os campos que você quer da tabela Loja
-        },
-        {
-          model: Usuario,
-          as: 'usuario', // Alias da associação para o criador (se for diferente de usuario)
-          attributes: ['id', 'name'],
-        },
-        {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
           attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          include: [
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name']
+            },
+            {
+              model: Loja,
+              as: 'loja', // Alias da associação
+              attributes: ['id', 'name'],// Apenas os campos que você quer da tabela Loja
+             
+            },
+          ]
         }
       ]
     });
@@ -71,6 +74,26 @@ class AnotacoesService {
   async getAnotacoesById(id) {
     return await Anotacoes.findByPk(id, {
       attributes: {},
+      include: [
+        {
+          model: Auditoria,
+          as: 'auditoria', // Alias da associação
+          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          include: [
+            {
+              model: Usuario,
+              as: 'usuario',
+              attributes: ['id', 'name']
+            },
+            {
+              model: Loja,
+              as: 'loja', // Alias da associação
+              attributes: ['id', 'name'],// Apenas os campos que você quer da tabela Loja
+             
+            },
+          ]
+        }
+      ]
     });
   }
 
