@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 
+
 dotenv.config(); // Não esqueça de configurar o dotenv para carregar as variáveis de ambiente
 
 console.log('DB_HOST:', process.env.DB_HOST);

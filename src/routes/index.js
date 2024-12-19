@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { authMiddleware } from '../services/authMiddleware.js';
 import usuarioRoutes from './usuarioRoutes.js';
 import categoriaRoutes from './categoriaRoutes.js';
 import auditoriaRoutes from './auditoriaRoutes.js';
-import avoperacionalRoustes from './avoperacionalRoustes.js';
+import avoperacionalRoutes from './avoperacionalRoustes.js'; // corrigido o typo
 import cadavoperacionalRoutes from './cadavoperacionalRoutes.js';
 import cadquestoesRoutes from './cadquestoesRoutes.js';
 import cadsexoRoutes from './cadsexoRoutes.js';
@@ -15,28 +16,32 @@ import pausaRoutes from './pausaRoutes.js';
 import perdasRoutes from './perdasRoutes.js';
 import vendasRoutes from './vendasRoutes.js';
 import anotacaoRoutes from './anotacaoRoutes.js';
-
-
-
+import authRoutes from './authRoutes.js'; // Nova rota de autenticação
 
 const router = Router();
 
-// Registrar as rotas de usuário e categoria
-router.use('/usuarios', usuarioRoutes); //teste feito
-router.use('/categorias', categoriaRoutes); //teste feito
-router.use('/anotacao', anotacaoRoutes); //teste feito
-router.use('/auditoria', auditoriaRoutes); //teste feito
-router.use('/avoperacional', avoperacionalRoustes); //teste feito
-router.use('/cadavoperacional', cadavoperacionalRoutes); //teste feito
-router.use('/cadquestoes', cadquestoesRoutes); //teste feito
-router.use('/cadsexo', cadsexoRoutes); //teste feito
-router.use('/formadepagamento', formadepagamentoRoutes); //teste feito
-router.use('/loja', lojaRoutes); //teste feito
-router.use('/motivodepausa', motivodepausaRoutes); //teste feito
-router.use('/motivoperdas', motivoperdasRoutes); //teste feito
-router.use('/questoes', questoesRoutes); // teste feito
-router.use('/pausa', pausaRoutes); // teste feito
-router.use('/perdas', perdasRoutes);// teste feito
-router.use('/vendas', vendasRoutes); //teste feito.
+// Rota de autenticação (não protegida)
+router.use('/auth', authRoutes);
+
+// Aplicar middleware de autenticação para todas as rotas abaixo
+router.use(authMiddleware);
+
+// Registrar as rotas protegidas
+router.use('/usuarios', usuarioRoutes); 
+router.use('/categorias', categoriaRoutes);
+router.use('/anotacao', anotacaoRoutes);
+router.use('/auditoria', auditoriaRoutes);
+router.use('/avoperacional', avoperacionalRoutes);
+router.use('/cadavoperacional', cadavoperacionalRoutes);
+router.use('/cadquestoes', cadquestoesRoutes);
+router.use('/cadsexo', cadsexoRoutes);
+router.use('/formadepagamento', formadepagamentoRoutes);
+router.use('/loja', lojaRoutes);
+router.use('/motivodepausa', motivodepausaRoutes);
+router.use('/motivoperdas', motivoperdasRoutes);
+router.use('/questoes', questoesRoutes);
+router.use('/pausa', pausaRoutes);
+router.use('/perdas', perdasRoutes);
+router.use('/vendas', vendasRoutes);
 
 export default router;
