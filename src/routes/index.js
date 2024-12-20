@@ -44,4 +44,5 @@ router.use('/pausa', pausaRoutes);
 router.use('/perdas', perdasRoutes);
 router.use('/vendas', vendasRoutes);
 
+
 export default router;

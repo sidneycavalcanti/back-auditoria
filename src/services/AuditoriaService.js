@@ -1,43 +1,58 @@
 import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
-
 import { Op } from 'sequelize';
 
 class AuditoriaService {
-  async getAuditoria({ page = 1, limit = 10, lojaId,  usuarioId, criadorId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  // Método para buscar auditorias com filtros
+  async getAuditoria({
+    page = 1,
+    limit = 10,
+    lojaId,
+    usuarioId,
+    criadorId,
+    createdBefore,
+    createdAfter,
+    updatedBefore,
+    updatedAfter,
+    sort,
+  }) {
     let where = {};
     let order = [];
-    
+
+    // Filtro por loja
     if (lojaId) {
       where = { ...where, lojaId };
     }
 
+    // Filtro por usuário logado
     if (usuarioId) {
       where = { ...where, usuarioId };
     }
 
+    // Filtro por criador (se houver)
     if (criadorId) {
       where = { ...where, criadorId };
     }
 
+    // Filtros por datas
     if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
+      where = { ...where, createdAt: { [Op.lte]: createdBefore } };
     }
 
     if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
+      where = { ...where, createdAt: { [Op.gte]: createdAfter } };
     }
-    
 
     if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
+      where = { ...where, updatedAt: { [Op.lte]: updatedBefore } };
     }
 
     if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedAfter } };
+      where = { ...where, updatedAt: { [Op.gte]: updatedAfter } };
     }
 
+    // Ordenação
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
     }
@@ -45,31 +60,32 @@ class AuditoriaService {
     // Paginação
     const offset = (page - 1) * limit;
 
-    // Consulta ao banco de dados, incluindo os relacionamentos
+    // Consulta ao banco com associações
     const auditoria = await Auditoria.findAndCountAll({
       where,
       order,
       limit,
       offset,
-       include: [
+      include: [
         {
           model: Loja,
           as: 'loja', // Alias da associação
-          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+          attributes: ['id', 'name'], // Campos desejados
         },
         {
           model: Usuario,
-          as: 'usuario', // Alias da associação
-          attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
-        },
-        {
-          model: Usuario,
-          as: 'criador', // Alias da associação para o criador (se for diferente de usuario)
+          as: 'usuario', // Alias do usuário relacionado
           attributes: ['id', 'name'],
-        }
+        },
+        {
+          model: Usuario,
+          as: 'criador', // Alias do criador (se houver)
+          attributes: ['id', 'name'],
+        },
       ],
     });
 
+    // Retorna auditorias com metadados de paginação
     return {
       auditoria: auditoria.rows,
       totalItems: auditoria.count,
@@ -78,40 +94,102 @@ class AuditoriaService {
     };
   }
 
-    async getAuditoriaById(id) {
-    return await Auditoria.findByPk(id, {
-      attributes: {},
+  // Método para buscar uma auditoria por ID
+  async getAuditoriaById(id) {
+    console.log('Buscando auditoria com ID:', id); // Verifica o ID recebido
+  
+    const auditoria = await Auditoria.findByPk(id, {
+      include: [
+        {
+          model: Loja,
+          as: 'loja',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Usuario,
+          as: 'usuario',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Usuario,
+          as: 'criador',
+          attributes: ['id', 'name'],
+        },
+      ],
     });
+  
+    if (!auditoria) {
+      console.error('Auditoria não encontrada com ID:', id); // Log detalhado
+      throw new Error('Auditoria não encontrada.');
+    }
+  
+    return auditoria;
   }
+  
 
+  // Método para criar uma nova auditoria
   async createAuditoria(data) {
     return await Auditoria.create(data);
   }
 
+  // Método para atualizar uma auditoria existente
   async updateAuditoria(id, updateData) {
     const [updated] = await Auditoria.update(updateData, {
-      where: { id } // Especifica qual registro deve ser atualizado
+      where: { id },
     });
 
     if (updated) {
       return await this.getAuditoriaById(id); // Retorna o registro atualizado
     }
-    throw new Error('Anotacões não encontrada');
+
+    throw new Error('Auditoria não encontrada para atualizar.');
   }
 
-
+  // Método para deletar uma auditoria
   async deleteAuditoria(id) {
-    // Verifica se a cadquestoes existe
     const auditoria = await this.getAuditoriaById(id);
 
     if (!auditoria) {
-      throw new Error('auditoria não encontrada');
+      throw new Error('Auditoria não encontrada para exclusão.');
     }
 
-    // Exclui a Motivo de pausa com a condição where
-    return await Auditoria.destroy({
-      where: { id } // Especifica o registro a ser excluído
+    await Auditoria.destroy({
+      where: { id },
     });
+
+    return { message: 'Auditoria excluída com sucesso.' };
+  }
+
+  async getAuditoria({ usuarioId, ...filters }) {
+    const where = {};
+  
+    // Filtro para auditorias do usuário logado
+    if (usuarioId) {
+      where.usuarioId = usuarioId;
+    }
+  
+    // Adicione outros filtros aqui, se necessário
+    if (filters.lojaId) {
+      where.lojaId = filters.lojaId;
+    }
+  
+    const auditorias = await Auditoria.findAll({
+      where,
+      include: [
+        {
+          model: Loja,
+          as: 'loja',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Usuario,
+          as: 'usuario',
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
+  
+    return auditorias;
   }
 }
 
