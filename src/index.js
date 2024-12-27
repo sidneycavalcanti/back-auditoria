@@ -37,4 +37,11 @@ sequelize.authenticate()
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Algo deu errado no servidor!' });
+
+  try {
+    const validator = require('validator');
+    console.log('Validator loaded successfully:', validator);
+  } catch (err) {
+    console.error('Failed to load validator:', err);
+  }
 });
