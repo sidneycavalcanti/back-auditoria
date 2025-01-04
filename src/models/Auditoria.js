@@ -33,15 +33,6 @@ const Auditoria = sequelize.define('Auditoria', {
   data: {
     type: DataTypes.DATE,
   },
-  fluxoespeculador: {
-    type: DataTypes.INTEGER,
-  },
-  fluxoacompanhante: {
-    type: DataTypes.INTEGER,
-  },
-  fluxooutros: {
-    type: DataTypes.INTEGER,
-  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,

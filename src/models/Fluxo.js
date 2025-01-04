@@ -10,20 +10,16 @@ const Fluxo = sequelize.define('fluxopessoas', {
     primaryKey: true,
     autoIncrement: true,
   },
-  id_loja: {
+  lojaId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  id_auditoria: {
+  auditoriaId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
   data: {
     type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  hora: {
-    type: DataTypes.TIME,
     allowNull: false,
   },
   categoria: {
@@ -44,7 +40,7 @@ const Fluxo = sequelize.define('fluxopessoas', {
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-Loja.belongsTo(Loja, { foreignKey: 'id_loja', as: 'loja' });
-Auditoria.belongsTo(Auditoria, { foreignKey: 'id_auditoria', as: 'auditoria' });
+Fluxo.belongsTo(Loja, { foreignKey: 'lojaId', as: 'loja' });
+Fluxo.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 
 export default Fluxo;
