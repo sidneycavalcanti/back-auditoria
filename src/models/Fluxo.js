@@ -1,6 +1,9 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
 
+import Auditoria from './Auditoria.js';
+import Loja from './Loja.js';
+
 const Fluxo = sequelize.define('fluxopessoas', {
   id: {
     type: DataTypes.INTEGER,
@@ -41,16 +44,7 @@ const Fluxo = sequelize.define('fluxopessoas', {
   underscored: false, // Desativa a conversão automática para snake_case
 });
 
-// Definindo as associações
-Fluxopessoa.associate = (models) => {
-  Fluxopessoa.belongsTo(models.Loja, {
-    foreignKey: 'id_loja',
-    as: 'loja',
-  });
-  Fluxopessoa.belongsTo(models.Auditoria, {
-    foreignKey: 'id_auditoria',
-    as: 'auditoria',
-  });
-};
+Loja.belongsTo(Loja, { foreignKey: 'id_loja', as: 'loja' });
+Auditoria.belongsTo(Auditoria, { foreignKey: 'id_auditoria', as: 'auditoria' });
 
 export default Fluxo;
