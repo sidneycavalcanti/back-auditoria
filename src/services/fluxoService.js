@@ -5,19 +5,11 @@ import Loja from '../models/Loja.js';
 
 class fluxoService {
   // Método para buscar fluxopessoas com filtros e paginação
-  async getFluxopessoa({ page = 1, limit = 10, id_loja, id_auditoria, categoria, sexo, dataBefore, dataAfter, horaBefore, horaAfter, sort }) {
+  async getFluxopessoa({ page = 1, limit = 10, categoria, sexo, dataBefore, dataAfter, horaBefore, horaAfter, sort }) {
     let where = {};
     let order = [];
 
     // Filtros
-    if (id_loja) {
-      where = { ...where, id_loja };
-    }
-
-    if (id_auditoria) {
-      where = { ...where, id_auditoria };
-    }
-
     if (categoria) {
       where = { ...where, categoria: { [Op.like]: `%${categoria}%` } };
     }
