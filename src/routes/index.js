@@ -22,10 +22,10 @@ import authRoutes from './authRoutes.js'; // Nova rota de autenticação
 const router = Router();
 
 // Rota de autenticação (não protegida)
-//router.use('/auth', authRoutes);
+router.use('/auth', authRoutes);
 
 // Aplicar middleware de autenticação para todas as rotas abaixo
-//router.use(authMiddleware);
+router.use(authMiddleware);
 
 // Registrar as rotas protegidas
 router.use('/usuarios', usuarioRoutes); 
