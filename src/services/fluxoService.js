@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 
-class FluxopessoaService {
+class fluxoService {
   // Método para buscar fluxopessoas com filtros e paginação
   async getFluxopessoa({ page = 1, limit = 10, id_loja, id_auditoria, categoria, sexo, dataBefore, dataAfter, horaBefore, horaAfter, sort }) {
     let where = {};
@@ -113,4 +113,4 @@ class FluxopessoaService {
   }
 }
 
-export default new FluxopessoaService();
+export default new fluxoService();
