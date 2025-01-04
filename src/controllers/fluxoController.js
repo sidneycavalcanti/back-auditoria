@@ -1,6 +1,6 @@
 import fluxoService from '../services/fluxoService.js';
 
-class FluxopessoaController {
+class FluxoController {
   // Método para listar fluxopessoas com filtros e paginação
   async index(req, res) {
     try {
@@ -69,4 +69,4 @@ class FluxopessoaController {
   }
 }
 
-export default new FluxopessoaController();
+export default new FluxoController();
