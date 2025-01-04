@@ -25,7 +25,7 @@ const router = Router();
 //router.use('/auth', authRoutes);
 
 // Aplicar middleware de autenticação para todas as rotas abaixo
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 // Registrar as rotas protegidas
 router.use('/usuarios', usuarioRoutes); 
