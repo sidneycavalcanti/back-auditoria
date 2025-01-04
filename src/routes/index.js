@@ -16,6 +16,7 @@ import pausaRoutes from './pausaRoutes.js';
 import perdasRoutes from './perdasRoutes.js';
 import vendasRoutes from './vendasRoutes.js';
 import anotacaoRoutes from './anotacaoRoutes.js';
+import fluxoRoutes from './fluxoRoutes.js';
 import authRoutes from './authRoutes.js'; // Nova rota de autenticação
 
 const router = Router();
@@ -43,6 +44,8 @@ router.use('/questoes', questoesRoutes);
 router.use('/pausa', pausaRoutes);
 router.use('/perdas', perdasRoutes);
 router.use('/vendas', vendasRoutes);
+router.use('/fluxo', fluxoRoutes);
+
 
 
 export default router;

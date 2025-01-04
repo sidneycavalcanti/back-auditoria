@@ -49,7 +49,7 @@ class VendasService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Loja,
