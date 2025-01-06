@@ -20,8 +20,13 @@ const Vendas = sequelize.define('Vendas', {
   sexoId: {
     type: DataTypes.INTEGER,
   },
-  faixaetaria: {
-    type: DataTypes.INTEGER,
+  valor: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false,
+    validate: {
+      isDecimal: true, // Valida se o valor é decimal
+      min: 0, // Não permite valores negativos
+    },
   },
   createdAt: {
     type: DataTypes.DATE,
