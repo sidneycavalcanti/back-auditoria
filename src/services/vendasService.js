@@ -12,6 +12,12 @@ class VendasService {
     let where = {};
     let order = [];
 
+    // Filtro por `auditoriaId`
+    if (auditoriaId) {
+      where = { ...where, auditoriaId }; // Adiciona auditoriaId ao filtro
+    }
+
+
     if (id) {
       where = { ...where, id: { [Op.like]: `%${id}%` } };
     }
