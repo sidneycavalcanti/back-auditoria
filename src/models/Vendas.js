@@ -13,12 +13,19 @@ const Vendas = sequelize.define('Vendas', {
   },
   auditoriaId: {
     type: DataTypes.INTEGER,
+    allowNull: false, // É obrigatório, pois vincula à auditoria
+    references: {
+      model: 'Auditoria',
+      key: 'id',
+    },
   },
   formadepagamentoId: {
     type: DataTypes.INTEGER,
+    allowNull: false, // Relacionado à forma de pagamento
   },
   sexoId: {
     type: DataTypes.INTEGER,
+    allowNull: false, // Relacionado ao sexo
   },
   valor: {
     type: DataTypes.DECIMAL(10, 2),
@@ -38,11 +45,10 @@ const Vendas = sequelize.define('Vendas', {
   },
 }, {
   tableName: 'vendas',
-  timestamps: true, // Mantém o controle automático de createdAt e updatedAt
-  underscored: false, // Desativa a conversão automática para snake_case
+  timestamps: true,
 });
 
-// Definindo a relação: Produto pertence a Categoria
+// Relacionamentos
 Vendas.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 Vendas.belongsTo(Formadepagamento, { foreignKey: 'formadepagamentoId', as: 'formadepagamento' });
 Vendas.belongsTo(Sexo, { foreignKey: 'sexoId', as: 'sexo' });
