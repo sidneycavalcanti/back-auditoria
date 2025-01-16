@@ -17,7 +17,7 @@ import perdasRoutes from './perdasRoutes.js';
 import vendasRoutes from './vendasRoutes.js';
 import anotacaoRoutes from './anotacaoRoutes.js';
 import fluxoRoutes from './fluxoRoutes.js';
-//import authRoutes from './authRoutes.js'; // Nova rota de autenticação
+import authRoutes from './authRoutes.js'; // Nova rota de autenticação
 
 const router = Router();
 
