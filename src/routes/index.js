@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authMiddleware } from '../services/authMiddleware.js';
+//import { authMiddleware } from '../services/authMiddleware.js';
 import usuarioRoutes from './usuarioRoutes.js';
 import categoriaRoutes from './categoriaRoutes.js';
 import auditoriaRoutes from './auditoriaRoutes.js';
@@ -17,7 +17,7 @@ import perdasRoutes from './perdasRoutes.js';
 import vendasRoutes from './vendasRoutes.js';
 import anotacaoRoutes from './anotacaoRoutes.js';
 import fluxoRoutes from './fluxoRoutes.js';
-import authRoutes from './authRoutes.js'; // Nova rota de autenticação
+//import authRoutes from './authRoutes.js'; // Nova rota de autenticação
 
 const router = Router();
 
@@ -25,7 +25,7 @@ const router = Router();
 //router.use('/auth', authRoutes);
 
 // Aplicar middleware de autenticação para todas as rotas abaixo
-router.use(authMiddleware);
+//router.use(authMiddleware);
 
 // Registrar as rotas protegidas
 router.use('/usuarios', usuarioRoutes); 
