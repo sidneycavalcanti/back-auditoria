@@ -22,7 +22,7 @@ import fluxoRoutes from './fluxoRoutes.js';
 const router = Router();
 
 // Rota de autenticação (não protegida)
-//router.use('/auth', authRoutes);
+router.use('/auth', authRoutes);
 
 // Aplicar middleware de autenticação para todas as rotas abaixo
 //router.use(authMiddleware);
