@@ -9,6 +9,10 @@ const Perdas = sequelize.define('Perdas', {
     primaryKey: true,
     autoIncrement: true,
   },
+  obs: {
+    type: DataTypes.TEXT, // Campo para a observação (verifique o nome no banco)
+    allowNull: true,
+  },
   motivoperdasId: {
     type: DataTypes.INTEGER,
     references: {

@@ -38,32 +38,33 @@ class PerdaService {
       order,
       limit,
       offset,
-      include:
-      [
+      attributes: ['id', 'obs', 'createdAt', 'updatedAt'], // Inclua 'observacao'
+      include: [
         {
           model: Auditoria,
           as: 'auditoria',
-          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          attributes: ['id', 'usuarioId', 'lojaId'], // Inclua o necessário de Auditoria
           include: [
             {
               model: Loja,
               as: 'loja',
-              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+              attributes: ['id', 'name'], // Inclua o nome da loja
             },
             {
               model: Usuario,
               as: 'usuario',
-              attributes: ['id', 'name'],
+              attributes: ['id', 'name'], // Inclua o nome do usuário
             },
           ],
         },
         {
           model: Motivoperdas,
           as: 'motivoperdas',
-          attributes: [ 'id','name']
-        }
-      ]
+          attributes: ['id', 'name'], // Inclua o nome do motivo da perda
+        },
+      ],
     });
+    
 
     return {
       perdas: perdas.rows,
