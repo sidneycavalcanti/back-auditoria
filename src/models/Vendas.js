@@ -41,6 +41,10 @@ const Vendas = sequelize.define(
       allowNull: false, // Obrigatório
       defaultValue: false, // Valor padrão é `false`
     },
+    observacao: {
+      type: DataTypes.TEXT, // Tipo de texto para armazenar observações longas
+      allowNull: true, // Permite valores nulos
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
