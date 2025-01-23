@@ -8,7 +8,7 @@ import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
 class VendasService {
-  async getVendas({ auditoriaId, page = 1, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getVendas({ auditoriaId, page = 1, limit = 10, id, troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -18,10 +18,15 @@ class VendasService {
     }
 
 
+    // Filtro por `id`
     if (id) {
-      where = { ...where, id: { [Op.like]: `%${id}%` } };
+      where = { ...where, id }; // Busca exata pelo id (sem LIKE, pois id geralmente é inteiro)
     }
 
+    // Filtro por `troca`
+    if (typeof troca !== 'undefined') {
+      where = { ...where, troca }; // Filtra por 0 ou 1 diretamente
+    }
     if (createdBefore) {
       where = { ...where, createdAt: { [Op.gte]: createdBefore } };
     }
