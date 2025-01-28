@@ -103,7 +103,7 @@ class VendasService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Loja,
@@ -153,7 +153,7 @@ class VendasService {
     const vendas = await this.getVendasById(id);
 
     if (!vendas) {
-      throw new Error('Motivo de pausa não encontrada');
+      throw new Error('Motivo de venda não encontrada');
     }
 
     // Exclui a Motivo de pausa com a condição where

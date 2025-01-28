@@ -15,20 +15,18 @@ class VendasController {
   }
 
   async show(req, res) {
-    try {
-      const vendas = await VendasService.getVendasById(req.params.id);
-
-      if (!vendas) {
-        return res.status(404).json({ error: 'Vendas não encontrado' });
+      try {
+        const vendas = await VendasService.getVendasById(req.params.id);
+  
+        if (!vendas) {
+          return res.status(404).json({ error: 'Vendas não encontrado' });
+        }
+  
+        return res.status(200).json(user);
+      } catch (error) {
+        return res.status(500).json({ error: 'Erro ao buscar Vendas' });
       }
-
-      return res.status(200).json(vendas);
-    } catch (error) {
-      console.error('Erro ao criar Vendas:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar Vendas', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao buscar categoria' });
     }
-  }
 
   async create(req, res) {
     try {
