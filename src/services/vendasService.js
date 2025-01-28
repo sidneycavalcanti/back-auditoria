@@ -100,39 +100,40 @@ class VendasService {
 
   async getVendasById(id) {
     return await Vendas.findByPk(id, {
-      attributes: {},
+      attributes: ['id', 'valor', 'dataVenda'], // Adapte para os campos necessários
       include: [
         {
           model: Auditoria,
-          as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
+          as: 'auditoria',
+          attributes: ['id', 'data'],
           include: [
             {
               model: Loja,
               as: 'loja',
-              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+              attributes: ['id', 'name'],
             },
             {
               model: Usuario,
-              as: 'usuario', // Alias da associação
-              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+              as: 'usuario',
+              attributes: ['id', 'name'],
             },
           ]
         },
-
         {
           model: Formadepagamento,
-          as: 'formadepagamento', // Alias da associação
-          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+          as: 'formadepagamento',
+          attributes: ['id', 'name'],
         },
         {
           model: Cadsexo,
-          as: 'sexo', // Alias da associação
-          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
+          as: 'sexo',
+          attributes: ['id', 'name'],
         },
-      ]
+      ],
+      logging: console.log, // Mostra a query gerada no console
     });
   }
+  
 
   async createVendas(data) {
     return await Vendas.create(data);
