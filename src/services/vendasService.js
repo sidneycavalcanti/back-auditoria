@@ -99,45 +99,40 @@ class VendasService {
   }
 
   async getVendasById(id) {
-    const venda = await Vendas.findByPk(id, {
-     // attributes: ['id', 'valor'], // Adapte para os campos necessários
+    return await Vendas.findByPk(id, {
+      attributes: {},
       include: [
         {
           model: Auditoria,
-          as: 'auditoria',
-          attributes: ['id', 'data'],
+          as: 'auditoria', // Alias da associação
+          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Loja,
               as: 'loja',
-              attributes: ['id', 'name'],
+              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
             },
             {
               model: Usuario,
-              as: 'usuario',
-              attributes: ['id', 'name'],
+              as: 'usuario', // Alias da associação
+              attributes: ['id', 'name'], //apenas campos da tabela auditoria.
             },
           ]
         },
+
         {
           model: Formadepagamento,
-          as: 'formadepagamento',
-          attributes: ['id', 'name'],
+          as: 'formadepagamento', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
         },
         {
           model: Cadsexo,
-          as: 'sexo',
-          attributes: ['id', 'name'],
+          as: 'sexo', // Alias da associação
+          attributes: ['id', 'name'], //apenas campos da tabela auditoria.
         },
-      ],
+      ]
     });
-
-    if(!venda){
-      console.error('Venda não encontrada com ID:', id); // Log detalhado
-      throw new Error('Venda não encontrada.');
-    }
   }
-  
 
   async createVendas(data) {
     return await Vendas.create(data);
