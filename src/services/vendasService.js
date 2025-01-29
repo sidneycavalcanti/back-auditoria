@@ -8,7 +8,7 @@ import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
 class VendasService {
-  async getVendas({  page = 1,  limit = 10, id, auditoriaId, troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getVendas({  page = 1,  limit = 10, id, auditoriaId, usuarioId,  troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
@@ -24,6 +24,9 @@ class VendasService {
       where = { ...where, auditoriaId }; // Adiciona auditoriaId ao filtro
     }
 
+    if (usuarioId) {
+      where = { ...where, usuarioId }; // Adiciona auditoriaId ao filtro
+    }
 
     // Filtro por `troca`
     if (typeof troca !== 'undefined') {
