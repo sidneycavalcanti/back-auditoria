@@ -99,8 +99,8 @@ class VendasService {
   }
 
   async getVendasById(id) {
-    return await Vendas.findByPk(id, {
-      attributes: ['id', 'valor', 'dataVenda'], // Adapte para os campos necessários
+    const venda = await Vendas.findByPk(id, {
+     // attributes: ['id', 'valor'], // Adapte para os campos necessários
       include: [
         {
           model: Auditoria,
@@ -130,8 +130,12 @@ class VendasService {
           attributes: ['id', 'name'],
         },
       ],
-      logging: console.log, // Mostra a query gerada no console
     });
+
+    if(!venda){
+      console.error('Venda não encontrada com ID:', id); // Log detalhado
+      throw new Error('Venda não encontrada.');
+    }
   }
   
 
