@@ -45,6 +45,11 @@ const Vendas = sequelize.define(
       type: DataTypes.TEXT, // Tipo de texto para armazenar observações longas
       allowNull: true, // Permite valores nulos
     },
+    faixaetaria: {
+      type: DataTypes.ENUM('infantil', 'adolescente', 'adulto', 'idoso'), // 🔥 Adicionando ENUM
+      allowNull: false,
+      defaultValue: 'adulto', // 🔥 Define um valor padrão
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
