@@ -46,9 +46,9 @@ const Vendas = sequelize.define(
       allowNull: true, // Permite valores nulos
     },
     faixaetaria: {
-      type: DataTypes.ENUM('infantil', 'adolescente', 'adulto', 'idoso'), // 🔥 Adicionando ENUM
-      allowNull: false,
-      defaultValue: 'adulto', // 🔥 Define um valor padrão
+      type: DataTypes.ENUM("infantil", "adolescente", "adulto", "idoso"),
+      allowNull: false, 
+      defaultValue: null // 🔥 Remove "adulto" como valor padrão
     },
     createdAt: {
       type: DataTypes.DATE,
