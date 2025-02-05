@@ -33,11 +33,12 @@ class PerdaService {
     }
 
     const offset = (page - 1) * limit;
+
     const perdas = await Perdas.findAndCountAll({
       where,
       order,
-      limit,
-      offset,
+      limit: limit || 10,  // 🔥 Permite ajustar via requisição
+      offset: (page - 1) * limit,
       attributes: ['id', 'obs', 'createdAt', 'updatedAt'], // Inclua 'observacao'
       include: [
         {
