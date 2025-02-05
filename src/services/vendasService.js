@@ -58,7 +58,7 @@ class VendasService {
     // consulta ao banco de dados, incluindo os relacionamentos
     const vendas = await Vendas.findAndCountAll({
       where,
-      order,
+      order: [['createdAt','DESC']],
       limit,
       offset,
       include: [
