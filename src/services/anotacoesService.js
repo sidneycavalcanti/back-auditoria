@@ -6,42 +6,16 @@ import Usuario from '../models/Usuario.js';
 import { Op } from 'sequelize';
 
 class AnotacoesService {
-  async getAnotacoes({ page = 1, auditoriaId, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAnotacoes({ page = 1, auditoriaId, limit = 10 }) {
     let where = {};
-    let order = [];
-
-    if (id) {
-      where = { ...where, id: { [Op.like]: `%${id}%` } };
-    }
-
-      // Filtro por `auditoriaId`
-      if (auditoriaId) {
-        where = { ...where, auditoriaId }; // Adiciona auditoriaId ao filtro
-      }
+    let order = [['createdAt', 'DESC']]; // Ordenar por data de criação decrescente
   
-
-    if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
+    if (auditoriaId) {
+      where.auditoriaId = auditoriaId;
     }
-
-    if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
-    }
-
-
-    if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
-    }
-
-    if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedAfter } };
-    }
-
-    if (sort) {
-      order = sort.split(',').map((item) => item.split(':'));
-    }
-
+  
     const offset = (page - 1) * limit;
+  
     const anotacoes = await Anotacoes.findAndCountAll({
       where,
       order,
@@ -50,8 +24,8 @@ class AnotacoesService {
       include: [
         {
           model: Auditoria,
-          as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'data'], //apenas campos da tabela auditoria.
+          as: 'auditoria',
+          attributes: ['id', 'data'],
           include: [
             {
               model: Usuario,
@@ -60,15 +34,16 @@ class AnotacoesService {
             },
             {
               model: Loja,
-              as: 'loja', // Alias da associação
-              attributes: ['id', 'name'],// Apenas os campos que você quer da tabela Loja
-             
+              as: 'loja',
+              attributes: ['id', 'name'],
             },
           ]
         }
       ]
     });
-
+  
+    console.log("📡 Resultado da busca de anotações:", anotacoes.rows);
+  
     return {
       anotacoes: anotacoes.rows,
       totalItems: anotacoes.count,
@@ -76,6 +51,7 @@ class AnotacoesService {
       currentPage: page,
     };
   }
+  
 
   async getAnotacoesById(id) {
     return await Anotacoes.findByPk(id, {
