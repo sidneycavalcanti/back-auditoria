@@ -6,13 +6,19 @@ import Usuario from '../models/Usuario.js';
 import { Op } from 'sequelize';
 
 class AnotacoesService {
-  async getAnotacoes({ page = 1, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getAnotacoes({ page = 1, auditoriaId, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     let where = {};
     let order = [];
 
     if (id) {
       where = { ...where, id: { [Op.like]: `%${id}%` } };
     }
+
+      // Filtro por `auditoriaId`
+      if (auditoriaId) {
+        where = { ...where, auditoriaId }; // Adiciona auditoriaId ao filtro
+      }
+  
 
     if (createdBefore) {
       where = { ...where, createdAt: { [Op.gte]: createdBefore } };
@@ -45,7 +51,7 @@ class AnotacoesService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Usuario,
