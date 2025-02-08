@@ -7,50 +7,63 @@ import { Op } from 'sequelize';
 
 class AnotacoesService {
   async getAnotacoes({ page = 1, auditoriaId, limit = 10 }) {
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+  
+    if (isNaN(page) || page < 1) page = 1;
+    if (isNaN(limit) || limit < 1) limit = 10;
+  
     let where = {};
     let order = [['createdAt', 'DESC']]; // Ordenar por data de criação decrescente
   
     if (auditoriaId) {
-      where.auditoriaId = auditoriaId;
+      where.auditoriaId = Number(auditoriaId); // 🔥 Garante que auditoriaId seja um número
     }
   
     const offset = (page - 1) * limit;
   
-    const anotacoes = await Anotacoes.findAndCountAll({
-      where,
-      order,
-      limit,
-      offset,
-      include: [
-        {
-          model: Auditoria,
-          as: 'auditoria',
-          attributes: ['id', 'data'],
-          include: [
-            {
-              model: Usuario,
-              as: 'usuario',
-              attributes: ['id', 'name']
-            },
-            {
-              model: Loja,
-              as: 'loja',
-              attributes: ['id', 'name'],
-            },
-          ]
-        }
-      ]
-    });
+    try {
+      const anotacoes = await Anotacoes.findAndCountAll({
+        where,
+        order,
+        limit,
+        offset,
+        include: [
+          {
+            model: Auditoria,
+            as: 'auditoria',
+            attributes: ['id', 'data'],
+            include: [
+              {
+                model: Usuario,
+                as: 'usuario',
+                attributes: ['id', 'name']
+              },
+              {
+                model: Loja,
+                as: 'loja',
+                attributes: ['id', 'name'],
+              },
+            ]
+          }
+        ]
+      });
   
-    console.log("📡 Resultado da busca de anotações:", anotacoes.rows);
+      console.log("📡 Resultado da busca de anotações:", anotacoes.rows);
   
-    return {
-      anotacoes: anotacoes.rows,
-      totalItems: anotacoes.count,
-      totalPages: Math.ceil(anotacoes.count / limit),
-      currentPage: page,
-    };
+      return {
+        anotacoes: anotacoes.rows,
+        totalItems: anotacoes.count,
+        totalPages: Math.ceil(anotacoes.count / limit),
+        currentPage: page,
+      };
+  
+    } catch (error) {
+      console.error("❌ Erro ao buscar anotações:", error);
+      throw new Error("Erro ao buscar anotações no banco de dados.");
+    }
   }
+  
   
 
   async getAnotacoesById(id) {
@@ -60,7 +73,7 @@ class AnotacoesService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data', 'fluxoespeculador', 'fluxoacompanhante', 'fluxooutros'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Usuario,
