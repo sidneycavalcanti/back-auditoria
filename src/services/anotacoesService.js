@@ -51,7 +51,7 @@ class AnotacoesService {
         {
           model: Auditoria,
           as: 'auditoria', // Alias da associação
-          attributes: ['id', 'data'], //apenas campos da tabela auditoria.
+          attributes: ['id', 'data', 'data'], //apenas campos da tabela auditoria.
           include: [
             {
               model: Usuario,
