@@ -5,115 +5,81 @@ import Motivodepausa from '../models/Motivodepausa.js';
 import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
-
-
 class PausaService {
-  async getPausa({ page = 1, limit = 10, motivodepausaId, usuarioId, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
-    let where = {};
-    let order = [];
+  async getPausas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    page = parseInt(page, 10) || 1;
+    limit = parseInt(limit, 10) || 10;
+    const offset = (page - 1) * limit;
 
-    if (motivodepausaId) {
-      where = { ...where, motivodepausaId };
-    }
-
-    if (usuarioId) {
-      where = { ...where, usuarioId };
-    }
+    const where = {};
+    let order = [['createdAt', 'DESC']];
 
     if (auditoriaId) {
-      where = { ...where, auditoriaId };
+      where.auditoriaId = parseInt(auditoriaId, 10);
     }
 
-    if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
-    }
-
-    if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
-    }
-    
-
-    if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
-    }
-
-    if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedAfter } };
-    }
+    if (createdBefore) where.createdAt = { [Op.lte]: new Date(createdBefore) };
+    if (createdAfter) where.createdAt = { ...where.createdAt, [Op.gte]: new Date(createdAfter) };
+    if (updatedBefore) where.updatedAt = { [Op.lte]: new Date(updatedBefore) };
+    if (updatedAfter) where.updatedAt = { ...where.updatedAt, [Op.gte]: new Date(updatedAfter) };
 
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
     }
 
-    const offset = (page - 1) * limit;
-    const pausa = await Pausa.findAndCountAll({
+    console.log("🔍 Buscando pausas com os seguintes parâmetros:", { page, limit, auditoriaId, where, order });
+
+    const pausas = await Pausa.findAndCountAll({
       where,
       order,
       limit,
       offset,
+      attributes: ['id', 'obs', 'createdAt', 'updatedAt'],
       include: [
         {
           model: Auditoria,
           as: 'auditoria',
-          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          attributes: ['id', 'usuarioId', 'lojaId'],
           include: [
-            {
-              model: Loja,
-              as: 'loja',
-              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
-            },
-            {
-              model: Usuario,
-              as: 'usuario',
-              attributes: ['id', 'name']
-            }
+            { model: Loja, as: 'loja', attributes: ['id', 'name'] },
+            { model: Usuario, as: 'usuario', attributes: ['id', 'name'] },
           ],
         },
-       
         {
           model: Motivodepausa,
           as: 'motivodepausa',
-          attributes: ['id','name'],
+          attributes: ['id', 'name'],
         },
-      ]
+      ],
     });
 
     return {
-      pausa: pausa.rows,
-      totalItems: pausa.count,
-      totalPages: Math.ceil(pausa.count / limit),
+      pausas: pausas.rows,
+      totalItems: pausas.count,
+      totalPages: Math.ceil(pausas.count / limit),
       currentPage: page,
     };
   }
 
-    async getPausaById(id) {
+  async getPausaById(id) {
     return await Pausa.findByPk(id, {
-      attributes: {},
+      attributes: ['id', 'obs', 'createdAt', 'updatedAt'],
       include: [
         {
           model: Auditoria,
           as: 'auditoria',
-          attributes: ['id', 'usuarioId','lojaId'],  // Aqui você busca o 'lojaId' na auditoria
+          attributes: ['id', 'usuarioId', 'lojaId'],
           include: [
-            {
-              model: Loja,
-              as: 'loja',
-              attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
-            },
-            {
-              model: Usuario,
-              as: 'usuario',
-              attributes: ['id', 'name']
-            }
+            { model: Loja, as: 'loja', attributes: ['id', 'name'] },
+            { model: Usuario, as: 'usuario', attributes: ['id', 'name'] },
           ],
         },
-       
         {
           model: Motivodepausa,
           as: 'motivodepausa',
-          attributes: ['id','name'],
+          attributes: ['id', 'name'],
         },
-      ]
+      ],
     });
   }
 
@@ -122,29 +88,20 @@ class PausaService {
   }
 
   async updatePausa(id, updateData) {
-    const [updated] = await Pausa.update(updateData, {
-      where: { id } // Especifica qual registro deve ser atualizado
-    });
+    const [updated] = await Pausa.update(updateData, { where: { id } });
 
     if (updated) {
-      return await this.getPausaById(id); // Retorna o registro atualizado
+      return await this.getPausaById(id);
     }
     throw new Error('Pausa não encontrada');
   }
 
-
   async deletePausa(id) {
-    // Verifica se a cadquestoes existe
     const pausa = await this.getPausaById(id);
-
     if (!pausa) {
       throw new Error('Pausa não encontrada');
     }
-
-    // Exclui a Motivo de pausa com a condição where
-    return await Pausa.destroy({
-      where: { id } // Especifica o registro a ser excluído
-    });
+    return await Pausa.destroy({ where: { id } });
   }
 }
 
