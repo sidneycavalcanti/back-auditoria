@@ -34,7 +34,7 @@ class PausaService {
       order,
       limit,
       offset,
-      attributes: ['id', 'obs', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'createdAt', 'updatedAt'],
       include: [
         {
           model: Auditoria,
@@ -63,7 +63,7 @@ class PausaService {
 
   async getPausaById(id) {
     return await Pausa.findByPk(id, {
-      attributes: ['id', 'obs', 'createdAt', 'updatedAt'],
+      attributes: ['id', 'createdAt', 'updatedAt'],
       include: [
         {
           model: Auditoria,
