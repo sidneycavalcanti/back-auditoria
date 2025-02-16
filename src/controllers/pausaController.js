@@ -4,15 +4,14 @@ import PausaService from '../services/pausaService.js';
 class PausaController {
   async index(req, res) {
     try {
-      const pausa = await PausaService.getPausa(req.query);
-      return res.status(200).json(pausa);
+      const pausas = await PausaService.getPausas(req.query); // ✅ CORRETO - Função existente
+      return res.status(200).json(pausas);
     } catch (error) {
-      console.error('Erro ao buscar pausa:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao buscar pausa', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao buscar categoria' });
+      console.error('Erro ao buscar pausas:', error);
+      res.status(500).json({ error: 'Erro ao buscar pausas', detalhes: error.message });
     }
-   
   }
+  
 
   async show(req, res) {
     try {
