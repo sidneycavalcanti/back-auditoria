@@ -101,7 +101,7 @@ class PausaService {
   
       console.log(`✅ Pausa encontrada! Criada em: ${pausa.createdAt}`);
   
-      // 🔥 Atualiza apenas `updatedAt`
+      // 🔥 Atualiza apenas o campo `updatedAt`
       await pausa.update({
         updatedAt: Sequelize.literal('CURRENT_TIMESTAMP')
       });
@@ -114,6 +114,7 @@ class PausaService {
       throw error;
     }
   }
+  
   
   
 
