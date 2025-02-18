@@ -74,6 +74,26 @@ class PausaController {
       res.status(500).json({ error: 'Erro ao excluir pausa', detalhes: error.message });
     }
   }
+
+  async encerrarPausa(req, res) {
+    try {
+      const { id } = req.params;
+  
+      console.log(`📡 Encerrando pausa com ID: ${id}`);
+  
+      // 🔥 Chama o serviço de update, sem precisar passar dados extras
+      const pausaEncerrada = await PausaService.updatePausa(id, {});
+  
+      console.log("✅ Pausa encerrada no backend:", pausaEncerrada);
+  
+      return res.status(200).json({ message: "Pausa encerrada com sucesso", pausa: pausaEncerrada });
+    } catch (error) {
+      console.error("❌ Erro ao encerrar pausa:", error);
+      return res.status(500).json({ error: "Erro ao encerrar pausa no servidor" });
+    }
+  }
+  
+  
 }
 
 export default new PausaController();
