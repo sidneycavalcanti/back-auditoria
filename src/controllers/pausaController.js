@@ -46,23 +46,22 @@ class PausaController {
 
   async update(req, res) {
     try {
-      await req.body, { abortEarly: false };
-
-      const pausaAtualizada = await PausaService.updatePausa(req.params.id, req.body);
-      console.log("✅ Pausa encerrada no backend:", pausaAtualizada);
-      return res.status(200).json(pausaAtualizada);
-
-
-      return res.status(200).json(pausa);
+      const { id } = req.params;
+  
+      console.log(`📡 Encerrando pausa com ID: ${id}`);
+  
+      // 🔥 Chama o serviço para atualizar a pausa
+      const pausaEncerrada = await PausaService.updatePausa(id);
+  
+      console.log("✅ Pausa encerrada no backend:", pausaEncerrada);
+  
+      return res.status(200).json({ message: "Pausa encerrada com sucesso", pausa: pausaEncerrada });
     } catch (error) {
-      if (error.name === 'ValidationError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      console.error('Erro ao atualizar pausa:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao atualizar pausa', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao atualizar categoria' });
+      console.error("❌ Erro ao encerrar pausa:", error); // 🔥 Agora exibe o erro real
+      return res.status(500).json({ error: "Erro ao encerrar pausa", detalhes: error.message });
     }
   }
+  
 
   async destroy(req, res) {
     try {
