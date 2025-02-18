@@ -87,22 +87,25 @@ class PausaService {
     return await Pausa.create(data);
   }
 
-  async updatePausa(id, updateData = {}) {
-    // 🔍 Busca a pausa pelo ID
-    const pausa = await Pausa.findByPk(id);
-    if (!pausa) {
-      throw new Error('Pausa não encontrada');
+  async updatePausa(id) {
+    try {
+      const pausa = await Pausa.findByPk(id);
+      if (!pausa) {
+        throw new Error('Pausa não encontrada');
+      }
+  
+      // 🔥 Atualiza apenas o campo `updatedAt`
+      await pausa.update({
+        updatedAt: Sequelize.literal('CURRENT_TIMESTAMP')
+      });
+  
+      console.log(`✅ Pausa encerrada! Novo updatedAt: ${new Date()}`);
+  
+      return pausa;
+    } catch (error) {
+      console.error("❌ Erro ao encerrar pausa:", error);
+      throw error;
     }
-  
-    // 🔥 Força a atualização do campo `updatedAt`
-    updateData.updatedAt = new Date();
-  
-    // 🔄 Atualiza a pausa no banco de dados
-    await pausa.update(updateData);
-  
-    console.log("✅ Pausa encerrada e updatedAt atualizado:", pausa.updatedAt);
-  
-    return pausa; // Retorna a pausa atualizada
   }
   
   
