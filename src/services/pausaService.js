@@ -93,21 +93,22 @@ class PausaService {
   
       const pausa = await Pausa.findByPk(id);
       if (!pausa) {
+        console.error("❌ ERRO: Pausa não encontrada no banco!");
         throw new Error('Pausa não encontrada');
       }
   
       console.log(`✅ Pausa encontrada! Criada em: ${pausa.createdAt}`);
   
-      // 🔥 Atualiza apenas o campo `updatedAt`
+      // 🔥 Atualiza apenas `updatedAt`
       await pausa.update({
         updatedAt: Sequelize.literal('CURRENT_TIMESTAMP')
       });
   
-      console.log(`✅ Pausa encerrada com sucesso! updatedAt atualizado para: ${new Date()}`);
+      console.log(`✅ Pausa encerrada com sucesso! updatedAt atualizado.`);
   
       return pausa;
     } catch (error) {
-      console.error("❌ Erro no serviço updatePausa:", error);
+      console.error("❌ ERRO no serviço updatePausa:", error.message);
       throw error;
     }
   }

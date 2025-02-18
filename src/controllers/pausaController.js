@@ -50,6 +50,11 @@ class PausaController {
   
       console.log(`📡 Encerrando pausa com ID: ${id}`);
   
+      // 🔥 Confirma que o ID é válido
+      if (!id || isNaN(id)) {
+        return res.status(400).json({ error: "ID inválido para encerrar a pausa" });
+      }
+  
       // 🔥 Chama o serviço para atualizar a pausa
       const pausaEncerrada = await PausaService.updatePausa(id);
   
@@ -57,10 +62,11 @@ class PausaController {
   
       return res.status(200).json({ message: "Pausa encerrada com sucesso", pausa: pausaEncerrada });
     } catch (error) {
-      console.error("❌ Erro ao encerrar pausa:", error); // 🔥 Agora exibe o erro real
+      console.error("❌ ERRO ao encerrar pausa:", error.message);
       return res.status(500).json({ error: "Erro ao encerrar pausa", detalhes: error.message });
     }
   }
+  
   
 
   async destroy(req, res) {
