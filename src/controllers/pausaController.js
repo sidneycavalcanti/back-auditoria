@@ -48,7 +48,10 @@ class PausaController {
     try {
       await req.body, { abortEarly: false };
 
-      const pausa = await PausaService.updatePausa(req.params.id, req.body);
+      const pausaAtualizada = await PausaService.updatePausa(req.params.id, req.body);
+      console.log("✅ Pausa encerrada no backend:", pausaAtualizada);
+      return res.status(200).json(pausaAtualizada);
+
 
       return res.status(200).json(pausa);
     } catch (error) {

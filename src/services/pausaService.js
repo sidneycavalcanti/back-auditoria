@@ -88,13 +88,20 @@ class PausaService {
   }
 
   async updatePausa(id, updateData) {
-    const [updated] = await Pausa.update(updateData, { where: { id } });
-
-    if (updated) {
-      return await this.getPausaById(id);
+    // 🔍 Busca a pausa antes de atualizar
+    const pausa = await Pausa.findByPk(id);
+    if (!pausa) {
+      throw new Error('Pausa não encontrada');
     }
-    throw new Error('Pausa não encontrada');
+  
+    // 🔄 Atualiza a pausa e salva no banco
+    await pausa.update(updateData);
+  
+    console.log("✅ Pausa atualizada com sucesso:", pausa);
+  
+    return pausa; // 🔥 Retorna o objeto atualizado
   }
+  
 
   async deletePausa(id) {
     const pausa = await this.getPausaById(id);
