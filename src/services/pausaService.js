@@ -5,6 +5,8 @@ import Motivodepausa from '../models/Motivodepausa.js';
 import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
+import { Sequelize } from 'sequelize';
+
 class PausaService {
   async getPausas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     page = parseInt(page, 10) || 1;
