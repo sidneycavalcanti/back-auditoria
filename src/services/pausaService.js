@@ -88,16 +88,16 @@ class PausaService {
   }
 
   async updatePausa(id, updateData) {
-    // 🔍 Busca a pausa antes de atualizar
+    // 🔍 Busca a pausa pelo ID
     const pausa = await Pausa.findByPk(id);
     if (!pausa) {
       throw new Error('Pausa não encontrada');
     }
   
-    // 🔄 Atualiza a pausa e salva no banco
-    await pausa.update(updateData);
+    // 🔄 Atualiza o campo `updatedAt` manualmente
+    await pausa.update({ ...updateData, updatedAt: new Date() });
   
-    console.log("✅ Pausa atualizada com sucesso:", pausa);
+    console.log("✅ Pausa encerrada e updatedAt atualizado:", pausa);
   
     return pausa; // 🔥 Retorna o objeto atualizado
   }
