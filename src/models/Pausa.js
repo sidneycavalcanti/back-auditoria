@@ -23,6 +23,10 @@ const Pausa = sequelize.define('Pausa', {
       key: 'id',
     }
   },
+  status: { // 🔥 Novo campo
+    type: DataTypes.TINYINT,
+    defaultValue: 1, // ✅ Começa como "em pausa"
+  },
   createdAt: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
