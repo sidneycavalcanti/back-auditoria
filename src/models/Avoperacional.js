@@ -5,7 +5,7 @@ import Auditoria from './Auditoria.js';
 import Cadavoperacional from './Cadavoperacional.js';
 
 
-const Avoperacional = sequelize.define('Avoperacional', {
+const Avoperacional = sequelize.define('Avoperacional',  {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
