@@ -93,31 +93,31 @@ class PausaService {
     });
   }
 
- async updatePausa(id) {
-  try {
-    console.log(`🔄 Buscando pausa com ID: ${id}...`);
-
-    const pausa = await Pausa.findByPk(id);
-    if (!pausa) {
-      console.error("❌ ERRO: Pausa não encontrada!");
-      throw new Error('Pausa não encontrada');
+  async updatePausa(id, updateData) {
+    try {
+      console.log(`🔄 Buscando pausa com ID: ${id}...`);
+  
+      const pausa = await Pausa.findByPk(id);
+      if (!pausa) {
+        throw new Error('Pausa não encontrada');
+      }
+  
+      console.log(`✅ Pausa encontrada! Criada em: ${pausa.createdAt}`);
+  
+      // 🔥 ATUALIZA **SOMENTE OS CAMPOS PASSADOS (status, updatedAt)**
+      await pausa.update({
+        ...updateData,
+        updatedAt: new Date(), // 🔄 Força a atualização do `updatedAt`
+      });
+  
+      console.log(`✅ Pausa encerrada! Novo status: ${updateData.status}`);
+      return pausa;
+    } catch (error) {
+      console.error("❌ Erro no serviço updatePausa:", error);
+      throw error;
     }
-
-    console.log(`✅ Pausa encontrada! Criada em: ${pausa.createdAt}`);
-
-    // 🔥 Atualiza `updatedAt` e muda `status` para 0 (encerrado)
-    await pausa.update({
-      updatedAt: new Date(),
-      status: 0, // ✅ Agora a pausa é considerada encerrada
-    });
-
-    console.log(`✅ Pausa encerrada com sucesso! Status atualizado.`);
-    return pausa;
-  } catch (error) {
-    console.error("❌ ERRO no serviço updatePausa:", error.message);
-    throw error;
   }
-}
+  
 
   
   
