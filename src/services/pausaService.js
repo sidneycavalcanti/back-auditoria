@@ -5,8 +5,6 @@ import Motivodepausa from '../models/Motivodepausa.js';
 import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
-import { Sequelize } from 'sequelize';
-
 class PausaService {
   async getPausas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
     page = parseInt(page, 10) || 1;
@@ -93,28 +91,61 @@ class PausaService {
     });
   }
 
- async updatePausa(id) {
-  try {
-    console.log(`🔄 Buscando pausa com ID: ${id}...`);
-
-    const pausa = await Pausa.findByPk(id);
-    if (!pausa) {
-      console.error("❌ ERRO: Pausa não encontrada!");
-      throw new Error('Pausa não encontrada');
+  async updatePausa(id, updateData = {}) {
+    try {
+      console.log(`🔄 Buscando pausa ativa com ID: ${id} para encerramento...`);
+  
+      const pausa = await Pausa.findOne({
+        where: {
+          id,
+          status: 1, // 🔥 Apenas pausas que ainda estão ativas
+        },
+      });
+  
+      if (!pausa) {
+        console.warn("⚠️ Nenhuma pausa ativa encontrada para encerrar.");
+        return null;
+      }
+  
+      console.log(`✅ Pausa ativa encontrada! Criada em: ${pausa.createdAt}`);
+  
+      // 🔥 Atualiza `updatedAt` e `status` para `0` (encerrado)
+      await pausa.update({
+        updatedAt: new Date(),
+        status: 0, // ✅ Agora a pausa é considerada encerrada
+        ...updateData, // 🔥 Permite atualizar outros campos, se necessário
+      });
+  
+      console.log(`✅ Pausa encerrada com sucesso! Status atualizado.`);
+      return pausa;
+    } catch (error) {
+      console.error("❌ ERRO no serviço updatePausa:", error.message);
+      throw error;
     }
+  }
+  
 
-    console.log(`✅ Pausa encontrada! Criada em: ${pausa.createdAt}`);
+async getPausasAtivas(auditoriaId) {
+  try {
+    console.log(`🔍 Buscando pausas ativas para auditoria ID: ${auditoriaId}...`);
 
-    // 🔥 Atualiza `updatedAt` e muda `status` para 0 (encerrado)
-    await pausa.update({
-      updatedAt: new Date(),
-      status: 0, // ✅ Agora a pausa é considerada encerrada
+    const pausasAtivas = await Pausa.findAll({
+      where: {
+        auditoriaId,  // 🔍 Filtra pela auditoria específica
+        status: 1,    // 🔥 Apenas pausas que estão ativas
+      },
+      order: [['createdAt', 'DESC']], // 🔥 Retorna as mais recentes primeiro
     });
 
-    console.log(`✅ Pausa encerrada com sucesso! Status atualizado.`);
-    return pausa;
+    if (pausasAtivas.length > 0) {
+      console.log("✅ Pausas ativas encontradas:", pausasAtivas);
+      return pausasAtivas;
+    } else {
+      console.log("❌ Nenhuma pausa ativa encontrada.");
+      return [];
+    }
   } catch (error) {
-    console.error("❌ ERRO no serviço updatePausa:", error.message);
+    console.error("❌ ERRO ao buscar pausas ativas:", error);
     throw error;
   }
 }

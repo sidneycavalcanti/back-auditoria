@@ -9,4 +9,7 @@ router.post('/', pausaController.create);
 router.put('/:id', pausaController.update);
 router.delete('/:id', pausaController.destroy);
 
+// 🚀 Nova Rota para Buscar Somente as Pausas Ativas
+router.get('/ativas/:auditoriaId', pausaController.getPausasAtivas);
+
 export default router;

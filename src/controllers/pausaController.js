@@ -86,17 +86,43 @@ class PausaController {
   
       console.log(`📡 Encerrando pausa com ID: ${id}`);
   
-      // 🔥 Chama o serviço de update, sem precisar passar dados extras
-      const pausaEncerrada = await PausaService.updatePausa(id, {});
+      // 🔥 Chama o serviço e passa explicitamente { status: 0 }
+      const pausaEncerrada = await PausaService.updatePausa(id, { status: 0 });
+  
+      if (!pausaEncerrada) {
+        return res.status(404).json({ error: "Pausa não encontrada ou já encerrada" });
+      }
   
       console.log("✅ Pausa encerrada no backend:", pausaEncerrada);
   
       return res.status(200).json({ message: "Pausa encerrada com sucesso", pausa: pausaEncerrada });
     } catch (error) {
       console.error("❌ Erro ao encerrar pausa:", error);
-      return res.status(500).json({ error: "Erro ao encerrar pausa no servidor" });
+      return res.status(500).json({ error: "Erro ao encerrar pausa no servidor", detalhes: error.message });
     }
   }
+
+  async getPausasAtivas(req, res) {
+    try {
+      const { auditoriaId } = req.params;
+  
+      if (!auditoriaId) {
+        return res.status(400).json({ error: "AuditoriaId é obrigatório" });
+      }
+  
+      const pausasAtivas = await PausaService.getPausasAtivas(auditoriaId);
+  
+      if (!pausasAtivas.length) {
+        return res.status(200).json({ message: "Nenhuma pausa ativa encontrada", pausas: [] });
+      }
+  
+      return res.status(200).json({ pausas: pausasAtivas });
+    } catch (error) {
+      console.error("❌ Erro ao buscar pausas ativas:", error.message);
+      return res.status(500).json({ error: "Erro ao buscar pausas ativas", detalhes: error.message });
+    }
+  }
+  
   
   
 }
