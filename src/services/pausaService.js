@@ -125,33 +125,22 @@ class PausaService {
   }
   
 
-async getPausasAtivas(auditoriaId) {
-  try {
-    console.log(`🔍 Buscando pausas ativas para auditoria ID: ${auditoriaId}...`);
-
-    const pausasAtivas = await Pausa.findAll({
+  async getPausasAtivas(auditoriaId) {
+    return await Pausa.findAll({
       where: {
-        auditoriaId,  // 🔍 Filtra pela auditoria específica
-        status: 1,    // 🔥 Apenas pausas que estão ativas
+        auditoriaId,
+        status: 1,  // 🔍 Apenas pausas ativas
       },
-      order: [['createdAt', 'DESC']], // 🔥 Retorna as mais recentes primeiro
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Motivodepausa,  // 🔥 Inclui o motivo da pausa na resposta
+          as: 'motivodepausa',
+          attributes: ['id', 'name'],  // Retorna apenas o ID e Nome do motivo
+        }
+      ],
     });
-
-    if (pausasAtivas.length > 0) {
-      console.log("✅ Pausas ativas encontradas:", pausasAtivas);
-      return pausasAtivas;
-    } else {
-      console.log("❌ Nenhuma pausa ativa encontrada.");
-      return [];
-    }
-  } catch (error) {
-    console.error("❌ ERRO ao buscar pausas ativas:", error);
-    throw error;
   }
-}
-
-  
-  
   
 
   async deletePausa(id) {
