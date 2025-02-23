@@ -8,36 +8,33 @@ import { Op } from 'sequelize';
 
 
 class AvoperacionalService {
-  async getAvoperacional({ page = 1, limit = 10, id, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
-    let where = {};
-    let order = [];
-
-    if (id) {
-      where = { ...where, name: { [Op.like]: `%${id}%` } };
-    }
-
-    if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
-    }
-
-    if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
-    }
-
-
-    if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
-    }
-
-    if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedAfter } };
-    }
-
-    if (sort) {
-      order = sort.split(',').map((item) => item.split(':'));
-    }
-
+  async getAvoperacional({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    // 🚀 Garantia que `page`, `limit`, e `auditoriaId` são valores numéricos válidos
+    page = parseInt(page, 10) || 1;
+    limit = parseInt(limit, 10) || 10;
     const offset = (page - 1) * limit;
+
+    let where = {};
+    let order = [['createdAt', 'DESC']]; // 🔥 Garante que os mais recentes venham primeiro
+
+    // Filtro por AuditoriaID (se fornecido)
+    if (auditoriaId) {
+      where.auditoriaId = parseInt(auditoriaId, 10);
+    }
+
+    // Filtros opcionais de data
+    if (createdBefore) where.createdAt = { [Op.gte]: createdBefore };
+    if (createdAfter) where.createdAt = { ...where.createdAt, [Op.lte]: createdAfter };
+    if (updatedBefore) where.updatedAt = { [Op.gte]: updatedBefore };
+    if (updatedAfter) where.updatedAt = { ...where.updatedAt, [Op.lte]: updatedAfter };
+
+    // Opção para ordenação dinâmica (caso venha na requisição)
+    if (sort) order = sort.split(',').map((item) => item.split(':'));
+
+    // 🔍 Log para depuração - mostra os filtros aplicados
+    console.log("🔍 Buscando avaliação com os seguintes parâmetros:", { page, limit, auditoriaId, where, order });
+
+    // 🚀 Busca as perdas com paginação
     const avoperacional = await Avoperacional.findAndCountAll({
       where,
       order,
@@ -72,7 +69,7 @@ class AvoperacionalService {
     });
 
     return {
-      avoperacional: avoperacional.rows,
+      avaliacoes: avoperacional.rows,
       totalItems: avoperacional.count,
       totalPages: Math.ceil(avoperacional.count / limit),
       currentPage: page,
@@ -81,7 +78,7 @@ class AvoperacionalService {
 
   async getAvoperacionalById(id) {
     return await Avoperacional.findByPk(id, {
-      attributes: {},
+      attributes: ['id', 'resposta', 'createdAt', 'updatedAt'],
       include: [
 
         {
@@ -110,22 +107,20 @@ class AvoperacionalService {
       ],
     });
   }
+  
 
   async createAvoperacional(data) {
     return await Avoperacional.create(data);
   }
 
   async updateAvoperacional(id, updateData) {
-    const [updated] = await Avoperacional.update(updateData, {
-      where: { id } // Especifica qual registro deve ser atualizado
-    });
+    const [updated] = await Avoperacional.update(updateData, { where: { id } });
 
     if (updated) {
-      return await this.getAvoperacionalById(id); // Retorna o registro atualizado
+      return await this.getAvoperacionalById(id);
     }
-    throw new Error('avoperacional não encontrada');
+    throw new Error('Avaliação não encontrada');
   }
-
 
   async deleteAvoperacional(id) {
     // Verifica se a cadquestoes existe
