@@ -2,37 +2,49 @@ import Cadavoperacional from '../models/Cadavoperacional.js';
 import { Op } from 'sequelize';
 
 class CadavoperacionalService {
-  async getCadavoperacional({ page = 1, limit = 10,descricao, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  // 🔥 Buscar todas ou apenas perguntas filtradas (paginações e ordenação)
+  async getCadavoperacional({
+    page = 1,
+    limit = 10,
+    descricao,
+    situacao,
+    createdBefore,
+    createdAfter,
+    updatedBefore,
+    updatedAfter,
+    sort,
+  }) {
     let where = {};
-    let order = [];
 
     if (descricao) {
-      where = { ...where, descricao: { [Op.like]: `%${descricao}%` } };
+      where.descricao = { [Op.like]: `%${descricao}%` };
     }
 
-    if (situacao) {
-      where = { ...where, situacao: { [Op.like]: `%${situacao}%` } };
+    if (situacao !== undefined) {
+      where.situacao = situacao === 'true'; // Converte string para booleano
     }
-
 
     if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
+      where.createdAt = { [Op.gte]: new Date(createdBefore) };
     }
 
     if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
+      where.createdAt = { ...where.createdAt, [Op.lte]: new Date(createdAfter) };
     }
 
     if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
+      where.updatedAt = { [Op.gte]: new Date(updatedBefore) };
     }
 
     if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedAfter } };
+      where.updatedAt = { ...where.updatedAt, [Op.lte]: new Date(updatedAfter) };
     }
 
+    let order = [];
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
+    } else {
+      order = [['createdAt', 'DESC']]; // Padrão: mais recentes primeiro
     }
 
     const offset = (page - 1) * limit;
@@ -51,40 +63,92 @@ class CadavoperacionalService {
     };
   }
 
-    async getcadavoperacionalById(id) {
-    return await Cadavoperacional.findByPk(id, {
-      attributes: {},
-    });
+  // 🔥 Buscar perguntas (ativas ou todas)
+  async getPerguntas({ situacao }) {
+    try {
+      console.log("📡 Buscando perguntas...");
+
+      let whereCondition = {};
+      if (situacao !== undefined) {
+        whereCondition.situacao = situacao === 'true'; // Converte string para booleano
+      }
+
+      const perguntas = await Cadavoperacional.findAll({
+        where: whereCondition,
+        order: [['createdAt', 'DESC']], // Mais recentes primeiro
+      });
+
+      console.log(`✅ Perguntas encontradas: ${perguntas.length}`);
+      return perguntas;
+    } catch (error) {
+      console.error("❌ Erro ao buscar perguntas:", error.message);
+      throw new Error("Erro ao buscar perguntas.");
+    }
   }
 
+  // 🔥 Buscar uma pergunta específica pelo ID
+  async getCadavoperacionalById(id) {
+    try {
+      const pergunta = await Cadavoperacional.findByPk(id);
+      if (!pergunta) {
+        throw new Error("Pergunta não encontrada.");
+      }
+      return pergunta;
+    } catch (error) {
+      console.error("❌ Erro ao buscar pergunta pelo ID:", error.message);
+      throw new Error("Erro ao buscar pergunta.");
+    }
+  }
+
+  // 🔥 Criar uma nova pergunta
   async createCadavoperacional(data) {
-    return await Cadavoperacional.create(data);
-  }
-
-  async updateCadavoperacional(id, updateData) {
-    const [updated] = await Cadavoperacional.update(updateData, {
-      where: { id } // Especifica qual registro deve ser atualizado
-    });
-
-    if (updated) {
-      return await this.getcadavoperacionalById(id); // Retorna o registro atualizado
+    try {
+      console.log("📡 Criando nova pergunta...");
+      const novaPergunta = await Cadavoperacional.create(data);
+      console.log("✅ Pergunta criada com sucesso:", novaPergunta);
+      return novaPergunta;
+    } catch (error) {
+      console.error("❌ Erro ao criar pergunta:", error.message);
+      throw new Error("Erro ao criar pergunta.");
     }
-    throw new Error('Avaliação operacional não encontrada');
   }
 
+  // 🔥 Atualizar uma pergunta existente
+  async updateCadavoperacional(id, dadosAtualizados) {
+    try {
+      console.log(`📡 Atualizando pergunta com ID: ${id}`);
 
+      const pergunta = await Cadavoperacional.findByPk(id);
+      if (!pergunta) {
+        throw new Error("Pergunta não encontrada.");
+      }
+
+      await pergunta.update(dadosAtualizados);
+      console.log(`✅ Pergunta ID ${id} atualizada com sucesso!`);
+      return pergunta;
+    } catch (error) {
+      console.error("❌ Erro ao atualizar pergunta:", error.message);
+      throw new Error("Erro ao atualizar pergunta.");
+    }
+  }
+
+  // 🔥 Deletar uma pergunta
   async deleteCadavoperacional(id) {
-    // Verifica se a cadquestoes existe
-    const cadavoperacional = await this.getcadavoperacionalById(id);
+    try {
+      console.log(`📡 Deletando pergunta com ID: ${id}`);
 
-    if (!cadavoperacional) {
-      throw new Error('Avaliação operacional não encontrada');
+      const pergunta = await Cadavoperacional.findByPk(id);
+      if (!pergunta) {
+        throw new Error("Pergunta não encontrada.");
+      }
+
+      await pergunta.destroy();
+      console.log(`✅ Pergunta ID ${id} deletada com sucesso!`);
+      return { message: "Pergunta deletada com sucesso" };
+    } catch (error) {
+      console.error("❌ Erro ao deletar pergunta:", error.message);
+      throw new Error("Erro ao deletar pergunta.");
     }
-
-    // Exclui a cadquestoes com a condição where
-    return await Cadavoperacional.destroy({
-      where: { id } // Especifica o registro a ser excluído
-    });
   }
 }
 

@@ -1,78 +1,104 @@
-import Cadavoperacional from '../services/cadavoperacionalService.js';
-//import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
+import CadavoperacionalService from '../services/cadavoperacionalService.js';
 
-class cadavoperacionalController {
+class CadavoperacionalController {
+  // 🔥 Listar perguntas (ativas ou todas)
   async index(req, res) {
     try {
-      const cadavop = await Cadavoperacional.getCadavoperacional(req.query);
-      return res.status(200).json(cadavop);
+      const { page, limit, descricao, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort } = req.query;
+
+      // 🔥 Se `situacao` for passado na URL, converte para booleano corretamente
+      const filtroSituacao = situacao !== undefined ? (situacao === 'true') : undefined;
+
+      const perguntas = await CadavoperacionalService.getCadavoperacional({
+        page,
+        limit,
+        descricao,
+        situacao: filtroSituacao,
+        createdBefore,
+        createdAfter,
+        updatedBefore,
+        updatedAfter,
+        sort,
+      });
+
+      return res.status(200).json(perguntas);
     } catch (error) {
-      console.error('Erro ao buscar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao buscar avaliação operacional', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao buscar categoria' });
+      console.error('❌ Erro ao buscar perguntas:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar perguntas.' });
     }
-   
   }
 
+  // 🔥 Buscar perguntas ativas (ou todas)
+  async getPerguntas(req, res) {
+    try {
+      const { situacao } = req.query;
+
+      // 🔥 Converte `situacao` para booleano caso seja passado
+      const filtroSituacao = situacao !== undefined ? (situacao === 'true') : undefined;
+
+      const perguntas = await CadavoperacionalService.getPerguntas({ situacao: filtroSituacao });
+
+      return res.status(200).json({ perguntas });
+    } catch (error) {
+      console.error('❌ Erro ao buscar perguntas:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar perguntas.' });
+    }
+  }
+
+  // 🔥 Buscar uma pergunta específica por ID
   async show(req, res) {
     try {
-      const cadavop = await Cadavoperacional.getcadavoperacionalById(req.params.id);
+      const { id } = req.params;
+      const pergunta = await CadavoperacionalService.getCadavoperacionalById(id);
 
-      if (!cadavop) {
-        return res.status(404).json({ error: 'avaliação operacional não encontrado' });
+      if (!pergunta) {
+        return res.status(404).json({ error: 'Pergunta não encontrada.' });
       }
 
-      return res.status(200).json(cadavop);
+      return res.status(200).json(pergunta);
     } catch (error) {
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao buscar categoria' });
+      console.error('❌ Erro ao buscar pergunta:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar pergunta.' });
     }
   }
 
+  // 🔥 Criar uma nova pergunta
   async create(req, res) {
     try {
-      await req.body, { abortEarly: false }; // aqui ela passa pela validação 
-
-      const cadavop = await Cadavoperacional.createCadavoperacional(req.body);
-
-      return res.status(201).json(cadavop);
+      const novaPergunta = await CadavoperacionalService.createCadavoperacional(req.body);
+      return res.status(201).json(novaPergunta);
     } catch (error) {
-      if (error.name === 'ValidationError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      console.error('Erro ao criar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao criar avaliação operacional', detalhes: error.message });
+      console.error('❌ Erro ao criar pergunta:', error.message);
+      return res.status(500).json({ error: 'Erro ao criar pergunta.' });
     }
   }
 
+  // 🔥 Atualizar uma pergunta existente
   async update(req, res) {
     try {
-      await req.body, { abortEarly: false };
+      const { id } = req.params;
+      const dadosAtualizados = req.body;
 
-      const cadavop = await Cadavoperacional.updateCadavoperacional(req.params.id, req.body);
+      const perguntaAtualizada = await CadavoperacionalService.updateCadavoperacional(id, dadosAtualizados);
 
-      return res.status(200).json(cadavop);
+      return res.status(200).json(perguntaAtualizada);
     } catch (error) {
-      if (error.name === 'ValidationError') {
-        return res.status(400).json({ errors: error.errors });
-      }
-      console.error('Erro ao atualizar avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao atualizar avaliação operacional', detalhes: error.message });
-      //return res.status(500).json({ error: 'Erro ao atualizar categoria' });
+      console.error('❌ Erro ao atualizar pergunta:', error.message);
+      return res.status(500).json({ error: 'Erro ao atualizar pergunta.' });
     }
   }
 
+  // 🔥 Deletar uma pergunta
   async destroy(req, res) {
     try {
-      await Cadavoperacional.deleteCadavoperacional(req.params.id);
+      const { id } = req.params;
+      await CadavoperacionalService.deleteCadavoperacional(id);
       return res.status(204).send();
     } catch (error) {
-      //return res.status(500).json({ error: 'Erro ao excluir categoria' });
-      console.error('Erro ao excluir avaliação operacional:', error); // Log mais detalhado
-      res.status(500).json({ error: 'Erro ao excluir avaliação operacional', detalhes: error.message });
+      console.error('❌ Erro ao deletar pergunta:', error.message);
+      return res.status(500).json({ error: 'Erro ao deletar pergunta.' });
     }
   }
 }
 
-export default new cadavoperacionalController();
+export default new CadavoperacionalController();
