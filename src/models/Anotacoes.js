@@ -4,7 +4,7 @@ import Auditoria from './Auditoria.js';
 
 
 const Anotacoes = sequelize.define('Anotacoes', {
-  id: {
+  id: { 
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
