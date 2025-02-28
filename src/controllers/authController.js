@@ -24,7 +24,7 @@ const authController = {
       }
 
       // Gerar token JWT
-      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '12h' });
 
       // Retornar o token e informações do usuário
       return res.status(200).json({
