@@ -1,11 +1,14 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors'; // Importa o CORS
 import routes from './routes/index.js';
 import sequelize from './config/database.js'; // Ajuste o caminho conforme necessário
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
 
 // Configurações básicas
 app.use(express.json());
