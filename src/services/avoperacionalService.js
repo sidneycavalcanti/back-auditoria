@@ -1,21 +1,30 @@
 import Avoperacional from '../models/Avoperacional.js';
 import Cadavoperacional from '../models/Cadavoperacional.js';
+import Cadquestoes from '../models/Cadquestoes.js';
 import Usuario from '../models/Usuario.js';
 import Loja from '../models/Loja.js';
 import Auditoria from '../models/Auditoria.js';
 
 import { Op } from 'sequelize';
 
-
 class AvoperacionalService {
-  async getAvoperacional({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
-    // 🚀 Garantia que `page`, `limit`, e `auditoriaId` são valores numéricos válidos
+  async getAvoperacional({
+    page = 1,
+    limit = 10,
+    auditoriaId,
+    createdBefore,
+    createdAfter,
+    updatedBefore,
+    updatedAfter,
+    sort
+  }) {
+    // Garantia que page, limit e auditoriaId sejam valores numéricos válidos
     page = parseInt(page, 10) || 1;
     limit = parseInt(limit, 10) || 10;
     const offset = (page - 1) * limit;
 
     let where = {};
-    let order = [['createdAt', 'DESC']]; // 🔥 Garante que os mais recentes venham primeiro
+    let order = [['createdAt', 'DESC']];
 
     // Filtro por AuditoriaID (se fornecido)
     if (auditoriaId) {
@@ -23,91 +32,124 @@ class AvoperacionalService {
     }
 
     // Filtros opcionais de data
-    if (createdBefore) where.createdAt = { [Op.gte]: createdBefore };
-    if (createdAfter) where.createdAt = { ...where.createdAt, [Op.lte]: createdAfter };
-    if (updatedBefore) where.updatedAt = { [Op.gte]: updatedBefore };
-    if (updatedAfter) where.updatedAt = { ...where.updatedAt, [Op.lte]: updatedAfter };
+    if (createdBefore) {
+      where.createdAt = { [Op.gte]: createdBefore };
+    }
+    if (createdAfter) {
+      where.createdAt = { ...where.createdAt, [Op.lte]: createdAfter };
+    }
+    if (updatedBefore) {
+      where.updatedAt = { [Op.gte]: updatedBefore };
+    }
+    if (updatedAfter) {
+      where.updatedAt = { ...where.updatedAt, [Op.lte]: updatedAfter };
+    }
 
     // Opção para ordenação dinâmica (caso venha na requisição)
-    if (sort) order = sort.split(',').map((item) => item.split(':'));
+    if (sort) {
+      order = sort.split(',').map((item) => item.split(':'));
+    }
 
-    // 🔍 Log para depuração - mostra os filtros aplicados
-    console.log("🔍 Buscando avaliação com os seguintes parâmetros:", { page, limit, auditoriaId, where, order });
+    console.log('🔍 Buscando avaliação com os seguintes parâmetros:', {
+      page,
+      limit,
+      auditoriaId,
+      where,
+      order
+    });
 
-    // 🚀 Busca as perdas com paginação
+    // Aqui, adicionamos o include de Cadquestoes para trazer os dados relacionados
     const avoperacional = await Avoperacional.findAndCountAll({
       where,
       order,
       limit,
       offset,
+      attributes: [
+        'id',
+        'resposta',
+        'nota',        // Se você adicionou o campo "nota" no modelo
+        'createdAt',
+        'updatedAt'
+      ],
       include: [
-
         {
           model: Cadavoperacional,
-          as: 'cadavoperacional', // Alias da associação para o criador (se for diferente de usuario)
-          attributes: ['id', 'descricao'],
+          as: 'cadavoperacional',
+          attributes: ['id', 'descricao']
+        },
+        {
+          model: Cadquestoes,
+          as: 'cadquestoes',            // <-- Incluindo dados de Cadquestoes
+          attributes: ['id', 'name', 'situacao']
         },
         {
           model: Auditoria,
-          as: 'auditoria', // Alias da associação para o criador (se for diferente de usuario)
+          as: 'auditoria',
           attributes: ['id', 'data'],
           include: [
             {
               model: Loja,
-              as: 'loja', // Alias da associação
-              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+              as: 'loja',
+              attributes: ['id', 'name']
             },
             {
               model: Usuario,
-              as: 'usuario', // Alias da associação
-              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
-            },
+              as: 'usuario',
+              attributes: ['id', 'name']
+            }
           ]
-
         }
-      ],
+      ]
     });
 
     return {
       avaliacoes: avoperacional.rows,
       totalItems: avoperacional.count,
       totalPages: Math.ceil(avoperacional.count / limit),
-      currentPage: page,
+      currentPage: page
     };
   }
 
   async getAvoperacionalById(id) {
     return await Avoperacional.findByPk(id, {
-      attributes: ['id', 'resposta', 'createdAt', 'updatedAt'],
+      attributes: [
+        'id',
+        'resposta',
+        'nota', // Se quiser exibir a nota individualmente
+        'createdAt',
+        'updatedAt'
+      ],
       include: [
-
         {
           model: Cadavoperacional,
-          as: 'cadavoperacional', // Alias da associação para o criador (se for diferente de usuario)
-          attributes: ['id', 'descricao'],
+          as: 'cadavoperacional',
+          attributes: ['id', 'descricao']
+        },
+        {
+          model: Cadquestoes,
+          as: 'cadquestoes', // Incluindo dados de Cadquestoes
+          attributes: ['id', 'name', 'situacao']
         },
         {
           model: Auditoria,
-          as: 'auditoria', // Alias da associação para o criador (se for diferente de usuario)
+          as: 'auditoria',
           attributes: ['id', 'data'],
           include: [
             {
               model: Loja,
-              as: 'loja', // Alias da associação
-              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Loja
+              as: 'loja',
+              attributes: ['id', 'name']
             },
             {
               model: Usuario,
-              as: 'usuario', // Alias da associação
-              attributes: ['id', 'name'], // Apenas os campos que você quer da tabela Usuario
-            },
+              as: 'usuario',
+              attributes: ['id', 'name']
+            }
           ]
-
         }
-      ],
+      ]
     });
   }
-  
 
   async createAvoperacional(data) {
     return await Avoperacional.create(data);
@@ -123,17 +165,15 @@ class AvoperacionalService {
   }
 
   async deleteAvoperacional(id) {
-    // Verifica se a cadquestoes existe
+    // Verifica se o registro existe
     const avoperacional = await this.getAvoperacionalById(id);
 
     if (!avoperacional) {
       throw new Error('avoperacional não encontrada');
     }
 
-    // Exclui a Motivo de pausa com a condição where
-    return await avoperacional.destroy({
-      where: { id } // Especifica o registro a ser excluído
-    });
+    // Exclui o registro
+    return await avoperacional.destroy();
   }
 }
 

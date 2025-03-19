@@ -1,11 +1,20 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
+import sequelize from '../config/database.js';
+import Cadavoperacional from './Cadavoperacional.js';
 
 const Cadquestoes = sequelize.define('Cadquestoes', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
+  },
+  cadavoperacionalId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: Cadavoperacional, // Referência ao modelo importado
+      key: 'id',
+    },
   },
   name: {
     type: DataTypes.STRING,
@@ -15,18 +24,13 @@ const Cadquestoes = sequelize.define('Cadquestoes', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
 }, {
   tableName: 'cadquestoes',
-  timestamps: true, // Mantém o controle automático de createdAt e updatedAt
-  underscored: false, // Desativa a conversão automática para snake_case
+  timestamps: true, // O Sequelize gerencia createdAt e updatedAt automaticamente
+  underscored: false, // Mantém os nomes dos campos conforme definidos
 });
 
-export default Cadquestoes; // Certifique-se de que o modelo está sendo exportado como default
+// Associação: Cadquestoes pertence a Cadavoperacional
+Cadquestoes.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as: 'cadavoperacional' });
+
+export default Cadquestoes;

@@ -1,15 +1,25 @@
 import CadavoperacionalService from '../services/cadavoperacionalService.js';
 
 class CadavoperacionalController {
-  // 🔥 Listar perguntas (ativas ou todas)
+  // Listar cadavoperacional (com filtros e paginação)
   async index(req, res) {
     try {
-      const { page, limit, descricao, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort } = req.query;
+      const {
+        page,
+        limit,
+        descricao,
+        situacao,
+        createdBefore,
+        createdAfter,
+        updatedBefore,
+        updatedAfter,
+        sort
+      } = req.query;
 
-      // 🔥 Se `situacao` for passado na URL, converte para booleano corretamente
+      // Converte 'situacao' para boolean caso seja passado
       const filtroSituacao = situacao !== undefined ? (situacao === 'true') : undefined;
 
-      const perguntas = await CadavoperacionalService.getCadavoperacional({
+      const cadavoperacionais = await CadavoperacionalService.getCadavoperacional({
         page,
         limit,
         descricao,
@@ -21,82 +31,87 @@ class CadavoperacionalController {
         sort,
       });
 
-      return res.status(200).json(perguntas);
+      return res.status(200).json(cadavoperacionais);
     } catch (error) {
-      console.error('❌ Erro ao buscar perguntas:', error.message);
-      return res.status(500).json({ error: 'Erro ao buscar perguntas.' });
+      console.error('Erro ao buscar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar cadavoperacional.' });
     }
   }
 
-  // 🔥 Buscar perguntas ativas (ou todas)
-  async getPerguntas(req, res) {
+  // Buscar cadavoperacional ativas (ou todas) - antes chamado getPerguntas
+  async getAtivos(req, res) {
     try {
       const { situacao } = req.query;
-
-      // 🔥 Converte `situacao` para booleano caso seja passado
       const filtroSituacao = situacao !== undefined ? (situacao === 'true') : undefined;
 
-      const perguntas = await CadavoperacionalService.getPerguntas({ situacao: filtroSituacao });
+      // Se você quiser manter o método no service como getPerguntas, sem problemas.
+      // Aqui, apenas renomeamos o método do controller para "getAtivos" como exemplo.
+      const cadavoperacionais = await CadavoperacionalService.getPerguntas({
+        situacao: filtroSituacao,
+      });
 
-      return res.status(200).json({ perguntas });
+      return res.status(200).json({ cadavoperacionais });
     } catch (error) {
-      console.error('❌ Erro ao buscar perguntas:', error.message);
-      return res.status(500).json({ error: 'Erro ao buscar perguntas.' });
+      console.error('Erro ao buscar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar cadavoperacional.' });
     }
   }
 
-  // 🔥 Buscar uma pergunta específica por ID
+  // Buscar um registro específico por ID
   async show(req, res) {
     try {
       const { id } = req.params;
-      const pergunta = await CadavoperacionalService.getCadavoperacionalById(id);
+      const cadavoperacional = await CadavoperacionalService.getCadavoperacionalById(id);
 
-      if (!pergunta) {
-        return res.status(404).json({ error: 'Pergunta não encontrada.' });
+      if (!cadavoperacional) {
+        return res.status(404).json({ error: 'cadavoperacional não encontrado.' });
       }
 
-      return res.status(200).json(pergunta);
+      return res.status(200).json(cadavoperacional);
     } catch (error) {
-      console.error('❌ Erro ao buscar pergunta:', error.message);
-      return res.status(500).json({ error: 'Erro ao buscar pergunta.' });
+      console.error('Erro ao buscar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao buscar cadavoperacional.' });
     }
   }
 
-  // 🔥 Criar uma nova pergunta
+  // Criar um novo registro
   async create(req, res) {
     try {
-      const novaPergunta = await CadavoperacionalService.createCadavoperacional(req.body);
-      return res.status(201).json(novaPergunta);
+      const novoCadavoperacional = await CadavoperacionalService.createCadavoperacional(req.body);
+      return res.status(201).json(novoCadavoperacional);
     } catch (error) {
-      console.error('❌ Erro ao criar pergunta:', error.message);
-      return res.status(500).json({ error: 'Erro ao criar pergunta.' });
+      console.error('Erro ao criar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao criar cadavoperacional.' });
     }
   }
 
-  // 🔥 Atualizar uma pergunta existente
+  // Atualizar um registro existente
   async update(req, res) {
     try {
       const { id } = req.params;
       const dadosAtualizados = req.body;
 
-      const perguntaAtualizada = await CadavoperacionalService.updateCadavoperacional(id, dadosAtualizados);
+      const cadavoperacionalAtualizado = await CadavoperacionalService.updateCadavoperacional(
+        id,
+        dadosAtualizados
+      );
 
-      return res.status(200).json(perguntaAtualizada);
+      return res.status(200).json(cadavoperacionalAtualizado);
     } catch (error) {
-      console.error('❌ Erro ao atualizar pergunta:', error.message);
-      return res.status(500).json({ error: 'Erro ao atualizar pergunta.' });
+      console.error('Erro ao atualizar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao atualizar cadavoperacional.' });
     }
   }
 
-  // 🔥 Deletar uma pergunta
+  // Deletar um registro
   async destroy(req, res) {
     try {
       const { id } = req.params;
       await CadavoperacionalService.deleteCadavoperacional(id);
       return res.status(204).send();
     } catch (error) {
-      console.error('❌ Erro ao deletar pergunta:', error.message);
-      return res.status(500).json({ error: 'Erro ao deletar pergunta.' });
+      console.error('Erro ao deletar cadavoperacional:', error.message);
+      return res.status(500).json({ error: 'Erro ao deletar cadavoperacional.' });
     }
   }
 }
