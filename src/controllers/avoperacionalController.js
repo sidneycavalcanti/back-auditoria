@@ -1,4 +1,4 @@
-import AvoperacionalService from '../services/AvoperacionalService.js';
+import AvoperacionalService from '../services/avoperacionalService.js';
 // import { createAvoperacionalSchema, updateAvoperacionalSchema } from '../validations/avoperacionalValidation.js';
 // (Exemplo de import de validações, se você usar alguma biblioteca)
 
