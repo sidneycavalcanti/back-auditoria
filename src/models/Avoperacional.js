@@ -19,7 +19,7 @@ const Avoperacional = sequelize.define('Avoperacional', {
       key: 'id',
     },
   },
-  cadquestoesId: {
+  cadquestoesId: { // <-- O model espera esse nome de campo
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
