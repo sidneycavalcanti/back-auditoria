@@ -3,40 +3,39 @@ import CadquestoesService from '../services/cadquestoesService.js';
 // ^ Se você usar alguma biblioteca de validação, importe e aplique aqui.
 
 class CadquestoesController {
-  // Lista (com paginação e filtros)
-  async index(req, res) {
-    try {
-      // Busca as questões usando o service
-      const questoes = await CadquestoesService.getCadquestoes(req.query);
-      return res.status(200).json(questoes);
-    } catch (error) {
-      console.error('Erro ao buscar questões:', error);
-      return res.status(500).json({
-        error: 'Erro ao buscar questões',
-        detalhes: error.message
-      });
-    }
+ // Listagem com filtros, paginação e cadavoperacionalId
+ async index(req, res) {
+  try {
+    // Aqui você pode ler cadavoperacionalId, page, etc. de req.query
+    const questoes = await CadquestoesService.getCadquestoes(req.query);
+    return res.status(200).json(questoes);
+  } catch (error) {
+    console.error('Erro ao buscar questões:', error);
+    return res.status(500).json({
+      error: 'Erro ao buscar questões',
+      detalhes: error.message
+    });
   }
-
-  // Mostra uma questão específica por ID
-  async show(req, res) {
-    try {
-      const questao = await CadquestoesService.getcadquestoesById(req.params.id);
-
-      if (!questao) {
-        return res.status(404).json({ error: 'Questão não encontrada' });
+}
+    // Mostra uma questão específica
+    async show(req, res) {
+      try {
+        const questao = await CadquestoesService.getcadquestoesById(req.params.id);
+  
+        if (!questao) {
+          return res.status(404).json({ error: 'Questão não encontrada' });
+        }
+  
+        return res.status(200).json(questao);
+      } catch (error) {
+        console.error('Erro ao buscar questão:', error);
+        return res.status(500).json({
+          error: 'Erro ao buscar questão',
+          detalhes: error.message
+        });
       }
-
-      return res.status(200).json(questao);
-    } catch (error) {
-      console.error('Erro ao buscar questão:', error);
-      return res.status(500).json({
-        error: 'Erro ao buscar questão',
-        detalhes: error.message
-      });
     }
-  }
-
+    
   // Cria uma nova questão
   async create(req, res) {
     try {

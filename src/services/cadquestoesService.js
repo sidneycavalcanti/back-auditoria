@@ -11,15 +11,20 @@ class CadquestoesService {
     createdAfter,
     updatedBefore,
     updatedAfter,
-    sort
+    sort,
+    cadavoperacionalId // <-- Pega o cadavoperacionalId do query
   }) {
-    // Convertendo para número
     page = parseInt(page, 10) || 1;
     limit = parseInt(limit, 10) || 10;
     const offset = (page - 1) * limit;
 
     let where = {};
     let order = [];
+
+    // Filtra por cadavoperacionalId, se vier no query
+    if (cadavoperacionalId) {
+      where.cadavoperacionalId = cadavoperacionalId;
+    }
 
     // Filtro por nome (like)
     if (name) {
@@ -28,21 +33,17 @@ class CadquestoesService {
 
     // Filtros opcionais de data de criação
     if (createdBefore) {
-      // createdAt >= createdBefore
       where.createdAt = { ...where.createdAt, [Op.gte]: createdBefore };
     }
     if (createdAfter) {
-      // createdAt <= createdAfter
       where.createdAt = { ...where.createdAt, [Op.lte]: createdAfter };
     }
 
     // Filtros opcionais de data de atualização
     if (updatedBefore) {
-      // updatedAt >= updatedBefore
       where.updatedAt = { ...where.updatedAt, [Op.gte]: updatedBefore };
     }
     if (updatedAfter) {
-      // updatedAt <= updatedAfter
       where.updatedAt = { ...where.updatedAt, [Op.lte]: updatedAfter };
     }
 
@@ -57,14 +58,11 @@ class CadquestoesService {
       order,
       limit,
       offset,
-      // Escolha os atributos que deseja retornar
       attributes: ['id', 'name', 'situacao', 'cadavoperacionalId', 'createdAt', 'updatedAt'],
-      // Inclua o relacionamento com Cadavoperacional
       include: [
         {
           model: Cadavoperacional,
           as: 'cadavoperacional',
-          // Defina os campos de Cadavoperacional que você quer retornar
           attributes: ['id', 'descricao', 'situacao']
         }
       ]
@@ -78,46 +76,7 @@ class CadquestoesService {
     };
   }
 
-  async getcadquestoesById(id) {
-    return await Cadquestoes.findByPk(id, {
-      // Defina os campos de Cadquestoes que você quer retornar
-      attributes: ['id', 'name', 'situacao', 'cadavoperacionalId', 'createdAt', 'updatedAt'],
-      include: [
-        {
-          model: Cadavoperacional,
-          as: 'cadavoperacional',
-          attributes: ['id', 'descricao', 'situacao']
-        }
-      ]
-    });
-  }
-
-  async createCadquestoes(data) {
-    return await Cadquestoes.create(data);
-  }
-
-  async updateCadquestoes(id, updateData) {
-    const [updated] = await Cadquestoes.update(updateData, {
-      where: { id }
-    });
-
-    if (updated) {
-      return await this.getcadquestoesById(id);
-    }
-    throw new Error('cadquestoes não encontrada');
-  }
-
-  async deleteCadquestoes(id) {
-    // Verifica se a cadquestoes existe
-    const cadquestoes = await this.getcadquestoesById(id);
-
-    if (!cadquestoes) {
-      throw new Error('cadquestoes não encontrada');
-    }
-
-    // Exclui o registro
-    return await Cadquestoes.destroy({ where: { id } });
-  }
+  // Demais métodos...
 }
 
 export default new CadquestoesService();
