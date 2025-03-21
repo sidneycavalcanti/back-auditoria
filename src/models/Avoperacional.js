@@ -58,4 +58,5 @@ Avoperacional.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as
 Avoperacional.belongsTo(Cadquestoes, { foreignKey: 'cadquestoesId', as: 'cadquestoes' });
 Avoperacional.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 
+
 export default Avoperacional;
