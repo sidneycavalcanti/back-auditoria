@@ -19,7 +19,7 @@ const Avoperacional = sequelize.define('Avoperacional', {
       key: 'id',
     },
   },
-  cadquestaoId: {
+  cadquestoesId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
@@ -55,7 +55,7 @@ const Avoperacional = sequelize.define('Avoperacional', {
 
 // Associações
 Avoperacional.belongsTo(Cadavoperacional, { foreignKey: 'cadavoperacionalId', as: 'cadavoperacional' });
-Avoperacional.belongsTo(Cadquestoes, { foreignKey: 'cadquestaoId', as: 'cadquestoes' });
+Avoperacional.belongsTo(Cadquestoes, { foreignKey: 'cadquestoesId', as: 'cadquestoes' });
 Avoperacional.belongsTo(Auditoria, { foreignKey: 'auditoriaId', as: 'auditoria' });
 
 export default Avoperacional;
