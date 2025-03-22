@@ -29,27 +29,20 @@ class UserController {
 
   async create(req, res) {
     try {
-      // Validação do payload
-      await createUserSchema.validate(req.body, { abortEarly: false });
-      
-      // Verificação de unicidade no banco de dados
-      const userExists = await User.findOne({ where: { username: req.body.username } });
-      if (userExists) {
-        return res.status(400).json({ error: "Usuário já existente." });
-      }
-      
-      // Criação do usuário
+      await createUserSchema.validate(req.body, { abortEarly: false }); // aqui ela passa pela validação 
+
       const user = await UserService.createUser(req.body);
+
       return res.status(201).json(user);
     } catch (error) {
       if (error.name === 'ValidationError') {
         return res.status(400).json({ errors: error.errors });
       }
-      console.error('Erro ao criar usuário:', error);
+      console.error('Erro ao criar usuário:', error); // Log mais detalhado
       res.status(500).json({ error: 'Erro ao criar usuário', detalhes: error.message });
     }
   }
-  
+
   async update(req, res) {
     try {
       await updateUserSchema.validate(req.body, { abortEarly: false });
