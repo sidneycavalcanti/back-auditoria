@@ -51,7 +51,7 @@ class AuditoriaController {
   
   async create(req, res) {
     try {
-      //await req.body, { abortEarly: false }; // aqui ela passa pela validação 
+      await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
       const auditoria = await AuditoriaService.createAuditoriaComFluxos(req.body);
 
