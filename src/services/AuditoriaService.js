@@ -2,6 +2,7 @@ import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
 import Fluxo from '../models/Fluxo.js';
+import sequelize from '../config/database.js'; 
 
 import { Op } from 'sequelize';
 
@@ -186,19 +187,35 @@ class AuditoriaService {
 
   // Método para deletar uma auditoria
   async deleteAuditoria(id) {
-    const auditoria = await this.getAuditoriaById(id);
-
-    if (!auditoria) {
-      throw new Error('Auditoria não encontrada para exclusão.');
+    const t = await sequelize.transaction();
+    try {
+      // Verifica se a auditoria existe
+      const auditoria = await Auditoria.findByPk(id, { transaction: t });
+      if (!auditoria) {
+        throw new Error('Auditoria não encontrada para exclusão.');
+      }
+  
+      // Exclui todos os fluxos vinculados a essa auditoria
+      await Fluxo.destroy({ 
+        where: { auditoriaId: id },
+        transaction: t
+      });
+  
+      // Exclui a auditoria
+      await Auditoria.destroy({
+        where: { id },
+        transaction: t
+      });
+  
+      // Confirma a transação
+      await t.commit();
+      return { message: 'Auditoria e fluxos excluídos com sucesso.' };
+    } catch (error) {
+      // Se der erro, faz rollback
+      await t.rollback();
+      throw error;
     }
-
-    await Auditoria.destroy({
-      where: { id },
-    });
-
-    return { message: 'Auditoria excluída com sucesso.' };
   }
-
   async getAuditoria({ usuarioId, ...filters }) {
     const where = {};
   
