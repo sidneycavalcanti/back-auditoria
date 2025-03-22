@@ -1,4 +1,5 @@
 import AuditoriaService from '../services/AuditoriaService.js';
+import fluxoController from './fluxoController.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 
 class AuditoriaController {
@@ -50,9 +51,9 @@ class AuditoriaController {
   
   async create(req, res) {
     try {
-      await req.body, { abortEarly: false }; // aqui ela passa pela validação 
+      //await req.body, { abortEarly: false }; // aqui ela passa pela validação 
 
-      const auditoria = await AuditoriaService.createAuditoria(req.body);
+      const auditoria = await AuditoriaService.createAuditoriaComFluxos(req.body);
 
       return res.status(201).json(auditoria);
     } catch (error) {

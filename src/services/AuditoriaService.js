@@ -1,10 +1,49 @@
 import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
+import Fluxo from '../models/Fluxo.js';
+
 import { Op } from 'sequelize';
 
 class AuditoriaService {
+
+
+  //novo metodo para criação de auditoria e fluxo de pessoas
+  async createAuditoriaComFluxos(data) {
+    const t = await sequelize.transaction();
+    try {
+      // Cria a auditoria
+      const novaAuditoria = await Auditoria.create(data, { transaction: t });
+
+      // Dados fixos que você quer criar
+      const categorias = ['outros', 'acompanhante', 'especulador'];
+      const sexos = ['masculino', 'feminino'];
+
+      // Cria os 6 fluxos
+      for (const categoria of categorias) {
+        for (const sexo of sexos) {
+          await Fluxo.create({
+            lojaId: novaAuditoria.lojaId,  // ou data.lojaId
+            auditoriaId: novaAuditoria.id,
+            categoria,
+            sexo,
+            quantidade: 0,
+          }, { transaction: t });
+        }
+      }
+
+      // Confirma a transação
+      await t.commit();
+      return novaAuditoria;
+    } catch (error) {
+      // Se algo deu errado, desfaz tudo
+      await t.rollback();
+      throw error;
+    }
+  }
+
   // Método para buscar auditorias com filtros
+  
   async getAuditoria({
     page = 1,
     limit = 10,
