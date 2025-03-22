@@ -17,8 +17,8 @@ class AuditoriaService {
       const novaAuditoria = await Auditoria.create(data, { transaction: t });
 
       // Dados fixos que você quer criar
-      const categorias = ['outros', 'acompanhante', 'especulador'];
-      const sexos = ['masculino', 'feminino'];
+      const categorias = ['outros', 'acompanhante', 'especulador']; //array de categoria
+      const sexos = ['masculino', 'feminino']; // array de sexo
 
       // Cria os 6 fluxos
       for (const categoria of categorias) {

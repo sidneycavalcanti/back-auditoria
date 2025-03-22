@@ -18,10 +18,6 @@ const Fluxo = sequelize.define('fluxopessoas', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  data: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
   categoria: {
     type: DataTypes.ENUM('especulador', 'acompanhante', 'outros'),
     allowNull: false,
