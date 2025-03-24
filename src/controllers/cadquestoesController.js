@@ -1,7 +1,4 @@
-import CadquestoesService from '../services/cadquestoesService.js';
-// import { createQuestoesSchema, updateQuestoesSchema } from '../validations/questoesValidation.js';
-// ^ Se você usar alguma biblioteca de validação, importe e aplique aqui.
-
+import CadquestoesService from '../services/cadquestoesService.js'; // ✅ certo
 class CadquestoesController {
  // Listagem com filtros, paginação e cadavoperacionalId
  async index(req, res) {
