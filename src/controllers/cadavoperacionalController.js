@@ -38,6 +38,7 @@ class CadavoperacionalController {
     }
   }
 
+  
   // Buscar cadavoperacional ativas (ou todas) - antes chamado getPerguntas
   async getAtivos(req, res) {
     try {
