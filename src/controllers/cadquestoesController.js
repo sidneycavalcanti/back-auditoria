@@ -20,7 +20,7 @@ class CadquestoesController {
     // Mostra uma questão específica
     async show(req, res) {
       try {
-        const questao = await CadquestoesService.getcadquestoesById(req.params.id);
+        const questao = await CadquestoesService.getCadquestoesById(req.params.id);
   
         if (!questao) {
           return res.status(404).json({ error: 'Questão não encontrada' });

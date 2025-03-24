@@ -66,7 +66,7 @@ class CadavoperacionalService {
   // 🔥 Buscar perguntas (ativas ou todas)
   async getPerguntas({ situacao }) {
     try {
-      console.log("📡 Buscando perguntas...");
+      console.log("📡 Buscando cadastro de avaliação...");
 
       let whereCondition = {};
       if (situacao !== undefined) {
@@ -78,11 +78,11 @@ class CadavoperacionalService {
         order: [['createdAt', 'DESC']], // Mais recentes primeiro
       });
 
-      console.log(`✅ Perguntas encontradas: ${perguntas.length}`);
+      console.log(`✅ Cadastro de avaliação encontradas: ${perguntas.length}`);
       return perguntas;
     } catch (error) {
-      console.error("❌ Erro ao buscar perguntas:", error.message);
-      throw new Error("Erro ao buscar perguntas.");
+      console.error("❌ Erro ao buscar cadastro de avaliação:", error.message);
+      throw new Error("Erro ao buscar cadastro de avaliação.");
     }
   }
 
@@ -91,63 +91,63 @@ class CadavoperacionalService {
     try {
       const pergunta = await Cadavoperacional.findByPk(id);
       if (!pergunta) {
-        throw new Error("Pergunta não encontrada.");
+        throw new Error("Cadastro de avaliação não encontrada.");
       }
       return pergunta;
     } catch (error) {
-      console.error("❌ Erro ao buscar pergunta pelo ID:", error.message);
-      throw new Error("Erro ao buscar pergunta.");
+      console.error("❌ Erro ao buscar cadastro de avaliação pelo ID:", error.message);
+      throw new Error("Erro ao buscar cadastro de avaliação.");
     }
   }
 
   // 🔥 Criar uma nova pergunta
   async createCadavoperacional(data) {
     try {
-      console.log("📡 Criando nova pergunta...");
+      console.log("📡 Criando nova cadastro de avaliação...");
       const novaPergunta = await Cadavoperacional.create(data);
-      console.log("✅ Pergunta criada com sucesso:", novaPergunta);
+      console.log("✅ Cadastro de avaliação criada com sucesso:", novaPergunta);
       return novaPergunta;
     } catch (error) {
-      console.error("❌ Erro ao criar pergunta:", error.message);
-      throw new Error("Erro ao criar pergunta.");
+      console.error("❌ Erro ao criar cadastro de avaliação:", error.message);
+      throw new Error("Erro ao criar cadastro de avaliação.");
     }
   }
 
   // 🔥 Atualizar uma pergunta existente
   async updateCadavoperacional(id, dadosAtualizados) {
     try {
-      console.log(`📡 Atualizando pergunta com ID: ${id}`);
+      console.log(`📡 Atualizando cadastro de avaliação com ID: ${id}`);
 
       const pergunta = await Cadavoperacional.findByPk(id);
       if (!pergunta) {
-        throw new Error("Pergunta não encontrada.");
+        throw new Error("Cadastro de avaliação não encontrada.");
       }
 
       await pergunta.update(dadosAtualizados);
-      console.log(`✅ Pergunta ID ${id} atualizada com sucesso!`);
+      console.log(`✅ Cadastro de avaliação ID ${id} atualizada com sucesso!`);
       return pergunta;
     } catch (error) {
-      console.error("❌ Erro ao atualizar pergunta:", error.message);
-      throw new Error("Erro ao atualizar pergunta.");
+      console.error("❌ Erro ao atualizar cadastro de avaliação:", error.message);
+      throw new Error("Erro ao atualizar cadastro de avaliação.");
     }
   }
 
   // 🔥 Deletar uma pergunta
   async deleteCadavoperacional(id) {
     try {
-      console.log(`📡 Deletando pergunta com ID: ${id}`);
+      console.log(`📡 Deletando cadastro de avaliação com ID: ${id}`);
 
       const pergunta = await Cadavoperacional.findByPk(id);
       if (!pergunta) {
-        throw new Error("Pergunta não encontrada.");
+        throw new Error("Cadastro de avaliação não encontrada.");
       }
 
       await pergunta.destroy();
-      console.log(`✅ Pergunta ID ${id} deletada com sucesso!`);
-      return { message: "Pergunta deletada com sucesso" };
+      console.log(`✅ Cadastro de avaliação ID ${id} deletada com sucesso!`);
+      return { message: "Cadastro de avaliação deletada com sucesso" };
     } catch (error) {
-      console.error("❌ Erro ao deletar pergunta:", error.message);
-      throw new Error("Erro ao deletar pergunta.");
+      console.error("❌ Erro ao deletar cadastro de avaliação:", error.message);
+      throw new Error("Erro ao deletar cadastro de avaliação.");
     }
   }
 }
