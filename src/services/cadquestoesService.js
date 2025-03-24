@@ -79,7 +79,7 @@ class CadquestoesService {
   async getCadquestoesById(id) {
     try {
       const pergunta = await Cadquestoes.findByPk(id, {
-        attributes:{}^,
+        attributes:{},
          include: [
         {
           model: Cadavoperacional,
