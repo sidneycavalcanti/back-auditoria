@@ -79,7 +79,7 @@ class CadquestoesService {
 
   async getCadquestoesById(id) {
     try {
-      const pergunta = await Cadavoperacional.findByPk(id);
+      const pergunta = await Cadquestoes.findByPk(id);
       if (!pergunta) {
         throw new Error("Pergunta não encontrada.");
       }
@@ -94,7 +94,7 @@ class CadquestoesService {
   async createCadquestoes(data) {
     try {
       console.log("📡 Criando nova pergunta...");
-      const novaPergunta = await Cadavoperacional.create(data);
+      const novaPergunta = await Cadquestoes.create(data);
       console.log("✅ Pergunta criada com sucesso:", novaPergunta);
       return novaPergunta;
     } catch (error) {
@@ -108,7 +108,7 @@ class CadquestoesService {
     try {
       console.log(`📡 Atualizando pergunta com ID: ${id}`);
 
-      const pergunta = await Cadavoperacional.findByPk(id);
+      const pergunta = await Cadquestoes.findByPk(id);
       if (!pergunta) {
         throw new Error("Pergunta não encontrada.");
       }
@@ -127,7 +127,7 @@ class CadquestoesService {
     try {
       console.log(`📡 Deletando pergunta com ID: ${id}`);
 
-      const pergunta = await Cadavoperacional.findByPk(id);
+      const pergunta = await Cadquestoes.findByPk(id);
       if (!pergunta) {
         throw new Error("Pergunta não encontrada.");
       }
