@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/database.js'; // Caminho ajustado para ES Modules
+import sequelize from '../config/database.js'; 
 import Loja from './Loja.js';
 import Usuario from './Usuario.js';
 
@@ -26,12 +26,22 @@ const Auditoria = sequelize.define('Auditoria', {
   criadorId: {
     type: DataTypes.INTEGER,
     references: {
-      model: 'criador',
+      model: 'usuario', // ou 'criador', dependendo de como está seu model real
       key: 'id',
     }
   },
   data: {
     type: DataTypes.DATE,
+  },
+  horaInicial: {
+    type: DataTypes.TIME,
+    allowNull: true,
+    defaultValue: '00:00:00', // se quiser um valor padrão
+  },
+  horaFinal: {
+    type: DataTypes.TIME,
+    allowNull: true,
+    defaultValue: '00:00:00', // se quiser um valor padrão
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -43,11 +53,10 @@ const Auditoria = sequelize.define('Auditoria', {
   },
 }, {
   tableName: 'auditoria',
-  timestamps: true, // Mantém o controle automático de createdAt e updatedAt
-  underscored: false, // Desativa a conversão automática para snake_case
+  timestamps: true,
+  underscored: false,
 });
 
-// Definindo a relação: Produto pertence a Categoria
 Auditoria.belongsTo(Loja, { foreignKey: 'lojaId', as: 'loja' });
 Auditoria.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 Auditoria.belongsTo(Usuario, { foreignKey: 'criadorId', as: 'criador' });

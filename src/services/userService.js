@@ -68,6 +68,17 @@ class UserService {
   }
 
   async createUser(data) {
+    // Verifica se já existe um usuário com esse username
+    const userExists = await User.findOne({
+      where: { username: data.username },
+    });
+
+    if (userExists) {
+      // Lança um erro caso o username já esteja em uso
+      throw new Error('O usuário já existe.');
+    }
+
+    // Cria o usuário normalmente
     return await User.create(data);
   }
 
@@ -77,6 +88,16 @@ class UserService {
     if (!user) {
       throw new Error('Usuário não encontrado');
     }
+
+    // Se for necessário verificar a unicidade no update, faça algo semelhante aqui
+    if (data.username) {
+     const userExists = await User.findOne({
+        where: { username: data.username, id: { [Op.ne]: id } },
+       });
+       if (userExists) {
+         throw new Error('O usuário já existe.');
+     }
+   }
 
     return await user.update(data);
   }

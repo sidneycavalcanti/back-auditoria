@@ -1,10 +1,50 @@
 import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
+import Fluxo from '../models/Fluxo.js';
+import sequelize from '../config/database.js'; 
+
 import { Op } from 'sequelize';
 
 class AuditoriaService {
+
+
+  //novo metodo para criação de auditoria e fluxo de pessoas
+  async createAuditoriaComFluxos(data) {
+    const t = await sequelize.transaction();
+    try {
+      // Cria a auditoria
+      const novaAuditoria = await Auditoria.create(data, { transaction: t });
+
+      // Dados fixos que você quer criar
+      const categorias = ['outros', 'acompanhante', 'especulador']; //array de categoria
+      const sexos = ['masculino', 'feminino']; // array de sexo
+
+      // Cria os 6 fluxos
+      for (const categoria of categorias) {
+        for (const sexo of sexos) {
+          await Fluxo.create({
+            lojaId: novaAuditoria.lojaId,  // ou data.lojaId
+            auditoriaId: novaAuditoria.id,
+            categoria,
+            sexo,
+            quantidade: 0,
+          }, { transaction: t });
+        }
+      }
+
+      // Confirma a transação
+      await t.commit();
+      return novaAuditoria;
+    } catch (error) {
+      // Se algo deu errado, desfaz tudo
+      await t.rollback();
+      throw error;
+    }
+  }
+
   // Método para buscar auditorias com filtros
+  
   async getAuditoria({
     page = 1,
     limit = 10,
@@ -147,19 +187,35 @@ class AuditoriaService {
 
   // Método para deletar uma auditoria
   async deleteAuditoria(id) {
-    const auditoria = await this.getAuditoriaById(id);
-
-    if (!auditoria) {
-      throw new Error('Auditoria não encontrada para exclusão.');
+    const t = await sequelize.transaction();
+    try {
+      // Verifica se a auditoria existe
+      const auditoria = await Auditoria.findByPk(id, { transaction: t });
+      if (!auditoria) {
+        throw new Error('Auditoria não encontrada para exclusão.');
+      }
+  
+      // Exclui todos os fluxos vinculados a essa auditoria
+      await Fluxo.destroy({ 
+        where: { auditoriaId: id },
+        transaction: t
+      });
+  
+      // Exclui a auditoria
+      await Auditoria.destroy({
+        where: { id },
+        transaction: t
+      });
+  
+      // Confirma a transação
+      await t.commit();
+      return { message: 'Auditoria e fluxos excluídos com sucesso.' };
+    } catch (error) {
+      // Se der erro, faz rollback
+      await t.rollback();
+      throw error;
     }
-
-    await Auditoria.destroy({
-      where: { id },
-    });
-
-    return { message: 'Auditoria excluída com sucesso.' };
   }
-
   async getAuditoria({ usuarioId, ...filters }) {
     const where = {};
   
