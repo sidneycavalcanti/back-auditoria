@@ -6,7 +6,6 @@ class CadquestoesService {
   async getCadquestoes({
     page = 1,
     limit = 10,
-    cadavoperacionalId,
     name,
     createdBefore,
     createdAfter,
