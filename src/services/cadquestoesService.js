@@ -78,7 +78,16 @@ class CadquestoesService {
 
   async getCadquestoesById(id) {
     try {
-      const pergunta = await Cadquestoes.findByPk(id);
+      const pergunta = await Cadquestoes.findByPk(id, {
+        attributes:{}^,
+         include: [
+        {
+          model: Cadavoperacional,
+          as: 'cadavoperacional',
+          attributes: ['id', 'descricao', 'situacao']
+        }
+      ]
+      });
       if (!pergunta) {
         throw new Error("Pergunta não encontrada.");
       }
