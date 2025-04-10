@@ -51,94 +51,65 @@ class AuditoriaService {
     lojaId,
     usuarioId,
     criadorId,
+    data,
+    horaInicial,
+    horaFinal,
     createdBefore,
     createdAfter,
     updatedBefore,
     updatedAfter,
     sort,
   }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
+  
     let where = {};
     let order = [];
-
-    // Filtro por loja
-    if (lojaId) {
-      where = { ...where, lojaId };
-    }
-
-    // Filtro por usuário logado
-    if (usuarioId) {
-      where = { ...where, usuarioId };
-    }
-
-    // Filtro por criador (se houver)
-    if (criadorId) {
-      where = { ...where, criadorId };
-    }
-
-    // Filtros por datas
+  
+    // Filtros simples
+    if (lojaId) where.lojaId = lojaId;
+    if (usuarioId) where.usuarioId = usuarioId;
+    if (criadorId) where.criadorId = criadorId;
+    if (data) where.data = data;
+    if (horaInicial) where.horaInicial = horaInicial;
+    if (horaFinal) where.horaFinal = horaFinal;
+  
+    // Filtros por datas de criação e atualização
     if (createdBefore) {
-      where = { ...where, createdAt: { [Op.lte]: createdBefore } };
+      where.createdAt = { ...(where.createdAt || {}), [Op.lte]: createdBefore };
     }
-
+  
     if (createdAfter) {
-      where = { ...where, createdAt: { [Op.gte]: createdAfter } };
+      where.createdAt = { ...(where.createdAt || {}), [Op.gte]: createdAfter };
     }
-
+  
     if (updatedBefore) {
-      where = { ...where, updatedAt: { [Op.lte]: updatedBefore } };
+      where.updatedAt = { ...(where.updatedAt || {}), [Op.lte]: updatedBefore };
     }
-
+  
     if (updatedAfter) {
-      where = { ...where, updatedAt: { [Op.gte]: updatedAfter } };
+      where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter };
     }
-
-    // Ordenação
+  
+    // Ordenação (ex: sort=data:desc,horaInicial:asc)
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
+    } else {
+      order = [['data', 'DESC']]; // padrão
     }
-
-    // Paginação
+  
     const offset = (page - 1) * limit;
-
-    // Consulta ao banco com associações
+  
     const auditoria = await Auditoria.findAndCountAll({
       where,
       order,
       limit,
       offset,
-      include: [
-        {
-          model: Loja,
-          as: 'loja', // Alias da associação
-          attributes: ['id', 'name'], // Campos desejados
-        },
-        {
-          model: Usuario,
-          as: 'usuario', // Alias do usuário relacionado
-          attributes: ['id', 'name'],
-        },
-        {
-          model: Usuario,
-          as: 'criador', // Alias do criador (se houver)
-          attributes: ['id', 'name'],
-        },
+      attributes: [
+        'id', 'lojaId', 'usuarioId', 'criadorId',
+        'data', 'horaInicial', 'horaFinal',
+        'createdAt', 'updatedAt'
       ],
-    });
-
-    // Retorna auditorias com metadados de paginação
-    return {
-      auditoria: auditoria.rows,
-      totalItems: auditoria.count,
-      totalPages: Math.ceil(auditoria.count / limit),
-      currentPage: page,
-    };
-  }
-
-  // Método para buscar uma auditoria por ID
-  async getAuditoriaById(id) {
-    console.log('Buscando auditoria com ID:', id); // Verifica o ID recebido
-  
-    const auditoria = await Auditoria.findByPk(id, {
       include: [
         {
           model: Loja,
@@ -158,15 +129,55 @@ class AuditoriaService {
       ],
     });
   
-    if (!auditoria) {
-      console.error('Auditoria não encontrada com ID:', id); // Log detalhado
-      throw new Error('Auditoria não encontrada.');
-    }
-  
-    return auditoria;
+    return {
+      auditoria: auditoria.rows,
+      totalItems: auditoria.count,
+      totalPages: Math.ceil(auditoria.count / limit),
+      currentPage: page,
+    };
   }
   
 
+  // Método para buscar uma auditoria por ID
+  async getAuditoriaById(id) {
+    try {
+      const auditoria = await Auditoria.findByPk(id, {
+        attributes: [
+          'id', 'lojaId', 'usuarioId', 'criadorId',
+          'data', 'horaInicial', 'horaFinal',
+          'createdAt', 'updatedAt'
+        ],
+        include: [
+          {
+            model: Loja,
+            as: 'loja',
+            attributes: ['id', 'name'],
+          },
+          {
+            model: Usuario,
+            as: 'usuario',
+            attributes: ['id', 'name'],
+          },
+          {
+            model: Usuario,
+            as: 'criador',
+            attributes: ['id', 'name'],
+          },
+        ],
+      });
+  
+      if (!auditoria) {
+        console.error(`Auditoria não encontrada com ID: ${id}`);
+        throw new Error('Auditoria não encontrada.');
+      }
+  
+      return auditoria;
+    } catch (error) {
+      console.error('Erro ao buscar auditoria:', error.message);
+      throw error;
+    }
+  }
+  
   // Método para criar uma nova auditoria
   async createAuditoria(data) {
     return await Auditoria.create(data);

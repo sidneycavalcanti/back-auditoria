@@ -3,6 +3,9 @@ import { Op } from 'sequelize';
 
 class CatService {
   async getCats({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
+
     let where = {};
     let order = [];
 

@@ -6,6 +6,8 @@ import Usuario from '../models/Usuario.js';
 
 class QuestoesService {
   async getQuestoes({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
     let where = {};
     let order = [];
 

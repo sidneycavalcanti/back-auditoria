@@ -4,6 +4,8 @@ import { Op } from 'sequelize';
 
 class UserService {
   async getUsers({ page = 1, limit = 10, name, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
     let where = {};
     let order = [];
 

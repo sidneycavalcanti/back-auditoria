@@ -3,6 +3,8 @@ import { Op } from 'sequelize';
 
 class MotivoperdasService {
   async getMotivoperdas({ page = 1, limit = 10, name, situacao, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
     let where = {};
     let order = [];
 

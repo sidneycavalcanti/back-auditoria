@@ -16,6 +16,8 @@ class fluxoService {
     horaAfter, 
     sort 
   }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
     let where = {};
     let order = [];
 
