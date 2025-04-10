@@ -22,7 +22,7 @@ class AuditoriaController {
       const userId = req.user.id; // ID do usuário logado
       console.log('Buscando auditorias para o usuário:', userId); // Verifica o ID recebido
   
-      const auditorias = await AuditoriaService.getAuditoria({ usuarioId: userId });
+      const auditorias = await AuditoriaService.getAuditoriaUser({ usuarioId: userId });
       console.log('Auditorias encontradas:', auditorias); // Log para verificar o resultado do serviço
   
       return res.status(200).json({ auditoria: auditorias });

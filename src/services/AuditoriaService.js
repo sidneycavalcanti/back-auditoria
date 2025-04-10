@@ -227,7 +227,7 @@ class AuditoriaService {
       throw error;
     }
   }
-  async getAuditoria({ usuarioId, ...filters }) {
+  async getAuditoriaUser({ usuarioId, ...filters }) {
     const where = {};
   
     // Filtro para auditorias do usuário logado
