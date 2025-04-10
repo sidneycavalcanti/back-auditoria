@@ -17,20 +17,27 @@ class AuditoriaController {
 
   async minhasAuditorias(req, res) {
     try {
-      console.log('Usuário logado:', req.user); // Log para verificar o usuário logado
-  
       const userId = req.user.id; // ID do usuário logado
-      console.log('Buscando auditorias para o usuário:', userId); // Verifica o ID recebido
   
-      const auditorias = await AuditoriaService.getAuditoriaUser({ usuarioId: userId });
-      console.log('Auditorias encontradas:', auditorias); // Log para verificar o resultado do serviço
+      const { page = 1, limit = 10, ...filters } = req.query;
   
-      return res.status(200).json({ auditoria: auditorias });
+      const auditorias = await AuditoriaService.getAuditoriaUser({
+        usuarioId: userId,
+        page,
+        limit,
+        ...filters,
+      });
+  
+      return res.status(200).json(auditorias);
     } catch (error) {
       console.error('Erro ao buscar auditorias do usuário:', error);
-      return res.status(500).json({ error: 'Erro ao buscar auditorias do usuário.', detalhes: error.message });
+      return res.status(500).json({
+        error: 'Erro ao buscar auditorias do usuário.',
+        detalhes: error.message,
+      });
     }
   }
+  
   
 
   async show(req, res) {
