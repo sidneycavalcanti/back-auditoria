@@ -227,21 +227,44 @@ class AuditoriaService {
       throw error;
     }
   }
-  async getAuditoriaUser({ usuarioId, ...filters }) {
+
+  async getAuditoriaUser({ usuarioId, page = 1, limit = 10, ...filters }) {
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const offset = (page - 1) * limit;
+  
     const where = {};
   
-    // Filtro para auditorias do usuário logado
     if (usuarioId) {
       where.usuarioId = usuarioId;
     }
   
-    // Adicione outros filtros aqui, se necessário
     if (filters.lojaId) {
       where.lojaId = filters.lojaId;
     }
   
-    const auditorias = await Auditoria.findAll({
+    if (filters.data) {
+      where.data = filters.data;
+    }
+  
+    if (filters.horaInicial) {
+      where.horaInicial = filters.horaInicial;
+    }
+  
+    if (filters.horaFinal) {
+      where.horaFinal = filters.horaFinal;
+    }
+  
+    const auditorias = await Auditoria.findAndCountAll({
       where,
+      limit,
+      offset,
+      order: [['data', 'DESC']],
+      attributes: [
+        'id', 'lojaId', 'usuarioId',
+        'data', 'horaInicial', 'horaFinal',
+        'createdAt', 'updatedAt'
+      ],
       include: [
         {
           model: Loja,
@@ -256,8 +279,15 @@ class AuditoriaService {
       ],
     });
   
-    return auditorias;
+    return {
+      auditoria: auditorias.rows,
+      totalItems: auditorias.count,
+      totalPages: Math.ceil(auditorias.count / limit),
+      currentPage: page,
+    };
   }
+  
+
 }
 
 export default new AuditoriaService();
