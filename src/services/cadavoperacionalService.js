@@ -14,7 +14,11 @@ class CadavoperacionalService {
     updatedAfter,
     sort,
   }) {
-    let where = {};
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+     let where = {};
+     let order = [];
 
     if (descricao) {
       where.descricao = { [Op.like]: `%${descricao}%` };
@@ -40,7 +44,7 @@ class CadavoperacionalService {
       where.updatedAt = { ...where.updatedAt, [Op.lte]: new Date(updatedAfter) };
     }
 
-    let order = [];
+    
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
     } else {
