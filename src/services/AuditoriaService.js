@@ -63,7 +63,8 @@ class AuditoriaService {
   }) {
     page = parseInt(page);
     limit = parseInt(limit);
-  
+    
+    let search = filters.search || '';
     let where = {};
     let order = [];
   
