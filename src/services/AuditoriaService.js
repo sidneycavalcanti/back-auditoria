@@ -2,24 +2,18 @@ import Auditoria from '../models/Auditoria.js';
 import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
 import Fluxo from '../models/Fluxo.js';
-import sequelize from '../config/database.js'; 
-
-import { Op } from 'sequelize';
+import sequelize from '../config/database.js';
+import { Op, literal } from 'sequelize';
 
 class AuditoriaService {
-
-  //novo metodo para criação de auditoria e fluxo de pessoas
+  // Criação de auditoria com fluxos automáticos
   async createAuditoriaComFluxos(data) {
     const t = await sequelize.transaction();
     try {
-      // Cria a auditoria
       const novaAuditoria = await Auditoria.create(data, { transaction: t });
+      const categorias = ['outros', 'acompanhante', 'especulador'];
+      const sexos = ['masculino', 'feminino'];
 
-      // Dados fixos que você quer criar
-      const categorias = ['outros', 'acompanhante', 'especulador']; //array de categoria
-      const sexos = ['masculino', 'feminino']; // array de sexo
-
-      // Cria os 6 fluxos
       for (const categoria of categorias) {
         for (const sexo of sexos) {
           await Fluxo.create({
@@ -40,7 +34,7 @@ class AuditoriaService {
     }
   }
 
-  // Método para buscar auditorias com filtros e busca por texto nos nomes
+  // Busca auditorias com filtros e busca por texto em nomes relacionados
   async getAuditoria({
     page = 1,
     limit = 10,
@@ -85,38 +79,46 @@ class AuditoriaService {
       where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter };
     }
 
-    // Ordenação (ex: sort=data:desc,horaInicial:asc)
+    // Busca global por nome em relacionamentos (NOMES DINÂMICOS)
+    if (search) {
+      const searchTerm = `%${search}%`;
+      const lojaTable = Loja.getTableName();
+      const usuarioTable = Usuario.getTableName();
+
+      where[Op.or] = [
+        literal(`EXISTS (SELECT 1 FROM ${lojaTable} WHERE ${lojaTable}.id = Auditoria.lojaId AND ${lojaTable}.name LIKE ${sequelize.escape(searchTerm)})`),
+        literal(`EXISTS (SELECT 1 FROM ${usuarioTable} WHERE ${usuarioTable}.id = Auditoria.usuarioId AND ${usuarioTable}.name LIKE ${sequelize.escape(searchTerm)})`),
+        literal(`EXISTS (SELECT 1 FROM ${usuarioTable} WHERE ${usuarioTable}.id = Auditoria.criadorId AND ${usuarioTable}.name LIKE ${sequelize.escape(searchTerm)})`)
+      ];
+    }
+
+    // Ordenação
     if (sort) {
       order = sort.split(',').map((item) => item.split(':'));
     } else {
-      order = [['data', 'DESC']]; // padrão
+      order = [['data', 'DESC']];
     }
 
     const offset = (page - 1) * limit;
 
-    // Monta os includes ajustados para busca por texto
-    let include = [
+    const include = [
       {
         model: Loja,
         as: 'loja',
         attributes: ['id', 'name'],
-        ...(search ? { where: { name: { [Op.like]: `%${search}%` } }, required: false } : {}),
       },
       {
         model: Usuario,
         as: 'usuario',
         attributes: ['id', 'name'],
-        ...(search ? { where: { name: { [Op.like]: `%${search}%` } }, required: false } : {}),
       },
       {
         model: Usuario,
         as: 'criador',
         attributes: ['id', 'name'],
-        ...(search ? { where: { name: { [Op.like]: `%${search}%` } }, required: false } : {}),
       },
     ];
 
-    // Executa consulta
     const auditoria = await Auditoria.findAndCountAll({
       where,
       order,
@@ -128,7 +130,7 @@ class AuditoriaService {
         'createdAt', 'updatedAt'
       ],
       include,
-      distinct: true, // evita contagem duplicada se houver joins
+      distinct: true,
     });
 
     return {
@@ -139,7 +141,6 @@ class AuditoriaService {
     };
   }
 
-  // Método para buscar uma auditoria por ID
   async getAuditoriaById(id) {
     try {
       const auditoria = await Auditoria.findByPk(id, {
@@ -168,23 +169,19 @@ class AuditoriaService {
       });
 
       if (!auditoria) {
-        console.error(`Auditoria não encontrada com ID: ${id}`);
         throw new Error('Auditoria não encontrada.');
       }
 
       return auditoria;
     } catch (error) {
-      console.error('Erro ao buscar auditoria:', error.message);
       throw error;
     }
   }
 
-  // Método para criar uma nova auditoria
   async createAuditoria(data) {
     return await Auditoria.create(data);
   }
 
-  // Método para atualizar uma auditoria existente
   async updateAuditoria(id, updateData) {
     const [updated] = await Auditoria.update(updateData, {
       where: { id },
@@ -197,7 +194,6 @@ class AuditoriaService {
     throw new Error('Auditoria não encontrada para atualizar.');
   }
 
-  // Método para deletar uma auditoria
   async deleteAuditoria(id) {
     const t = await sequelize.transaction();
     try {
@@ -206,7 +202,7 @@ class AuditoriaService {
         throw new Error('Auditoria não encontrada para exclusão.');
       }
 
-      await Fluxo.destroy({ 
+      await Fluxo.destroy({
         where: { auditoriaId: id },
         transaction: t
       });
@@ -224,7 +220,6 @@ class AuditoriaService {
     }
   }
 
-  // Busca auditorias do usuário (mantido como estava)
   async getAuditoriaUser({ usuarioId, page = 1, limit = 10, ...filters }) {
     page = parseInt(page);
     limit = parseInt(limit);
@@ -235,19 +230,15 @@ class AuditoriaService {
     if (usuarioId) {
       where.usuarioId = usuarioId;
     }
-
     if (filters.lojaId) {
       where.lojaId = filters.lojaId;
     }
-
     if (filters.data) {
       where.data = filters.data;
     }
-
     if (filters.horaInicial) {
       where.horaInicial = filters.horaInicial;
     }
-
     if (filters.horaFinal) {
       where.horaFinal = filters.horaFinal;
     }
@@ -283,7 +274,6 @@ class AuditoriaService {
       currentPage: page,
     };
   }
-
 }
 
 export default new AuditoriaService();
