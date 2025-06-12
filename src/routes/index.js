@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { authMiddleware } from '../services/authMiddleware.js';
+
+// Imports das rotas
 import usuarioRoutes from './usuarioRoutes.js';
 import categoriaRoutes from './categoriaRoutes.js';
 import auditoriaRoutes from './auditoriaRoutes.js';
-import avoperacionalRoutes from './avoperacionalRoustes.js'; // corrigido o typo
+import avoperacionalRoutes from './avoperacionalRoutes.js';
 import cadavoperacionalRoutes from './cadavoperacionalRoutes.js';
 import cadquestoesRoutes from './cadquestoesRoutes.js';
 import cadsexoRoutes from './cadsexoRoutes.js';
@@ -18,6 +20,8 @@ import vendasRoutes from './vendasRoutes.js';
 import anotacaoRoutes from './anotacaoRoutes.js';
 import fluxoRoutes from './fluxoRoutes.js';
 import authRoutes from './authRoutes.js'; // Nova rota de autenticação
+import relatorioRoutes from './relatorioRoutes.js';
+
 
 const router = Router();
 
@@ -28,7 +32,7 @@ router.use('/auth', authRoutes);
 router.use(authMiddleware);
 
 // Registrar as rotas protegidas
-router.use('/usuarios', usuarioRoutes); 
+router.use('/usuarios', usuarioRoutes);
 router.use('/categorias', categoriaRoutes);
 router.use('/anotacao', anotacaoRoutes);
 router.use('/auditoria', auditoriaRoutes);
@@ -45,6 +49,7 @@ router.use('/pausa', pausaRoutes);
 router.use('/perdas', perdasRoutes);
 router.use('/vendas', vendasRoutes);
 router.use('/fluxo', fluxoRoutes);
+router.use('/relatorio', relatorioRoutes);
 
 
 
