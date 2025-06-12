@@ -8,6 +8,7 @@ import AnotacoesService from '../services/anotacoesService.js';
 import AvoperacionalService from '../services/avoperacionalService.js';
 
 class RelatorioController {
+  
   async gerarRelatorio(req, res) {
   const { auditoriaId } = req.params;
   try {
@@ -25,6 +26,27 @@ class RelatorioController {
   }
 }
 
+  async index(req, res) {
+    try {
+      // Pegue seus filtros da query string
+      const { dataInicial, dataFinal, lojaId, usuarioId } = req.query;
+
+      // Monte filtros para passar ao Service (ajuste conforme seu relatório)
+      const filtros = {};
+      if (lojaId) filtros.lojaId = lojaId;
+      if (usuarioId) filtros.usuarioId = usuarioId;
+      if (dataInicial || dataFinal) filtros.data = {};
+      if (dataInicial) filtros.data[">="] = dataInicial;
+      if (dataFinal) filtros.data["<="] = dataFinal;
+
+      // Chame seu service de auditoria, pode criar um método novo para relatório
+      const resultado = await AuditoriaService.getAuditoriaRelatorio(filtros);
+
+      res.status(200).json(resultado);
+    } catch (error) {
+      res.status(500).json({ error: 'Erro ao gerar relatório', detalhes: error.message });
+    }
+  }
 }
 
 export default new RelatorioController();
