@@ -8,7 +8,7 @@ import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
 class VendasService {
-  async getVendas({  page = 1,  limit = 10, id, auditoriaId, usuarioId,  troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getVendas({  page = 1,  limit = 10, id, auditoriaId, usuarioId,  troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort, lojaName }) {
     
     let where = {};
     let order = [];
@@ -34,13 +34,12 @@ class VendasService {
       where = { ...where, troca }; // Filtra por 0 ou 1 diretamente
     }
     if (createdBefore) {
-      where = { ...where, createdAt: { [Op.gte]: createdBefore } };
+    where.createdAt = { ...where.createdAt, [Op.lte]: new Date(createdBefore) };
     }
 
     if (createdAfter) {
-      where = { ...where, createdAt: { [Op.lte]: createdAfter } };
+      where.createdAt = { ...where.createdAt, [Op.gte]: new Date(createdAfter) };
     }
-
 
     if (updatedBefore) {
       where = { ...where, updatedAt: { [Op.gte]: updatedBefore } };
@@ -72,6 +71,7 @@ class VendasService {
               model: Loja,
               as: 'loja',
               attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+              ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
             },
             {
               model: Usuario,
