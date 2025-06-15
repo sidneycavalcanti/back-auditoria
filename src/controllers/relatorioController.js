@@ -8,32 +8,24 @@ import AnotacoesService from '../services/anotacoesService.js';
 import AvoperacionalService from '../services/avoperacionalService.js';
 
 class RelatorioController {
+  
   async gerarRelatorio(req, res) {
-    const { auditoriaId } = req.params;
+  const { auditoriaId } = req.params;
+  try {
+    console.log('🔍 auditoriaId recebido:', auditoriaId);
 
-    try {
-      const auditoria = await AuditoriaService.getAuditoriaById(auditoriaId);
-      const vendas = await VendasService.getVendas({ auditoriaId, limit: 100 });
-      const fluxo = await FluxoService.getFluxopessoa({ auditoriaId, limit: 100 });
-      const pausas = await PausaService.getPausas({ auditoriaId, limit: 100 });
-      const perdas = await PerdaService.getPerdas({ auditoriaId, limit: 100 });
-      const anotacoes = await AnotacoesService.getAnotacoes({ auditoriaId, limit: 100 });
-      const avaliacoes = await AvoperacionalService.getAvoperacional({ auditoriaId, limit: 100 });
-
-      return res.json({
-        auditoria,
-        vendas,
-        fluxo,
-        pausas,
-        perdas,
-        anotacoes,
-        avaliacoes
-      });
-    } catch (error) {
-      console.error('Erro ao gerar relatório:', error);
-      return res.status(500).json({ error: 'Erro ao gerar relatório' });
+    const auditoria = await AuditoriaService.getAuditoriaById(auditoriaId);
+    if (!auditoria) {
+      return res.status(404).json({ error: 'Auditoria não encontrada.' });
     }
+
+    return res.json({ auditoria });
+  } catch (error) {
+    console.error('❌ Erro ao buscar auditoria:', error);
+    return res.status(500).json({ error: 'Erro ao gerar relatório', details: error.message });
   }
+}
+
   async index(req, res) {
     try {
       // Pegue seus filtros da query string
