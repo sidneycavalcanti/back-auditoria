@@ -6,7 +6,7 @@ import Usuario from '../models/Usuario.js';
 import { Op } from 'sequelize';
 
 class AnotacoesService {
-  async getAnotacoes({ page = 1, auditoriaId, limit = 10 }) {
+  async getAnotacoes({ page = 1, auditoriaId, limit = 10, lojaId, lojaName }) {
     page = parseInt(page, 10);
     limit = parseInt(limit, 10);
   

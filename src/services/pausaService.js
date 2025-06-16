@@ -6,7 +6,7 @@ import Loja from '../models/Loja.js';
 import { Op } from 'sequelize';
 
 class PausaService {
-  async getPausas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getPausas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, lojaId, lojaName, sort }) {
     page = parseInt(page, 10) || 1;
     limit = parseInt(limit, 10) || 10;
     const offset = (page - 1) * limit;
@@ -41,7 +41,10 @@ class PausaService {
           as: 'auditoria',
           attributes: ['id', 'usuarioId', 'lojaId'],
           include: [
-            { model: Loja, as: 'loja', attributes: ['id', 'name'] },
+            { model: Loja, as: 'loja', attributes: ['id', 'name'],
+               ...(lojaId ? { where: { id: lojaId } } : {}),
+               ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
+             },
             { model: Usuario, as: 'usuario', attributes: ['id', 'name'] },
           ],
         },

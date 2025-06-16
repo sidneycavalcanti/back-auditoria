@@ -6,7 +6,7 @@ import Usuario from '../models/Usuario.js';
 import Motivoperdas from '../models/Motivoperdas.js';
 
 class PerdaService {
-  async getPerdas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getPerdas({ page = 1, limit = 10, auditoriaId, createdBefore, createdAfter, updatedBefore, updatedAfter, lojaId, lojaName, sort }) {
     // 🚀 Garantia que `page`, `limit`, e `auditoriaId` são valores numéricos válidos
     page = parseInt(page, 10) || 1;
     limit = parseInt(limit, 10) || 10;

@@ -5,7 +5,7 @@ import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
 
 class QuestoesService {
-  async getQuestoes({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, sort }) {
+  async getQuestoes({ page = 1, limit = 10, createdBefore, createdAfter, updatedBefore, updatedAfter, lojaId, lojaName, sort }) {
     page = parseInt(page);
     limit = parseInt(limit);
     let where = {};
