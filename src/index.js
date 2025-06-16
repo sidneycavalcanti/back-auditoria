@@ -3,12 +3,16 @@ import express from 'express';
 import cors from 'cors'; // Importa o CORS
 import routes from './routes/index.js';
 import sequelize from './config/database.js'; // Ajuste o caminho conforme necessário
+import compression from 'compression';
+
 
 dotenv.config();
 
 const app = express();
 
 app.use(cors());
+app.use(compression()); // ✅ compressão ativada aqui
+
 
 // Configurações básicas
 app.use(express.json());
