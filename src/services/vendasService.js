@@ -8,7 +8,7 @@ import Cadsexo from '../models/Cadsexo.js';
 import { Op } from 'sequelize';
 
 class VendasService {
-  async getVendas({  page = 1,  limit = 10, id, auditoriaId, usuarioId,  troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort, lojaName }) {
+  async getVendas({  page = 1,  limit = 10, id, auditoriaId, usuarioId,  troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort, lojaId, lojaName }) {
     
     let where = {};
     let order = [];
@@ -71,6 +71,7 @@ class VendasService {
               model: Loja,
               as: 'loja',
               attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+              ...(lojaId ? { where: { id: lojaId } } : {}),
               ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
             },
             {

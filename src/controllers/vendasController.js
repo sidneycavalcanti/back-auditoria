@@ -3,7 +3,7 @@ import VendasService from '../services/vendasService.js';
 class VendasController {
   async index(req, res) {
     try {
-      const { page = 1, limit = 10, auditoriaId, usuarioId, troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort, lojaName } = req.query;
+      const { page = 1, limit = 10, auditoriaId, usuarioId, troca, createdBefore, createdAfter, updatedBefore, updatedAfter, sort, lojaId, lojaName } = req.query;
 
       // Converte valores para garantir que sejam números
       const vendas = await VendasService.getVendas({
@@ -17,6 +17,7 @@ class VendasController {
         updatedBefore,
         updatedAfter,
         sort,
+        lojaId,
         lojaName
       });
 

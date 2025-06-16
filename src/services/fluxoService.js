@@ -14,6 +14,8 @@ class fluxoService {
     dataAfter, 
     horaBefore, 
     horaAfter, 
+    lojaId,
+    lojaName,
     sort 
   }) {
     page = parseInt(page);
@@ -68,6 +70,8 @@ class fluxoService {
             model: Loja,
             as: 'loja',
             attributes: ['id', 'name'],
+            ...(lojaId ? { where: { id: lojaId } } : {}),
+            ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
         },
         {
             model: Auditoria,

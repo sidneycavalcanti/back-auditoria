@@ -43,6 +43,8 @@ class AnotacoesService {
                 model: Loja,
                 as: 'loja',
                 attributes: ['id', 'name'],
+                ...(lojaId ? { where: { id: lojaId } } : {}),
+                ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
               },
             ]
           }

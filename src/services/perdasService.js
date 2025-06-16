@@ -45,7 +45,12 @@ class PerdaService {
           as: 'auditoria',
           attributes: ['id', 'usuarioId', 'lojaId'],
           include: [
-            { model: Loja, as: 'loja', attributes: ['id', 'name'] },
+            { model: 
+              Loja, as: 'loja',
+               attributes: ['id', 'name'],
+              ...(lojaId ? { where: { id: lojaId } } : {}),
+              ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
+              },
             { model: Usuario, as: 'usuario', attributes: ['id', 'name'] },
           ],
         },

@@ -16,6 +16,8 @@ class AvoperacionalService {
     createdAfter,
     updatedBefore,
     updatedAfter,
+    lojaId,
+    lojaName,
     sort
   }) {
     // Garantia que page, limit e auditoriaId sejam valores numéricos válidos
@@ -90,7 +92,9 @@ class AvoperacionalService {
             {
               model: Loja,
               as: 'loja',
-              attributes: ['id', 'name']
+              attributes: ['id', 'name'],
+              ...(lojaId ? { where: { id: lojaId } } : {}),
+              ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
             },
             {
               model: Usuario,

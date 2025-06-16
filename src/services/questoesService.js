@@ -48,6 +48,8 @@ class QuestoesService {
               model: Loja,
               as: 'loja',
               attributes: ['id', 'name'],  // A partir do 'lojaId', traz o nome da loja
+              ...(lojaId ? { where: { id: lojaId } } : {}),
+              ...(lojaName ? { where: { name: { [Op.like]: `%${lojaName}%` } } } : {})
             },
             {
               model: Usuario,
