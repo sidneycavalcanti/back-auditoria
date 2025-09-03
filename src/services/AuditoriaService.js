@@ -36,110 +36,89 @@ class AuditoriaService {
 
   // Busca auditorias com filtros e busca por texto em nomes relacionados
   async getAuditoria({
-    page = 1,
-    limit = 10,
-    search,
-    lojaId,
-    usuarioId,
-    criadorId,
-    data,
-    horaInicial,
-    horaFinal,
-    createdBefore,
-    createdAfter,
-    updatedBefore,
-    updatedAfter,
-    sort,
-  }) {
-    page = parseInt(page);
-    limit = parseInt(limit);
+  page = 1,
+  limit,            // pode vir como limit…
+  quantidade,       // …ou como quantidade (do front)
+  search,           // pode vir como search…
+  q,                // …ou como q (do front)
+  lojaId,
+  usuarioId,
+  criadorId,
+  data,
+  horaInicial,
+  horaFinal,
+  createdBefore,
+  createdAfter,
+  updatedBefore,
+  updatedAfter,
+  sort,
+}) {
+  // normaliza params
+  const take = parseInt(limit ?? quantidade ?? 10);
+  const pageNum = Math.max(1, parseInt(page));
 
-    let where = {};
-    let order = [];
+  const where = {};
+  if (lojaId) where.lojaId = lojaId;
+  if (usuarioId) where.usuarioId = usuarioId;
+  if (criadorId) where.criadorId = criadorId;
+  if (data) where.data = data;
+  if (horaInicial) where.horaInicial = horaInicial;
+  if (horaFinal) where.horaFinal = horaFinal;
 
-    // Filtros simples
-    if (lojaId) where.lojaId = lojaId;
-    if (usuarioId) where.usuarioId = usuarioId;
-    if (criadorId) where.criadorId = criadorId;
-    if (data) where.data = data;
-    if (horaInicial) where.horaInicial = horaInicial;
-    if (horaFinal) where.horaFinal = horaFinal;
+  if (createdBefore) where.createdAt = { ...(where.createdAt || {}), [Op.lte]: createdBefore };
+  if (createdAfter)  where.createdAt = { ...(where.createdAt || {}), [Op.gte]: createdAfter  };
+  if (updatedBefore) where.updatedAt = { ...(where.updatedAt || {}), [Op.lte]: updatedBefore };
+  if (updatedAfter)  where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter  };
 
-    // Filtros por datas de criação e atualização
-    if (createdBefore) {
-      where.createdAt = { ...(where.createdAt || {}), [Op.lte]: createdBefore };
-    }
-    if (createdAfter) {
-      where.createdAt = { ...(where.createdAt || {}), [Op.gte]: createdAfter };
-    }
-    if (updatedBefore) {
-      where.updatedAt = { ...(where.updatedAt || {}), [Op.lte]: updatedBefore };
-    }
-    if (updatedAfter) {
-      where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter };
-    }
+  // busca livre: aceita ?search= ou ?q=
+  const term = ((search ?? q) || '').toString().trim().toLowerCase();
+  if (term) {
+    const lojaTable      = Loja.getTableName();
+    const usuarioTable   = Usuario.getTableName();
+    const auditoriaTable = Auditoria.getTableName();
+    const like = `%${term}%`;
 
-    // Busca global por nome em relacionamentos (NOMES DINÂMICOS)
-    if (search) {
-      const searchTerm = `%${search}%`;
-      const lojaTable = Loja.getTableName();
-      const usuarioTable = Usuario.getTableName();
-
-      where[Op.or] = [
-        literal(`EXISTS (SELECT 1 FROM ${lojaTable} WHERE ${lojaTable}.id = Auditoria.lojaId AND ${lojaTable}.name LIKE ${sequelize.escape(searchTerm)})`),
-        literal(`EXISTS (SELECT 1 FROM ${usuarioTable} WHERE ${usuarioTable}.id = Auditoria.usuarioId AND ${usuarioTable}.name LIKE ${sequelize.escape(searchTerm)})`),
-        literal(`EXISTS (SELECT 1 FROM ${usuarioTable} WHERE ${usuarioTable}.id = Auditoria.criadorId AND ${usuarioTable}.name LIKE ${sequelize.escape(searchTerm)})`)
-      ];
-    }
-
-    // Ordenação
-    if (sort) {
-      order = sort.split(',').map((item) => item.split(':'));
-    } else {
-      order = [['data', 'DESC']];
-    }
-
-    const offset = (page - 1) * limit;
-
-    const include = [
-      {
-        model: Loja,
-        as: 'loja',
-        attributes: ['id', 'name'],
-      },
-      {
-        model: Usuario,
-        as: 'usuario',
-        attributes: ['id', 'name'],
-      },
-      {
-        model: Usuario,
-        as: 'criador',
-        attributes: ['id', 'name'],
-      },
+    // Usa LOWER(...) LIKE ? e referencia tabela da Auditoria também pelo nome real
+    where[Op.or] = [
+      literal(`EXISTS (SELECT 1 FROM \`${lojaTable}\` WHERE \`${lojaTable}\`.id = \`${auditoriaTable}\`.lojaId AND LOWER(\`${lojaTable}\`.name) LIKE ${sequelize.escape(like)})`),
+      literal(`EXISTS (SELECT 1 FROM \`${usuarioTable}\` WHERE \`${usuarioTable}\`.id = \`${auditoriaTable}\`.usuarioId AND LOWER(\`${usuarioTable}\`.name) LIKE ${sequelize.escape(like)})`),
+      literal(`EXISTS (SELECT 1 FROM \`${usuarioTable}\` WHERE \`${usuarioTable}\`.id = \`${auditoriaTable}\`.criadorId AND LOWER(\`${usuarioTable}\`.name) LIKE ${sequelize.escape(like)})`),
     ];
-
-    const auditoria = await Auditoria.findAndCountAll({
-      where,
-      order,
-      limit,
-      offset,
-      attributes: [
-        'id', 'lojaId', 'usuarioId', 'criadorId',
-        'data', 'horaInicial', 'horaFinal',
-        'createdAt', 'updatedAt'
-      ],
-      include,
-      distinct: true,
-    });
-
-    return {
-      auditoria: auditoria.rows,
-      totalItems: auditoria.count,
-      totalPages: Math.ceil(auditoria.count / limit),
-      currentPage: page,
-    };
   }
+
+  const order = sort
+    ? String(sort).split(',').map((i) => i.split(':'))
+    : [['data', 'DESC'], ['createdAt', 'DESC']];
+
+  const include = [
+    { model: Loja,     as: 'loja',    attributes: ['id','name'], required: false },
+    { model: Usuario,  as: 'usuario', attributes: ['id','name'], required: false },
+    { model: Usuario,  as: 'criador', attributes: ['id','name'], required: false },
+  ];
+
+  // conta total primeiro (com include para manter LEFT JOIN)
+  const totalItems = await Auditoria.count({ where, include, distinct: true });
+  const totalPages = Math.max(1, Math.ceil(totalItems / take));
+  const safePage   = Math.min(pageNum, totalPages);
+
+  const auditoria = await Auditoria.findAll({
+    where, include, order,
+    limit: take,
+    offset: (safePage - 1) * take,
+    attributes: [
+      'id','lojaId','usuarioId','criadorId',
+      'data','horaInicial','horaFinal','createdAt','updatedAt'
+    ],
+    distinct: true,
+  });
+
+  return {
+    auditoria,
+    totalItems,
+    totalPages,
+    currentPage: safePage,
+  };
+}
 
   async getAuditoriaById(id) {
     try {
