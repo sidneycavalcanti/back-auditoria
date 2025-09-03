@@ -1,4 +1,4 @@
-import AuditoriaService from '../services/AuditoriaService.js';
+import AuditoriaService from '../services/auditoriaService.js';
 import fluxoController from './fluxoController.js';
 //import { createcatSchema, updatecatSchema } from '../validations/catValidation.js'; // Categoria não precisa de validação
 

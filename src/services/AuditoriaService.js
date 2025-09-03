@@ -3,7 +3,7 @@ import Loja from '../models/Loja.js';
 import Usuario from '../models/Usuario.js';
 import Fluxo from '../models/Fluxo.js';
 import sequelize from '../config/database.js';
-import { Op, literal } from 'sequelize';
+import { Op } from 'sequelize';
 
 class AuditoriaService {
   // Criação de auditoria com fluxos automáticos
@@ -35,89 +35,80 @@ class AuditoriaService {
   }
 
   // Busca auditorias com filtros e busca por texto em nomes relacionados
-  async getAuditoria({
-  page = 1,
-  limit,            // pode vir como limit…
-  quantidade,       // …ou como quantidade (do front)
-  search,           // pode vir como search…
-  q,                // …ou como q (do front)
-  lojaId,
-  usuarioId,
-  criadorId,
-  data,
-  horaInicial,
-  horaFinal,
-  createdBefore,
-  createdAfter,
-  updatedBefore,
-  updatedAfter,
-  sort,
-}) {
-  // normaliza params
-  const take = parseInt(limit ?? quantidade ?? 10);
-  const pageNum = Math.max(1, parseInt(page));
+  async getAuditoria(query) {
+  let {
+    page = 1,
+    limit,
+    quantidade,     // aceita os dois nomes
+    search,
+    q,              // aceita 'q' também
+    lojaId,
+    usuarioId,
+    criadorId,
+    data,
+    horaInicial,
+    horaFinal,
+    createdBefore,
+    createdAfter,
+    updatedBefore,
+    updatedAfter,
+    sort,
+  } = query
 
-  const where = {};
-  if (lojaId) where.lojaId = lojaId;
-  if (usuarioId) where.usuarioId = usuarioId;
-  if (criadorId) where.criadorId = criadorId;
-  if (data) where.data = data;
-  if (horaInicial) where.horaInicial = horaInicial;
-  if (horaFinal) where.horaFinal = horaFinal;
+  page = parseInt(page) || 1
+  limit = parseInt(limit ?? quantidade) || 10
+  const offset = (page - 1) * limit
 
-  if (createdBefore) where.createdAt = { ...(where.createdAt || {}), [Op.lte]: createdBefore };
-  if (createdAfter)  where.createdAt = { ...(where.createdAt || {}), [Op.gte]: createdAfter  };
-  if (updatedBefore) where.updatedAt = { ...(where.updatedAt || {}), [Op.lte]: updatedBefore };
-  if (updatedAfter)  where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter  };
+  const where = {}
 
-  // busca livre: aceita ?search= ou ?q=
-  const term = ((search ?? q) || '').toString().trim().toLowerCase();
+  if (lojaId) where.lojaId = lojaId
+  if (usuarioId) where.usuarioId = usuarioId
+  if (criadorId) where.criadorId = criadorId
+  if (data) where.data = data
+  if (horaInicial) where.horaInicial = horaInicial
+  if (horaFinal) where.horaFinal = horaFinal
+  if (createdBefore) where.createdAt = { ...(where.createdAt || {}), [Op.lte]: createdBefore }
+  if (createdAfter)  where.createdAt = { ...(where.createdAt || {}), [Op.gte]: createdAfter }
+  if (updatedBefore) where.updatedAt = { ...(where.updatedAt || {}), [Op.lte]: updatedBefore }
+  if (updatedAfter)  where.updatedAt = { ...(where.updatedAt || {}), [Op.gte]: updatedAfter }
+
+  // ----- BUSCA GLOBAL (sem literal/alias da tabela raiz) -----
+  const term = (search ?? q)?.toString().trim()
   if (term) {
-    const lojaTable      = Loja.getTableName();
-    const usuarioTable   = Usuario.getTableName();
-    const auditoriaTable = Auditoria.getTableName();
-    const like = `%${term}%`;
-
-    // Usa LOWER(...) LIKE ? e referencia tabela da Auditoria também pelo nome real
+    const like = { [Op.like]: `%${term}%` }
     where[Op.or] = [
-      literal(`EXISTS (SELECT 1 FROM \`${lojaTable}\` WHERE \`${lojaTable}\`.id = \`${auditoriaTable}\`.lojaId AND LOWER(\`${lojaTable}\`.name) LIKE ${sequelize.escape(like)})`),
-      literal(`EXISTS (SELECT 1 FROM \`${usuarioTable}\` WHERE \`${usuarioTable}\`.id = \`${auditoriaTable}\`.usuarioId AND LOWER(\`${usuarioTable}\`.name) LIKE ${sequelize.escape(like)})`),
-      literal(`EXISTS (SELECT 1 FROM \`${usuarioTable}\` WHERE \`${usuarioTable}\`.id = \`${auditoriaTable}\`.criadorId AND LOWER(\`${usuarioTable}\`.name) LIKE ${sequelize.escape(like)})`),
-    ];
+      { '$loja.name$': like },
+      { '$usuario.name$': like },
+      { '$criador.name$': like },
+    ]
   }
 
-  const order = sort
-    ? String(sort).split(',').map((i) => i.split(':'))
-    : [['data', 'DESC'], ['createdAt', 'DESC']];
-
   const include = [
-    { model: Loja,     as: 'loja',    attributes: ['id','name'], required: false },
-    { model: Usuario,  as: 'usuario', attributes: ['id','name'], required: false },
-    { model: Usuario,  as: 'criador', attributes: ['id','name'], required: false },
-  ];
+    { model: Loja,    as: 'loja',    attributes: ['id', 'name'], required: false },
+    { model: Usuario, as: 'usuario', attributes: ['id', 'name'], required: false },
+    { model: Usuario, as: 'criador', attributes: ['id', 'name'], required: false },
+  ]
 
-  // conta total primeiro (com include para manter LEFT JOIN)
-  const totalItems = await Auditoria.count({ where, include, distinct: true });
-  const totalPages = Math.max(1, Math.ceil(totalItems / take));
-  const safePage   = Math.min(pageNum, totalPages);
+  const order = sort
+    ? String(sort).split(',').map(s => s.split(':'))
+    : [['data', 'DESC']]
 
-  const auditoria = await Auditoria.findAll({
-    where, include, order,
-    limit: take,
-    offset: (safePage - 1) * take,
-    attributes: [
-      'id','lojaId','usuarioId','criadorId',
-      'data','horaInicial','horaFinal','createdAt','updatedAt'
-    ],
+  const { rows, count } = await Auditoria.findAndCountAll({
+    where,
+    include,
+    order,
+    limit,
+    offset,
     distinct: true,
-  });
+    subQuery: false, // garante count correto com include
+  })
 
   return {
-    auditoria,
-    totalItems,
-    totalPages,
-    currentPage: safePage,
-  };
+    auditoria: rows,
+    totalItems: count,
+    totalPages: Math.max(1, Math.ceil(count / limit)),
+    currentPage: page,
+  }
 }
 
   async getAuditoriaById(id) {
