@@ -3,16 +3,10 @@ import vendasController from '../controllers/vendasController.js';
 
 const router = new Router();
 
-/* CRUD / listagem base */
 router.get('/', vendasController.index);
 router.get('/:id', vendasController.show);
 router.post('/', vendasController.create);
 router.put('/:id', vendasController.update);
 router.delete('/:id', vendasController.destroy);
-
-/* Relatórios */
-router.get('/reports/resumo-mensal', vendasController.resumoMensal);
-router.get('/reports/resumo-diario', vendasController.resumoDiario);
-router.get('/reports/por-hora', vendasController.comparativoHora);
 
 export default router;

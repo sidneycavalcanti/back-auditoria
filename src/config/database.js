@@ -11,18 +11,19 @@ console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
 
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME, 
-  process.env.DB_USERNAME, 
-  process.env.DB_PASSWORD, 
+  process.env.DB_NAME,
+  process.env.DB_USERNAME,
+  process.env.DB_PASSWORD,
   {
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-  logging: false, // Isso desativa os logs do Sequelize, incluindo warnings
-  timezone:'-03:00',
-     dialectOptions: {
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
+    logging: false,
+    //timezone: '-03:00', // força horário de Brasília
+    dialectOptions: {
       useUTC: false, // não converte UTC ao ler
     },
-});
+  }
+);
 
 export default sequelize;
 
