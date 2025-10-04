@@ -18,7 +18,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_HOST,
     dialect: 'mysql',
     logging: false,
-    timezone: '-03:00', // força horário de Brasília
+    //timezone: '-03:00', // força horário de Brasília
     dialectOptions: {
       useUTC: false, // não converte UTC ao ler
     },
