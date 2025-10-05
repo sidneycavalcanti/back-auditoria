@@ -163,7 +163,7 @@ npm start
 
 ## 📄 Licença
 
-Projeto sob licença **MIT** — livre para uso e modificação.
+
 
 ---
 
