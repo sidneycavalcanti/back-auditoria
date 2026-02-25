@@ -1,11 +1,19 @@
-import { Op } from 'sequelize';
+import { Op } from "sequelize";
 
-import Auditoria from '../models/Auditoria.js';
-import Fluxo from '../models/Fluxo.js';
-import Vendas from '../models/Vendas.js';
-import Perdas from '../models/Perdas.js';
+import Auditoria from "../models/Auditoria.js";
+import Fluxo from "../models/Fluxo.js";
+import Vendas from "../models/Vendas.js";
+import Perdas from "../models/Perdas.js";
 
-const DOW = ["Segunda-feira","Terça-feira","Quarta-feira","Quinta-feira","Sexta-feira","Sábado","Domingo"];
+const DOW = [
+  "Segunda-feira",
+  "Terça-feira",
+  "Quarta-feira",
+  "Quinta-feira",
+  "Sexta-feira",
+  "Sábado",
+  "Domingo",
+];
 
 function getStartEnd(mes, ano) {
   const start = new Date(ano, mes - 1, 1, 0, 0, 0);
@@ -15,7 +23,7 @@ function getStartEnd(mes, ano) {
 
 function dayOfWeekLabel(date) {
   const d = date.getDay(); // 0 dom ... 6 sab
-  const map = { 1:0, 2:1, 3:2, 4:3, 5:4, 6:5, 0:6 };
+  const map = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 0: 6 };
   return DOW[map[d]];
 }
 
@@ -56,60 +64,92 @@ class RelatorioMensalService {
         lojaId,
         data: { [Op.gte]: start, [Op.lt]: end },
       },
-      order: [['data', 'ASC']],
+      order: [["data", "ASC"]],
       raw: true,
     });
 
-    const auditoriaIds = auditorias.map(a => a.id);
+    const auditoriaIds = auditorias.map((a) => a.id);
     if (auditoriaIds.length === 0) {
       return {
-        lojaId, mes, ano,
+        lojaId,
+        mes,
+        ano,
         totalAuditado: 0,
-        perfilClientesCompradores: withTotalsByDow(initByDow({ masculino:0,feminino:0,crianca:0,jovem:0,adulto:0,idoso:0 })),
-        fluxoPessoasPorDiaSemana: withTotalsByDow(initByDow({ vendasRealizadas:0,acompanhantes:0,vendasPerdidas:0,trocas:0,outros:0 })),
+        perfilClientesCompradores: withTotalsByDow(
+          initByDow({
+            masculino: 0,
+            feminino: 0,
+            crianca: 0,
+            jovem: 0,
+            adulto: 0,
+            idoso: 0,
+          }),
+        ),
+        fluxoPessoasPorDiaSemana: withTotalsByDow(
+          initByDow({
+            vendasRealizadas: 0,
+            acompanhantes: 0,
+            vendasPerdidas: 0,
+            trocas: 0,
+            outros: 0,
+          }),
+        ),
         fluxoPessoasPorSemana: {},
-        vendasPerdidasPorDiaSemana: withTotalsByDow(initByDow({ preco:0,faltaMercadoria:0,modCorTamanho:0,formaPagamento:0,atendimento:0,outros:0 })),
+        vendasPerdidasPorDiaSemana: withTotalsByDow(
+          initByDow({
+            preco: 0,
+            faltaMercadoria: 0,
+            modCorTamanho: 0,
+            formaPagamento: 0,
+            atendimento: 0,
+            outros: 0,
+          }),
+        ),
         aproveitamentoVendas: {},
-        meta: { auditorias: 0 }
+        meta: { auditorias: 0 },
       };
     }
 
     // 2) buscar filhos por auditoriaId (sem depender de data no model Fluxo)
     const [fluxos, vendas, perdas] = await Promise.all([
-  // Fluxo TEM lojaId (seu model mostrou)
-  Fluxo.findAll({
-    where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
-    attributes: ['auditoriaId','categoria','sexo','quantidade'],
-    raw: true,
-  }),
+      // Fluxo TEM lojaId (seu model mostrou)
+      Fluxo.findAll({
+        where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
+        attributes: ["auditoriaId", "categoria", "sexo", "quantidade"],
+        raw: true,
+      }),
 
-  // Vendas: pode ou não ter lojaId (pra não quebrar, filtra só por auditoriaId)
-  Vendas.findAll({
-    where: { auditoriaId: { [Op.in]: auditoriaIds } },
-    raw: true,
-  }),
+      // Vendas: pode ou não ter lojaId (pra não quebrar, filtra só por auditoriaId)
+      Vendas.findAll({
+        where: { auditoriaId: { [Op.in]: auditoriaIds } },
+        raw: true,
+      }),
 
-  // Perdas: NÃO tem lojaId (erro confirmou)
-  Perdas.findAll({
-    where: { auditoriaId: { [Op.in]: auditoriaIds } },
-    raw: true,
-  }),
-]);
+      // Perdas: NÃO tem lojaId (erro confirmou)
+      Perdas.findAll({
+        where: { auditoriaId: { [Op.in]: auditoriaIds } },
+        raw: true,
+      }),
+    ]);
 
     // mapa auditoriaId -> data
-    const auditDate = new Map(auditorias.map(a => [a.id, new Date(a.data)]));
+    const auditDate = new Map(auditorias.map((a) => [a.id, new Date(a.data)]));
 
     // 3) totalAuditado
     const totalAuditado = auditorias.reduce(
       (acc, a) => acc + Number(a.valor_auditado ?? a.valor ?? 0),
-      0
+      0,
     );
 
     // 4) Perfil clientes compradores (usa campos na auditoria)
     // ⚠️ Ajuste os nomes se forem diferentes nos seus campos de Auditoria
     const perfil = initByDow({
-      masculino: 0, feminino: 0,
-      crianca: 0, jovem: 0, adulto: 0, idoso: 0,
+      masculino: 0,
+      feminino: 0,
+      crianca: 0,
+      jovem: 0,
+      adulto: 0,
+      idoso: 0,
     });
 
     for (const a of auditorias) {
@@ -156,9 +196,12 @@ class RelatorioMensalService {
       if (!dt) continue;
       const dia = dayOfWeekLabel(dt);
 
-      if (f.categoria === 'acompanhante') fluxoPorDia[dia].acompanhantes += Number(f.quantidade || 0);
-      else if (f.categoria === 'outros') fluxoPorDia[dia].outros += Number(f.quantidade || 0);
-      else if (f.categoria === 'especulador') fluxoPorDia[dia].vendasPerdidas += Number(f.quantidade || 0); // ✅ ajuste a regra se quiser
+      if (f.categoria === "acompanhante")
+        fluxoPorDia[dia].acompanhantes += Number(f.quantidade || 0);
+      else if (f.categoria === "outros")
+        fluxoPorDia[dia].outros += Number(f.quantidade || 0);
+      else if (f.categoria === "especulador")
+        fluxoPorDia[dia].vendasPerdidas += Number(f.quantidade || 0); // ✅ ajuste a regra se quiser
     }
 
     // 6) Fluxo por semana (1..6 x dia)
@@ -215,11 +258,16 @@ class RelatorioMensalService {
     }
 
     return {
-      lojaId, mes, ano,
+      lojaId,
+      mes,
+      ano,
       totalAuditado,
       perfilClientesCompradores: withTotalsByDow(perfil),
       fluxoPessoasPorDiaSemana: withTotalsByDow(fluxoPorDia),
-      fluxoPessoasPorSemana,
+
+      // ✅ FIX
+      fluxoPessoasPorSemana: fluxoPorSemana,
+
       vendasPerdidasPorDiaSemana: withTotalsByDow(perdasPorDia),
       aproveitamentoVendas: aproveitamento,
       meta: {
