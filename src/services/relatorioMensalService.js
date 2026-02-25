@@ -76,20 +76,25 @@ class RelatorioMensalService {
 
     // 2) buscar filhos por auditoriaId (sem depender de data no model Fluxo)
     const [fluxos, vendas, perdas] = await Promise.all([
-      Fluxo.findAll({
-        where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
-        attributes: ['auditoriaId','categoria','sexo','quantidade'],
-        raw: true,
-      }),
-      Vendas.findAll({
-        where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
-        raw: true,
-      }),
-      Perdas.findAll({
-        where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
-        raw: true,
-      }),
-    ]);
+  // Fluxo TEM lojaId (seu model mostrou)
+  Fluxo.findAll({
+    where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
+    attributes: ['auditoriaId','categoria','sexo','quantidade'],
+    raw: true,
+  }),
+
+  // Vendas: pode ou não ter lojaId (pra não quebrar, filtra só por auditoriaId)
+  Vendas.findAll({
+    where: { auditoriaId: { [Op.in]: auditoriaIds } },
+    raw: true,
+  }),
+
+  // Perdas: NÃO tem lojaId (erro confirmou)
+  Perdas.findAll({
+    where: { auditoriaId: { [Op.in]: auditoriaIds } },
+    raw: true,
+  }),
+]);
 
     // mapa auditoriaId -> data
     const auditDate = new Map(auditorias.map(a => [a.id, new Date(a.data)]));
