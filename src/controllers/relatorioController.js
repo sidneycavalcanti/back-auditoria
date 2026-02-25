@@ -1,50 +1,21 @@
-// RelatorioController.js
-import AuditoriaService from '../services/AuditoriaService.js';
-import VendasService from '../services/vendasService.js';
-import FluxoService from '../services/fluxoService.js';
-import PausaService from '../services/pausaService.js';
-import PerdaService from '../services/perdasService.js';
-import AnotacoesService from '../services/anotacoesService.js';
-import AvoperacionalService from '../services/avoperacionalService.js';
+import RelatorioMensalService from '../services/relatorioMensalService.js';
 
 class RelatorioController {
-  
-  async gerarRelatorio(req, res) {
-  const { auditoriaId } = req.params;
-  try {
-    console.log('🔍 auditoriaId recebido:', auditoriaId);
-
-    const auditoria = await AuditoriaService.getAuditoriaById(auditoriaId);
-    if (!auditoria) {
-      return res.status(404).json({ error: 'Auditoria não encontrada.' });
-    }
-
-    return res.json({ auditoria });
-  } catch (error) {
-    console.error('❌ Erro ao buscar auditoria:', error);
-    return res.status(500).json({ error: 'Erro ao gerar relatório', details: error.message });
-  }
-}
-
-  async index(req, res) {
+  async mensal(req, res) {
     try {
-      // Pegue seus filtros da query string
-      const { dataInicial, dataFinal, lojaId, usuarioId } = req.query;
+      const lojaId = Number(req.query.lojaId);
+      const mes = Number(req.query.mes);
+      const ano = Number(req.query.ano);
 
-      // Monte filtros para passar ao Service (ajuste conforme seu relatório)
-      const filtros = {};
-      if (lojaId) filtros.lojaId = lojaId;
-      if (usuarioId) filtros.usuarioId = usuarioId;
-      if (dataInicial || dataFinal) filtros.data = {};
-      if (dataInicial) filtros.data[">="] = dataInicial;
-      if (dataFinal) filtros.data["<="] = dataFinal;
+      if (!lojaId || !mes || !ano) {
+        return res.status(400).json({ error: "Informe lojaId, mes e ano" });
+      }
 
-      // Chame seu service de auditoria, pode criar um método novo para relatório
-      const resultado = await AuditoriaService.getAuditoriaRelatorio(filtros);
-
-      res.status(200).json(resultado);
+      const payload = await RelatorioMensalService.gerar({ lojaId, mes, ano });
+      return res.status(200).json(payload);
     } catch (error) {
-      res.status(500).json({ error: 'Erro ao gerar relatório', detalhes: error.message });
+      console.error("❌ Erro relatório mensal:", error);
+      return res.status(500).json({ error: "Erro ao gerar relatório mensal", detalhes: error.message });
     }
   }
 }
