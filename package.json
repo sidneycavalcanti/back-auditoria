@@ -21,7 +21,9 @@
     "redis": "^5.5.6",
     "sequelize": "^6.37.5",
     "validator": "^13.9.0",
-    "yup": "^1.4.0"
+    "yup": "^1.4.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "engines": {
     "node": ">=18.18.0 <19.0.0"
