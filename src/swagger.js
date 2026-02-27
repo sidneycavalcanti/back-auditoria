@@ -16,6 +16,15 @@ const options = {
       : 'http://localhost:3000',
   },
 ],
+components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   // Procura anotações JSDoc dentro dos arquivos de rota
   apis: ['./src/routes/**/*.js'],
