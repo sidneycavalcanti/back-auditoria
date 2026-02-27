@@ -11,7 +11,7 @@ const options = {
     },
     servers: [
       { url: 'http://localhost:3000', description: 'Servidor local' },
-    ],
+    ], 
   },
   // Procura anotações JSDoc dentro dos arquivos de rota
   apis: ['./src/routes/**/*.js'],
