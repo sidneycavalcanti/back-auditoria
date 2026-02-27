@@ -9,9 +9,12 @@ const options = {
       version: '1.0.0',
       description: 'Documentação Swagger das rotas da API de auditoria',
     },
-    servers: [
-      { url: 'http://localhost:3000', description: 'Servidor local' },
-    ], 
+   servers: [
+  {
+    url: process.env.BASE_URL || 'http://localhost:3000',
+    description: 'Servidor',
+  },
+], 
   },
   // Procura anotações JSDoc dentro dos arquivos de rota
   apis: ['./src/routes/**/*.js'],
