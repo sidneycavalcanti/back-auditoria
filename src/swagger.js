@@ -9,12 +9,13 @@ const options = {
       version: '1.0.0',
       description: 'Documentação Swagger das rotas da API de auditoria',
     },
-   servers: [
+  servers: [
   {
-    url: process.env.BASE_URL || 'http://localhost:3000',
-    description: 'Servidor',
+    url: process.env.NODE_ENV === 'production'
+      ? 'https://back-auditoria.onrender.com'
+      : 'http://localhost:3000',
   },
-], 
+],
   },
   // Procura anotações JSDoc dentro dos arquivos de rota
   apis: ['./src/routes/**/*.js'],
