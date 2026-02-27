@@ -109,6 +109,10 @@ A API ficará disponível em:
 http://localhost:5000
 ```
 
+### 📖 Documentação Swagger
+Após instalar as dependências (veja passo 2 acima) e iniciar o servidor, abra `http://localhost:5000/api-docs` para visualizar a interface interativa com todos os endpoints documentados.
+
+
 ---
 
 ## 🐳 Execução com Docker
