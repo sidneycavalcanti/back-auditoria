@@ -5,67 +5,104 @@ const router = new Router();
 
 /**
  * @swagger
- * /usuarios:
+ * tags:
+ *   name: Anotação
+ *   description: Gerenciamento de anotações
+ */
+
+/**
+ * @swagger
+ * /anotacao:
  *   get:
- *     summary: Lista todos os usuários
- *     tags: [Usuários]
+ *     summary: Lista todas as anotações
+ *     tags: [Anotação]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Lista retornada com sucesso
+ *         description: Lista de anotações
  */
 router.get('/', anotacoesController.index);
+
 /**
  * @swagger
- * /usuarios:
+ * /anotacao/{id}:
  *   get:
- *     summary: Lista todos os usuários
- *     tags: [Usuários]
+ *     summary: Busca uma anotação pelo ID
+ *     tags: [Anotação]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Lista retornada com sucesso
+ *         description: Anotação encontrada
+ *       404:
+ *         description: Não encontrada
  */
 router.get('/:id', anotacoesController.show);
+
 /**
  * @swagger
- * /usuarios:
- *   get:
- *     summary: Lista todos os usuários
- *     tags: [Usuários]
+ * /anotacao:
+ *   post:
+ *     summary: Cria uma nova anotação
+ *     tags: [Anotação]
  *     security:
  *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
  *     responses:
- *       200:
- *         description: Lista retornada com sucesso
+ *       201:
+ *         description: Anotação criada
  */
 router.post('/', anotacoesController.create);
+
 /**
  * @swagger
- * /usuarios:
- *   get:
- *     summary: Lista todos os usuários
- *     tags: [Usuários]
+ * /anotacao/{id}:
+ *   put:
+ *     summary: Atualiza uma anotação
+ *     tags: [Anotação]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Lista retornada com sucesso
+ *         description: Atualizada com sucesso
  */
 router.put('/:id', anotacoesController.update);
+
 /**
  * @swagger
- * /usuarios:
- *   get:
- *     summary: Lista todos os usuários
- *     tags: [Usuários]
+ * /anotacao/{id}:
+ *   delete:
+ *     summary: Remove uma anotação
+ *     tags: [Anotação]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
- *         description: Lista retornada com sucesso
+ *         description: Removida com sucesso
  */
 router.delete('/:id', anotacoesController.destroy);
 
