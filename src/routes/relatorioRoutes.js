@@ -6,4 +6,7 @@ const router = new Router();
 // ✅ mensal por loja
 router.get('/mensal', relatorioController.mensal);
 
+
+
+
 export default router;
