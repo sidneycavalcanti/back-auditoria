@@ -41,6 +41,19 @@ function sumObj(obj) {
   return Object.values(obj).reduce((a, v) => a + (Number(v) || 0), 0);
 }
 
+function toNumberBR(v) {
+  if (v === null || v === undefined) return 0;
+  // suporta "1.234,56" e "1234.56"
+  const s = String(v).trim();
+  const n = Number(s.replace(/\./g, "").replace(",", "."));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function pickExistingAttrs(Model, attrs) {
+  const cols = Object.keys(Model.rawAttributes);
+  return attrs.filter((a) => cols.includes(a));
+}
+
 // total + total geral + participação (%)
 function withTotalsAndPctByDow(block) {
   const rows = {};
@@ -56,7 +69,8 @@ function withTotalsAndPctByDow(block) {
   }
 
   const totalAll = sumObj(totalGeral);
-  const pct = (n) => (totalAll > 0 ? Math.round((Number(n || 0) / totalAll) * 100) : 0);
+  const pct = (n) =>
+    totalAll > 0 ? Math.round((Number(n || 0) / totalAll) * 100) : 0;
 
   const participacaoPct = {};
   for (const k of keys) participacaoPct[k] = pct(totalGeral[k]);
@@ -81,8 +95,10 @@ function classifyFluxoCategoria(catRaw) {
 
   // Ajuste fino aqui se teus textos forem diferentes
   if (cat.includes("acomp")) return "acompanhantes";
-  if (cat.includes("ident") && cat.includes("perd")) return "vendasPerdidasIdentificadas";
-  if ((cat.includes("poss") || cat.includes("possive")) && cat.includes("perd")) return "possiveisVendasPerdidas";
+  if (cat.includes("ident") && cat.includes("perd"))
+    return "vendasPerdidasIdentificadas";
+  if ((cat.includes("poss") || cat.includes("possive")) && cat.includes("perd"))
+    return "possiveisVendasPerdidas";
   if (cat.includes("outro")) return "outros";
 
   // se vier "vendas realizadas" no fluxo, você pode mapear, mas eu prefiro vendas = tabela Vendas
@@ -95,12 +111,20 @@ function classifyFluxoCategoria(catRaw) {
 function classifyPerdaMotivo(p) {
   // 1) Se teu model já tem colunas tipo p.preco, p.atendimento, etc -> vamos usar direto no loop (abaixo)
   // 2) Se tua perda for "uma linha por motivo", tente achar o motivo aqui:
-  const raw = String(p.motivo ?? p.bucket ?? p.motivoNome ?? p.descricao ?? "outros");
+  const raw = String(
+    p.motivo ?? p.bucket ?? p.motivoNome ?? p.descricao ?? "outros",
+  );
   const m = norm(raw);
 
   if (m.includes("preco")) return "preco";
   if (m.includes("falta") || m.includes("mercadoria")) return "faltaMercadoria";
-  if (m.includes("mod") || m.includes("modelo") || m.includes("cor") || m.includes("taman")) return "modCorTamanho";
+  if (
+    m.includes("mod") ||
+    m.includes("modelo") ||
+    m.includes("cor") ||
+    m.includes("taman")
+  )
+    return "modCorTamanho";
   if (m.includes("pag") || m.includes("forma")) return "formaPagamento";
   if (m.includes("atend")) return "atendimento";
   return "outros";
@@ -131,7 +155,14 @@ class RelatorioMensalService {
         totalAuditado: 0,
 
         perfilClientesCompradores: withTotalsAndPctByDow(
-          initByDow({ masculino: 0, feminino: 0, crianca: 0, jovem: 0, adulto: 0, idoso: 0 })
+          initByDow({
+            masculino: 0,
+            feminino: 0,
+            crianca: 0,
+            jovem: 0,
+            adulto: 0,
+            idoso: 0,
+          }),
         ),
 
         fluxoPessoasPorDiaSemana: withTotalsAndPctByDow(
@@ -142,21 +173,46 @@ class RelatorioMensalService {
             possiveisVendasPerdidas: 0,
             trocas: 0,
             outros: 0,
-          })
+          }),
         ),
 
         fluxoPessoasPorSemana: {
-          rows: Object.fromEntries(DOW.map((dia) => [dia, { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0, total: 0 }])),
+          rows: Object.fromEntries(
+            DOW.map((dia) => [
+              dia,
+              { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0, total: 0 },
+            ]),
+          ),
           totalGeral: { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0, total: 0 },
-          participacaoPct: { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0, total: 100 },
+          participacaoPct: {
+            w1: 0,
+            w2: 0,
+            w3: 0,
+            w4: 0,
+            w5: 0,
+            w6: 0,
+            total: 100,
+          },
         },
 
         vendasPerdidasPorDiaSemana: withTotalsAndPctByDow(
-          initByDow({ preco: 0, faltaMercadoria: 0, modCorTamanho: 0, formaPagamento: 0, atendimento: 0, outros: 0 })
+          initByDow({
+            preco: 0,
+            faltaMercadoria: 0,
+            modCorTamanho: 0,
+            formaPagamento: 0,
+            atendimento: 0,
+            outros: 0,
+          }),
         ),
 
         aproveitamentoVendas: {
-          rows: Object.fromEntries(DOW.map((dia) => [dia, { fluxoPessoas: 0, numeroVendas: 0, aproveitamento: 0 }])),
+          rows: Object.fromEntries(
+            DOW.map((dia) => [
+              dia,
+              { fluxoPessoas: 0, numeroVendas: 0, aproveitamento: 0 },
+            ]),
+          ),
           totalGeral: { fluxoPessoas: 0, numeroVendas: 0, aproveitamento: 0 },
         },
 
@@ -168,13 +224,22 @@ class RelatorioMensalService {
     const [fluxos, vendas, perdas] = await Promise.all([
       Fluxo.findAll({
         where: { lojaId, auditoriaId: { [Op.in]: auditoriaIds } },
-        attributes: ["auditoriaId", "categoria", "quantidade"],
+        attributes: pickExistingAttrs(Fluxo, [
+          "auditoriaId",
+          "categoria",
+          "quantidade",
+        ]),
         raw: true,
       }),
 
       Vendas.findAll({
         where: { auditoriaId: { [Op.in]: auditoriaIds } },
-        attributes: ["auditoriaId", "troca", "valor", "sexo", "faixaetaria"],
+        attributes: pickExistingAttrs(Vendas, [
+          "auditoriaId",
+          "troca",
+          "valor",
+          "faixaetaria",
+        ]), // ✅ sem sexo
         raw: true,
       }),
 
@@ -198,13 +263,26 @@ class RelatorioMensalService {
     // 3) totalAuditado
     const totalAuditado = auditorias.reduce(
       (acc, a) => acc + Number(a.valor_auditado ?? a.valor ?? 0),
-      0
+      0,
+    );
+
+    // Total vendido no mês (somatório do campo valor)
+    const totalVendidoMes = vendas.reduce(
+      (acc, v) => acc + toNumberBR(v.valor),
+      0,
     );
 
     // ===========================
     // 1) PERFIL CLIENTES (Compradores) — vem de Auditoria (igual teu print)
     // ===========================
-    const perfil = initByDow({ masculino: 0, feminino: 0, crianca: 0, jovem: 0, adulto: 0, idoso: 0 });
+    const perfil = initByDow({
+      masculino: 0,
+      feminino: 0,
+      crianca: 0,
+      jovem: 0,
+      adulto: 0,
+      idoso: 0,
+    });
 
     for (const a of auditorias) {
       const info = auditInfo.get(a.id);
@@ -276,7 +354,8 @@ class RelatorioMensalService {
     // - cada célula: SOMA do total do fluxo daquela auditoria (no dia da semana) dentro da semana 1..6
     // ===========================
     const semanaBlock = {};
-    for (const dia of DOW) semanaBlock[dia] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0 };
+    for (const dia of DOW)
+      semanaBlock[dia] = { w1: 0, w2: 0, w3: 0, w4: 0, w5: 0, w6: 0 };
 
     for (const a of auditorias) {
       const info = auditInfo.get(a.id);
@@ -305,12 +384,19 @@ class RelatorioMensalService {
       const row = semanaBlock[dia];
       const total = sumObj(row);
       semanaRows[dia] = { ...row, total };
-      semanaTotals.w1 += row.w1; semanaTotals.w2 += row.w2; semanaTotals.w3 += row.w3;
-      semanaTotals.w4 += row.w4; semanaTotals.w5 += row.w5; semanaTotals.w6 += row.w6;
+      semanaTotals.w1 += row.w1;
+      semanaTotals.w2 += row.w2;
+      semanaTotals.w3 += row.w3;
+      semanaTotals.w4 += row.w4;
+      semanaTotals.w5 += row.w5;
+      semanaTotals.w6 += row.w6;
     }
 
     const semanaTotalAll = sumObj(semanaTotals);
-    const pctSem = (n) => (semanaTotalAll > 0 ? Math.round((Number(n || 0) / semanaTotalAll) * 100) : 0);
+    const pctSem = (n) =>
+      semanaTotalAll > 0
+        ? Math.round((Number(n || 0) / semanaTotalAll) * 100)
+        : 0;
 
     const semanaParticipacaoPct = {
       w1: pctSem(semanaTotals.w1),
@@ -358,7 +444,9 @@ class RelatorioMensalService {
 
       if (hasCols) {
         perdasPorDia[info.dia].preco += Number(p.preco || 0);
-        perdasPorDia[info.dia].faltaMercadoria += Number(p.falta_mercadoria || 0);
+        perdasPorDia[info.dia].faltaMercadoria += Number(
+          p.falta_mercadoria || 0,
+        );
         perdasPorDia[info.dia].modCorTamanho += Number(p.mod_cor_tamanho || 0);
         perdasPorDia[info.dia].formaPagamento += Number(p.forma_pagamento || 0);
         perdasPorDia[info.dia].atendimento += Number(p.atendimento || 0);
@@ -379,7 +467,9 @@ class RelatorioMensalService {
     const aproveitamentoRows = {};
     for (const dia of DOW) {
       const fluxoTotalDia = fluxoDiaComputed.rows[dia].total;
-      const numVendas = Number(fluxoDiaComputed.rows[dia].vendasRealizadas || 0);
+      const numVendas = Number(
+        fluxoDiaComputed.rows[dia].vendasRealizadas || 0,
+      );
       const perc = fluxoTotalDia > 0 ? (numVendas / fluxoTotalDia) * 100 : 0;
 
       aproveitamentoRows[dia] = {
@@ -390,9 +480,12 @@ class RelatorioMensalService {
     }
 
     const aproveitamentoTotalFluxo = fluxoDiaComputed.totalGeral.total;
-    const aproveitamentoTotalVendas = fluxoDiaComputed.totalGeral.vendasRealizadas;
+    const aproveitamentoTotalVendas =
+      fluxoDiaComputed.totalGeral.vendasRealizadas;
     const aproveitamentoTotalPerc =
-      aproveitamentoTotalFluxo > 0 ? (aproveitamentoTotalVendas / aproveitamentoTotalFluxo) * 100 : 0;
+      aproveitamentoTotalFluxo > 0
+        ? (aproveitamentoTotalVendas / aproveitamentoTotalFluxo) * 100
+        : 0;
 
     // ===========================
     // Retorno final (igual às tabelas)
@@ -402,6 +495,7 @@ class RelatorioMensalService {
       mes,
       ano,
       totalAuditado,
+      totalVendidoMes,
 
       // 1
       perfilClientesCompradores: withTotalsAndPctByDow(perfil),
