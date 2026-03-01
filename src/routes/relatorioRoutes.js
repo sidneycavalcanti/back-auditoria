@@ -7,6 +7,7 @@ const router = new Router();
 router.get('/mensal', relatorioController.mensal);
 
 
-
+// ✅ novo: vendas perdidas detalhado (tabela do print)
+router.get("/vendas-perdidas-detalhado", relatorioController.vendasPerdidasDetalhado);
 
 export default router;
