@@ -1,7 +1,6 @@
 import { Op } from "sequelize";
 import Auditoria from "../models/Auditoria.js";
 import Vendas from "../models/Vendas.js";
-import Formadepagamento from "../models/Formadepagamento.js";
 import AvOperacional from "../models/Avoperacional.js"; // ajuste se o nome for outro
 import Loja from "../models/Loja.js"; // opcional (só se for usar lojaId com meta)
 
@@ -94,36 +93,16 @@ class RelatorioDashboardService {
     // =========================
     let totalVendasValor = 0;
     let totalVendasCount = 0;
-    const formasPagamentoMap = new Map();
 
     if (auditoriaIds.length) {
       const vendas = await Vendas.findAll({
         where: { auditoriaId: { [Op.in]: auditoriaIds } },
-        attributes: ["valor", "formadepagamentoId"],
-        include: [
-          {
-            model: Formadepagamento,
-            as: "formadepagamento",
-            attributes: ["id", "name"],
-            required: false,
-          },
-        ],
+        attributes: ["valor"],
+        raw: true,
       });
-
       totalVendasCount = vendas.length;
       totalVendasValor = vendas.reduce((acc, v) => acc + toNumberBR(v.valor), 0);
-
-      for (const v of vendas) {
-        const nomeForma =
-          v?.formadepagamento?.name ??
-          (v.formadepagamentoId ? `Forma ${v.formadepagamentoId}` : "Não informado");
-        formasPagamentoMap.set(nomeForma, (formasPagamentoMap.get(nomeForma) ?? 0) + 1);
-      }
     }
-
-    const formasPagamento = Array.from(formasPagamentoMap.entries())
-      .map(([name, value]) => ({ name, value }))
-      .sort((a, b) => b.value - a.value);
 
     // =========================
     // PONTUAÇÃO MÉDIA (Questionário) no período
@@ -206,7 +185,6 @@ class RelatorioDashboardService {
       },
       charts: {
         auditoriasPorMes, // inclui também lojasAuditadas por mês
-        formasPagamento,
       },
       debug: {
         auditoriasNoFiltro: auditoriaIds.length,
