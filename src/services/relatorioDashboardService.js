@@ -1,7 +1,7 @@
 import { Op } from "sequelize";
 import Auditoria from "../models/Auditoria.js";
 import Vendas from "../models/Vendas.js";
-import AvOperacional from "../models/AvOperacional.js"; // ajuste se o nome for outro
+import AvOperacional from "../models/Avoperacional.js"; // ajuste se o nome for outro
 import Loja from "../models/Loja.js"; // opcional (só se for usar lojaId com meta)
 
 function rangeMes(ano, mes) {
