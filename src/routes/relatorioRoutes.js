@@ -13,4 +13,8 @@ router.get("/vendas-perdidas-detalhado", relatorioController.vendasPerdidasDetal
 // ✅ novo relatório: questionário de avaliação
 router.get("/questionario-avaliacao", relatorioController.questionarioAvaliacao);
 
+// ✅ NOVA rota do dashboard
+router.get("/dashboard", relatorioController.dashboard);
+
+
 export default router;
