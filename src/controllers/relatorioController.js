@@ -2,6 +2,8 @@
 import RelatorioMensalService from "../services/relatorioMensalService.js";
 import RelatorioVendasPerdidasDetalhadoService from "../services/relatorioVendasPerdidasDetalhadoService.js";
 import RelatorioQuestionarioAvaliacaoService from "../services/relatorioQuestionarioAvaliacaoService.js";
+import RelatorioDashboardService from "../services/relatorioDashboardService.js";
+
 
 
 class RelatorioController {
@@ -65,6 +67,33 @@ class RelatorioController {
       return res.status(500).json({ error: "Erro ao gerar relatório questionário", detalhes: error.message });
     }
   }
+
+  async dashboard(req, res) {
+  try {
+    // scope=mes (este mês) | scope=geral (completo)
+    const scope = String(req.query.scope ?? "mes");
+    const lojaId = req.query.lojaId ? Number(req.query.lojaId) : null;
+
+    // opcional: permitir escolher mês/ano manualmente (se não vier, usa atual)
+    const mes = req.query.mes ? Number(req.query.mes) : null;
+    const ano = req.query.ano ? Number(req.query.ano) : null;
+
+    const payload = await RelatorioDashboardService.gerar({
+      scope,
+      lojaId,
+      mes,
+      ano,
+    });
+
+    return res.status(200).json(payload);
+  } catch (error) {
+    console.error("❌ Erro dashboard:", error);
+    return res.status(500).json({
+      error: "Erro ao gerar dashboard",
+      detalhes: error.message,
+    });
+  }
+}
 
 
 
