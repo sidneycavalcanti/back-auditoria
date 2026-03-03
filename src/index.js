@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors'; // Importa o CORS
 import routes from './routes/index.js';
-import sequelize from './config/database.js'; // Ajuste o caminho conforme necessário
+import sequelize from './config/database.js'; // Ajuste o caminho conforme necessÃ¡rio
 import compression from 'compression';
 import { setupSwagger } from './swagger.js';
 
@@ -12,36 +12,39 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(compression()); // ✅ compressão ativada aqui
+app.use(compression()); // âœ… compressÃ£o ativada aqui
 
 
-// Swagger documentação (instalado antes das demais rotas para não exigir autenticação)
+// Swagger documentaÃ§Ã£o (instalado antes das demais rotas para nÃ£o exigir autenticaÃ§Ã£o)
 setupSwagger(app);
 
-// Configurações básicas
+// ConfiguraÃ§Ãµes bÃ¡sicas
 app.use(express.json());
 
 // Rotas
 app.use(routes);
 
-// Rota padrão
+// Rota padrÃ£o
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Servidor está rodando com sucesso! 🚀' });
+  res.status(200).json({ message: 'Servidor estÃ¡ rodando com sucesso! ðŸš€' });
 });
 
 // Porta
 const PORT = process.env.PORT || 3000;
 
-// Conexão com o banco de dados e inicialização do servidor
+// ConexÃ£o com o banco de dados e inicializaÃ§Ã£o do servidor
 sequelize.authenticate()
   .then(() => {
-    console.log('Conexão com o banco de dados bem-sucedida.');
+    console.log('ConexÃ£o com o banco de dados bem-sucedida.');
     app.listen(PORT, () => {
       console.log(`Servidor rodando na porta ${PORT}`);
     });
   })
   .catch(error => {
     console.error('Erro ao conectar ao banco de dados:', error);
+    if (error?.original?.code === 'ETIMEDOUT' || error?.parent?.code === 'ETIMEDOUT') {
+      console.error('Dica: timeout de rede. Verifique DB_HOST/DB_PORT, allowlist/firewall e se o banco aceita conexoes externas.');
+    }
   });
 
 // Middleware de erro
