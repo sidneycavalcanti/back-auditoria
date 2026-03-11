@@ -33,7 +33,7 @@ function weekOfMonth(date) {
 
 function initByDow(template) {
   const obj = {};
-  for (const dia of DOW) obj[dia] = JSON.parse(JSON.stringify(template));
+  for (const dia of DOW) obj[dia] = { ...template };
   return obj;
 }
 
@@ -140,6 +140,18 @@ class RelatorioMensalService {
         lojaId,
         data: { [Op.gte]: start, [Op.lt]: end },
       },
+      attributes: pickExistingAttrs(Auditoria, [
+        "id",
+        "data",
+        "valor_auditado",
+        "valor",
+        "masculino",
+        "feminino",
+        "crianca",
+        "jovem",
+        "adulto",
+        "idoso",
+      ]),
       order: [["data", "ASC"]],
       raw: true,
     });
@@ -245,6 +257,21 @@ class RelatorioMensalService {
 
       Perdas.findAll({
         where: { auditoriaId: { [Op.in]: auditoriaIds } },
+        attributes: pickExistingAttrs(Perdas, [
+          "auditoriaId",
+          "preco",
+          "falta_mercadoria",
+          "mod_cor_tamanho",
+          "forma_pagamento",
+          "atendimento",
+          "outros",
+          "motivo",
+          "bucket",
+          "motivoNome",
+          "descricao",
+          "quantidade",
+          "qtd",
+        ]),
         raw: true,
       }),
     ]);
