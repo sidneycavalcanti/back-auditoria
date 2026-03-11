@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+import { Op, fn, col } from "sequelize";
 import Auditoria from "../models/Auditoria.js";
 import Vendas from "../models/Vendas.js";
 import Formadepagamento from "../models/Formadepagamento.js";
@@ -152,29 +152,45 @@ class RelatorioDashboardService {
     // - se scope=ano: últimos 12 meses
     // =========================
     const serieMonths = lastNMonthsFrom(A, M, isAno ? 12 : 6);
-    const auditoriasPorMes = [];
+    const seriesStart = new Date(serieMonths[0].ano, serieMonths[0].mes - 1, 1, 0, 0, 0);
+    const seriesEnd = new Date(A, M, 1, 0, 0, 0);
 
-    for (const mm of serieMonths) {
-      const { start, end } = rangeMes(mm.ano, mm.mes);
-      const list = await Auditoria.findAll({
-        where: {
-          ...lojaWhere,
-          data: { [Op.gte]: start, [Op.lt]: end },
+    const groupedAuditorias = await Auditoria.findAll({
+      where: {
+        ...lojaWhere,
+        data: { [Op.gte]: seriesStart, [Op.lt]: seriesEnd },
+      },
+      attributes: [
+        [fn("YEAR", col("data")), "ano"],
+        [fn("MONTH", col("data")), "mes"],
+        [fn("COUNT", col("id")), "totalAuditorias"],
+        [fn("COUNT", fn("DISTINCT", col("lojaId"))), "lojasAuditadas"],
+      ],
+      group: [fn("YEAR", col("data")), fn("MONTH", col("data"))],
+      raw: true,
+    });
+
+    const groupedMap = new Map(
+      groupedAuditorias.map((r) => [
+        `${Number(r.ano)}-${Number(r.mes)}`,
+        {
+          totalAuditorias: Number(r.totalAuditorias || 0),
+          lojasAuditadas: Number(r.lojasAuditadas || 0),
         },
-        attributes: ["id", "lojaId"],
-        raw: true,
-      });
+      ])
+    );
 
-      const lojasSet = new Set(list.map((x) => x.lojaId).filter(Boolean));
-
-      auditoriasPorMes.push({
+    const auditoriasPorMes = serieMonths.map((mm) => {
+      const k = `${mm.ano}-${mm.mes}`;
+      const v = groupedMap.get(k) || { totalAuditorias: 0, lojasAuditadas: 0 };
+      return {
         label: `${mesLabel(mm.mes)}/${String(mm.ano).slice(-2)}`,
         mes: mm.mes,
         ano: mm.ano,
-        totalAuditorias: list.length,
-        lojasAuditadas: lojasSet.size,
-      });
-    }
+        totalAuditorias: v.totalAuditorias,
+        lojasAuditadas: v.lojasAuditadas,
+      };
+    });
 
     // =========================
     // META opcional de loja (se filtrou por loja)

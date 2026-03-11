@@ -19,7 +19,7 @@ app.use(compression()); // âœ… compressÃ£o ativada aqui
 setupSwagger(app);
 
 // ConfiguraÃ§Ãµes bÃ¡sicas
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Rotas
 app.use(routes);
@@ -50,12 +50,6 @@ sequelize.authenticate()
 // Middleware de erro
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Algo deu errado no servidor!' });
+  res.status(500).json({ error: 'Algo deu errado no servidor!' });});
 
-  try {
-    const validator = require('validator');
-    console.log('Validator loaded successfully:', validator);
-  } catch (err) {
-    console.error('Failed to load validator:', err);
-  }
-});
+
