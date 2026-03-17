@@ -27,11 +27,14 @@ components: {
     },
   },
   // Procura anotações JSDoc dentro dos arquivos de rota
-  apis: ['./src/routes/**/*.js'],
+  apis: ['./src/docs/swaggerRoutes.js'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
 
 export function setupSwagger(app) {
+  app.get('/api-docs.json', (_req, res) => res.json(swaggerSpec));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 }
+
+export { swaggerSpec };
