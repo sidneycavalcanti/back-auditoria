@@ -48,8 +48,8 @@ PORT=5000
 # Banco rodando no mesmo compose
 DB_HOST=db
 DB_PORT=3306
-DB_NAME=audit_plaza
-DB_USER=audit_plaza
+DB_NAME=banco
+DB_USER=root
 DB_PASSWORD=P@ssw0rd
 
 # CORS do Frontend
