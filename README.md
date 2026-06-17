@@ -50,7 +50,7 @@ DB_HOST=db
 DB_PORT=3306
 DB_NAME=banco
 DB_USER=root
-DB_PASSWORD=P@ssw0rd
+DB_PASSWORD=password
 
 # CORS do Frontend
 CORS_ORIGIN=http://localhost:3001
