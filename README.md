@@ -177,3 +177,7 @@ npm start
 Infraestrutura, DevOps e Desenvolvimento Fullstack  
 📧 [sidney@grupomtm.com.br](mailto:sidney@grupomtm.com.br)  
 🌐 [GitHub](https://github.com/sidneycavalcanti)
+
+## License
+
+MIT License — see [LICENSE](./LICENSE).
