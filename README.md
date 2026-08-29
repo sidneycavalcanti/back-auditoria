@@ -48,9 +48,9 @@ PORT=5000
 # Banco rodando no mesmo compose
 DB_HOST=db
 DB_PORT=3306
-DB_NAME=audit_plaza
-DB_USER=audit_plaza
-DB_PASSWORD=P@ssw0rd
+DB_NAME=banco
+DB_USER=root
+DB_PASSWORD=password
 
 # CORS do Frontend
 CORS_ORIGIN=http://localhost:3001
@@ -177,3 +177,7 @@ npm start
 Infraestrutura, DevOps e Desenvolvimento Fullstack  
 📧 [sidney@grupomtm.com.br](mailto:sidney@grupomtm.com.br)  
 🌐 [GitHub](https://github.com/sidneycavalcanti)
+
+## License
+
+MIT License — see [LICENSE](./LICENSE).
