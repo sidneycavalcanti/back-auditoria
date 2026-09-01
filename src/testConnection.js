@@ -1,5 +1,6 @@
-require('dotenv').config(); // Importa as variáveis de ambiente
-const sequelize = require('../src/config/database'); // Importa a configuração do Sequelize
+import dotenv from 'dotenv';
+dotenv.config(); // Importa as variáveis de ambiente
+import sequelize from './config/database.js'; // Importa a configuração do Sequelize
 
 async function testConnection() {
   try {
