@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 # Define o comando de inicialização do backend em modo de desenvolvimento
-CMD ["npm", "stat"]
+CMD ["npm", "start"]
